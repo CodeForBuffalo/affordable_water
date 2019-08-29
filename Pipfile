@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "*"
+django-crispy-forms = "*"
+pillow = "*"
+django-storages = "*"
+boto3 = "*"
+gunicorn = "*"
+python-dotenv = "*"
+django-heroku = "*"
+
+[requires]
+python_version = "3.7"
