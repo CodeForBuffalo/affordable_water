@@ -8,13 +8,22 @@ class Application(models.Model):
     middle_initial = models.CharField(blank=True, default='', max_length=5)
     last_name = models.CharField(max_length=100)
 
-    phone_number = models.CharField(validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$',
-        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")],
-        max_length=17, blank=True) # validators should be a list
+    phone_number = models.CharField(validators=[RegexValidator(regex=r'^((\+[1])?\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
+        message="Please use a valid phone number format such as 716-555-5555.")],
+        max_length=17) # validators should be a list
+    # Validates for:
+    #     7165555555
+    #     716-333-4444
+    #     (716) 333-4444
+    #     (716)333-4444
+    #     +17163334444
 
     email_address = models.EmailField(blank=True)
 
-class Documents(models.Model):
+    def __str__(self):
+        return f'{self.phone_number}'
+
+class Document(models.Model):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
     pay_period = models.CharField(choices=[
         ('WK',"Every week"),
@@ -22,9 +31,13 @@ class Documents(models.Model):
         ('TMO','Twice a month'),
         ('MO','Every month')],
         max_length=100)
+    household = models.IntegerField(default='1')
     income = models.IntegerField()
-    residency_photo = models.ImageField(upload_to='residency_docs')
-    income_photo = models.ImageField(upload_to='income_docs')
+    residency_photo = models.ImageField(upload_to='residency_docs', blank=True)
+    income_photo = models.ImageField(upload_to='income_docs', blank=True)
+
+    def __str__(self):
+        return f'{self.application.phone_number}'
 
 class Account(models.Model):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
@@ -36,6 +49,9 @@ class Account(models.Model):
     # Account service address
     address_number = models.IntegerField()
     address_street = models.CharField(max_length=100)
-    address_apartmentnum = models.CharField(max_length=100)
+    address_apartment_number = models.CharField(max_length=100, blank=True)
     address_zip = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.application.phone_number}'
     
