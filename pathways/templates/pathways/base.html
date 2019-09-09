@@ -35,7 +35,7 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
                         <a class="nav-item nav-link" href="{% url 'pathways-home' %}">Home</a>
-                        <a class="nav-item nav-link" href="{% url 'pathways-about' %}">About</a>
+                        <a class="nav-item nav-link" href="{% url 'pathways-apply' %}">Apply</a>
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
@@ -53,7 +53,7 @@
     </header>
     <main role="main" class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md">
                 <!-- Alerts and messages -->
                 {% if messages %}
                     {% for message in messages %}
