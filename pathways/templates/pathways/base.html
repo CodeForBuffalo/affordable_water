@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,9 +18,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'pathways/main.css' %}">
 
     {% if title %}
-    <title>Affordable Water - {{ title }}</title>
+    <title>{% trans "Affordable Water"%} - {{ title }}</title>
     {% else %}
-    <title>Affordable Water</title>
+    <title>{% trans "Affordable Water"%}</title>
     {% endif %}
 </head>
 

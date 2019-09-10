@@ -1,5 +1,6 @@
 {% extends "pathways/base.html" %}
+{% load i18n %}
 {% block content %}
-    <h1>Home Page</h1>
+    <h1>{% trans "Home Page" %}</h1>
     <div>Your app_id is: {{ request.session.app_id }}</div>
 {% endblock content %}
