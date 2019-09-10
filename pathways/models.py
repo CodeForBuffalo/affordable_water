@@ -20,19 +20,24 @@ class Application(models.Model):
 
     email_address = models.EmailField(blank=True)
 
+    own_or_rent = models.CharField(max_length=5, default='Own', choices=(
+        ('Own',"Own"),
+        ('Rent',"Rent")
+    ))
+
     def __str__(self):
         return f'{self.phone_number}'
 
 class Document(models.Model):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
-    pay_period = models.CharField(choices=[
+    pay_period = models.CharField(max_length=100, choices=[
         ('WK',"Every week"),
         ('TWK',"Every two weeks"),
         ('TMO','Twice a month'),
         ('MO','Every month')],
-        max_length=100)
-    household = models.IntegerField(default='1')
-    income = models.IntegerField()
+        )
+    household = models.PositiveSmallIntegerField(default='1')
+    income = models.PositiveIntegerField()
     residency_photo = models.ImageField(upload_to='residency_docs', blank=True)
     income_photo = models.ImageField(upload_to='income_docs', blank=True)
 

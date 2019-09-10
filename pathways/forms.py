@@ -27,6 +27,8 @@ class DocumentUploadForm(ModelForm):
         fields = ['pay_period','income','residency_photo','income_photo']
 
 class AccountAddressForm(ModelForm):
+    isAccountNameSame = forms.BooleanField(required=True, initial=False, label="Name on water bill", help_text="The person whose name is on the water bill. This might be a partner or roommate.")
+
     class Meta:
         model = Account
         fields = ['account_first','account_middle','account_last',
