@@ -1,16 +1,27 @@
 {% extends "pathways/base.html" %}
 {% load i18n %}
-{% block content %}
-<div class="jumbotron jumbotron-fluid">
-    <h1 class="display-4">Hello, world!</h1>
-    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to
-        featured content or information.</p>
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-    </p>
+
+{% block jumbotron %}
+<div class="jumbotron jumbotron-billboard">
+    <div class="img"></div>
+    <div class="darken"></div>
+    <div class="container text-white">
+        <div class="row">
+            <div class="col-md-8">
+                    <h1 class="text-white font-weight-bold">{% trans "Get help paying your <br> Buffalo water bill" %}</h1>
+                    <p class="lead">{% trans "Apply for assistance in 5 minutes" %}</p>
+                    <br class="my-4">
+                    <p class="lead">
+                        <a class="btn btn-primary btn-lg" href="{% url 'pathways-apply' %}" role="button">{% trans "Apply now" %}</a>
+                    </p>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
 </div>
+{% endblock jumbotron %}
+{% block content %}
+
 <h1>{% trans "Home Page" %}</h1>
 <div>Your app_id is: {{ request.session.app_id }}</div>
 {% endblock content %}
