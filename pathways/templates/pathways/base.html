@@ -15,7 +15,7 @@
     <!-- Compatibility -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'pathways/main.css' %}">
+    <link rel="stylesheet" href="{% static 'pathways/main.css' %}">
 
     {% if title %}
     <title>{% trans "Affordable Water"%} - {{ title }}</title>
@@ -24,37 +24,34 @@
     {% endif %}
 </head>
 
-<body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-            <div class="container">
-                <a class="navbar-brand mr-4" href="/">Affordable Water</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
-                    aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarToggle">
-                    <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" href="{% url 'pathways-home' %}">Home</a>
-                        <a class="nav-item nav-link" href="{% url 'pathways-apply' %}">Apply</a>
-                    </div>
-                    <!-- Navbar Right Side -->
-                    <div class="navbar-nav">
-                        {% if user.is_authenticated %}
-                        <a class="nav-item nav-link" href="#">Profile</a>
-                        <a class="nav-item nav-link" href="#">Logout</a>
-                        {% else %}
-                        <a class="nav-item nav-link" href="#">Login</a>
-                        <a class="nav-item nav-link" href="#">Register</a>
-                        {% endif %}
-                    </div>
+<body class="mt-5">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand mr-4" href="/">{% trans "Affordable Water"%}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{% url 'pathways-home' %}">{% trans "Home" %}</a>
+                    <a class="nav-item nav-link" href="{% url 'pathways-apply' %}">{% trans "Apply" %}</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="#">Español</a>
+                    {% if user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    {% endif %}
                 </div>
             </div>
-        </nav>
-    </header>
-    <main role="main" class="container-fluid">
+        </div>
+    </nav>
+    {% block jumbotron %}{% endblock jumbotron %}
+    <main role="main" class="container pt-4">
         <div class="row">
-            <div class="col">
+            <div class="col pt-2">
                 <!-- Alerts and messages -->
                 {% if messages %}
                     {% for message in messages %}
@@ -65,7 +62,7 @@
                 {% endif %}
 
                 <!-- Content of page -->
-                {% block content %}{% endblock %}
+                {% block content %}{% endblock content %}
             </div>
 
         </div>
