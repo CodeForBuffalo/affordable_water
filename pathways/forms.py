@@ -21,12 +21,12 @@ class ApplicationForm(ModelForm):
         phone = country_code + phone
         return phone
 
-class DocumentUploadForm(ModelForm):
+class DocumentForm(ModelForm):
     class Meta:
         model = Document
         fields = ['pay_period','income','residency_photo','income_photo']
 
-class AccountAddressForm(ModelForm):
+class AccountForm(ModelForm):
     isAccountNameSame = forms.BooleanField(required=True, initial=False, label="Name on water bill", help_text="The person whose name is on the water bill. This might be a partner or roommate.")
 
     class Meta:
