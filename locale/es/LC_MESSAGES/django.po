@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-10 13:30-0400\n"
+"POT-Creation-Date: 2019-09-11 11:09-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,9 +28,32 @@ msgstr "Español"
 
 #: .\pathways\templates\pathways\base.html:21
 #: .\pathways\templates\pathways\base.html:23
+#: .\pathways\templates\pathways\base.html:30
 msgid "Affordable Water"
 msgstr "Agua asequible"
 
-#: .\pathways\templates\pathways\home.html:4
+#: .\pathways\templates\pathways\base.html:37
+#, fuzzy
+#| msgid "Home Page"
+msgid "Home"
+msgstr "Página de inicio"
+
+#: .\pathways\templates\pathways\base.html:38
+msgid "Apply"
+msgstr "Aplicar"
+
+#: .\pathways\templates\pathways\home.html:7
+msgid "Get help paying your Buffalo water bill"
+msgstr "Obtenga ayuda para pagar su factura de agua de Buffalo"
+
+#: .\pathways\templates\pathways\home.html:8
+msgid "Apply for assistance in 5 minutes"
+msgstr "Solicite asistencia en 5 minutos"
+
+#: .\pathways\templates\pathways\home.html:11
+msgid "Apply now"
+msgstr "Aplica ya"
+
+#: .\pathways\templates\pathways\home.html:18
 msgid "Home Page"
 msgstr "Página de inicio"
