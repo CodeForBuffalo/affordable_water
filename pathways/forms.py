@@ -1,6 +1,7 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, widgets
 from .models import Application, Document, Account
+from django.utils.translation import ugettext_lazy as _
 
 class ApplicationForm(ModelForm):
     class Meta:
@@ -27,11 +28,13 @@ class DocumentForm(ModelForm):
         fields = ['pay_period','income','residency_photo','income_photo']
 
 class AccountForm(ModelForm):
-    isAccountNameSame = forms.BooleanField(required=True, initial=False, label="Name on water bill", help_text="The person whose name is on the water bill. This might be a partner or roommate.")
+    isAccountNameSame = forms.ChoiceField(required=True, initial=False,
+        label=_("Is your name listed on the water bill?"), choices=(('Yes',"Yes"),('No',"No")), widget=widgets.Select,
+        help_text=_("The person whose name is on the water bill. This might be a partner or roommate."))
 
     class Meta:
         model = Account
-        fields = ['account_first','account_middle','account_last',
+        fields = ['isAccountNameSame','account_first','account_middle','account_last',
             'address_number','address_street','address_apartment_number','address_zip']
 
     
