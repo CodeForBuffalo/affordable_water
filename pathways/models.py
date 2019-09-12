@@ -26,7 +26,7 @@ class Application(models.Model):
     ))
 
     def __str__(self):
-        return f'{self.phone_number}'
+        return f'{self.id} ({self.phone_number})'
 
 class Document(models.Model):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
@@ -42,7 +42,7 @@ class Document(models.Model):
     income_photo = models.ImageField(upload_to='income_docs', blank=True)
 
     def __str__(self):
-        return f'{self.application.phone_number}'
+        return f'{self.application.id} ({self.application.phone_number})'
 
 class Account(models.Model):
     application = models.OneToOneField(Application, on_delete=models.CASCADE)
@@ -58,5 +58,5 @@ class Account(models.Model):
     address_zip = models.IntegerField()
 
     def __str__(self):
-        return f'{self.application.phone_number}'
+        return f'{self.application.id} ({self.application.phone_number})'
     
