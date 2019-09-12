@@ -15,24 +15,15 @@ def home(request):
 def about(request):
     return render(request, 'pathways/about.html', {'title':'About'})
 
+# https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
+
 class ApplicationView(FormView):
     template_name = 'pathways/apply.html'
     form_class = ApplicationForm
-    success_url = '/docs/'
+    success_url = '/apply-account/'
 
     def form_valid(self, form):
-        application = form.save(commit=False)
-        app_id = application.id
-        self.request.session['app_id'] = app_id
-        return super().form_valid(form)
-
-class AccountView(FormView):
-    template_name = 'pathways/apply.html'
-    form_class = AccountForm
-    success_url = ''
-
-    def form_valid(self, form):
-        account = form.save()
+        application = form.save()
         app_id = application.id
         self.request.session['app_id'] = app_id
         return super().form_valid(form)
@@ -48,26 +39,50 @@ class DocumentView(FormView):
             documents.application = self.request.session['app_id'] = app_id 
         return super().form_valid(form)
 
-def apply(request):
-    context = {}
-    initial = {'app_id': request.session.get('app_id', None)}
-    form = ApplicationForm(request.POST or None, initial=initial)
-    if request.method == 'POST':
-        if form.is_valid():
-            application = form.save()
-            app_id = application.id
-            request.session['app_id'] = app_id
-            messages.info(request, f'Test submit {app_id}')
-            return redirect('/apply/address/')
-    else:
-        form = ApplicationForm()
-    context['form'] = form
-    return render(request, 'pathways/apply.html', context)
+class AccountView(FormView):
+    template_name = 'pathways/apply.html'
+    form_class = AccountForm
+    success_url = '/'
 
-def address(request):
-    context = {}
-    initial = {'app_id': request.session.get('app_id', None)}
-    form = AccountForm(request.POST or None, initial=initial)
-    if request.method == 'POST':
-        if form.is_valid():
-            return redirect('/')
+    def get_form_kwargs(self):
+        kwargs = super(AccountView, self).get_form_kwargs()
+        kwargs['app_id'] = self.request.session.get('app_id', None)
+        return kwargs
+
+    def form_valid(self, form):
+        account = form.save(commit=False)
+        account.application = Application.objects.filter(id=form.app_id)[0]
+        account = form.save()
+        messages.info(self.request, f'Account submit {account.application.id} ({account.application.phone_number})')
+        return super().form_valid(form)
+
+# def account(request):
+#     context = {}
+#     app_id = request.session.get('app_id', None)
+#     form = AccountForm(request.POST or None, app_id=app_id)
+#     messages.info(request, f'App id is {app_id}')
+#     if request.method == 'POST':
+#             if form.is_valid():
+#                 account = form.save(commit=False)
+#                 account.application = Application.objects.filter(id=form.app_id)[0]
+#                 messages.info(request, f'Account submit {account.application.id} ({account.application.phone_number})')
+#                 return redirect('/')
+#     else:
+#         context['form'] = form
+#         return render(request, 'pathways/apply-account.html', context)
+
+# def apply(request):
+#     context = {}
+#     initial = {'app_id': request.session.get('app_id', None)}
+#     form = ApplicationForm(request.POST or None, initial=initial)
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             application = form.save()
+#             app_id = application.id
+#             request.session['app_id'] = app_id
+#             messages.info(request, f'Test submit {app_id}')
+#             return redirect('/apply-account')
+#     else:
+#         form = ApplicationForm()
+#     context['form'] = form
+#     return render(request, 'pathways/apply.html', context)
