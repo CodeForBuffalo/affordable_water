@@ -8,15 +8,14 @@ class Application(models.Model):
     middle_initial = models.CharField(blank=True, default='', max_length=5)
     last_name = models.CharField(max_length=100)
 
-    phone_number = models.CharField(validators=[RegexValidator(regex=r'^((\+[1])?\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
+    phone_number = models.CharField(validators=[RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
         message="Please use a valid phone number format such as 716-555-5555.")],
         max_length=17) # validators should be a list
     # Validates for:
-    #     7165555555
-    #     716-333-4444
-    #     (716) 333-4444
-    #     (716)333-4444
-    #     +17163334444
+    # 7165555555
+    # 716-333-4444
+    # (716) 333-4444
+    # (716)333-4444
 
     email_address = models.EmailField(blank=True)
 

@@ -14,12 +14,7 @@ class ApplicationForm(ModelForm):
         phone = phone.replace('(','')
         phone = phone.replace(')','')
         phone = phone.replace(' ','')
-        country_code = '+1'
-        if len(phone) > 10:
-            country_code = phone[:-10]
-            phone = phone[-10:]
-        #phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
-        phone = country_code + phone
+        phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
         return phone
 
 class DocumentForm(ModelForm):
