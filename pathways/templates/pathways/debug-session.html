@@ -1,0 +1,10 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <h1 class="h6">Debug Session Info</h1>
+        <div>Household: {{ request.session.household }}</div>
+        <div>Household Benefits: {{ request.session.hasHouseholdBenefits }}</div>
+    </div>
+{% endblock content %}

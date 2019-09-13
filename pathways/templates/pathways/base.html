@@ -15,6 +15,7 @@
     <!-- Compatibility -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
 
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'pathways/main.css' %}">
 
     {% if title %}
@@ -39,7 +40,8 @@
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="#">Español</a>
+                    <a class="nav-item nav-link" href="http://localhost:8000/en/">English</a>
+                    <a class="nav-item nav-link" href="http://localhost:8000/es/">Español</a>
                     {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
@@ -104,6 +106,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/e8427b15fb.js"></script>
 </body>
 
 </html>

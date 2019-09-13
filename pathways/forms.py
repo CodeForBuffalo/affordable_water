@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm, widgets
+from django.core.validators import RegexValidator
 from .models import Application, Document, Account
 from django.utils.translation import ugettext_lazy as _
 
@@ -17,10 +18,47 @@ class ApplicationForm(ModelForm):
         phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
         return phone
 
+class HouseholdForm(forms.Form):
+    household = forms.ChoiceField(label="What is your household size?",
+        help_text="Typically how many people you regularly purchase and prepare food with, including yourself.",
+        choices=(
+            (1,_('Just me')),
+            (2,_('2 people')),
+            (3,_('3 people')),
+            (4,_('4 people')),
+            (5,_('5 people')),
+            (6,_('6 people')),
+            (7,_('7 people')),
+            (8,_('8 people')),
+        ), required=False)
+
+class AutoEligibleForm(forms.Form):
+    hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
+    choices=(
+        (True,_('Yes')),
+        (False,_('No')),
+    ))
+
+class ExactIncomeForm(forms.Form):
+    income = forms.IntegerField(min_value=0, label=_("Enter how much you earn"))
+    pay_period = forms.ChoiceField(choices=[
+        ('WK',"Every week"),
+        ('TWK',"Every two weeks"),
+        ('TMO','Twice a month'),
+        ('MO','Every month'),
+        ('YR','Every year'),
+        ], label=_("How often?"), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ExactIncomeForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+
 class DocumentForm(ModelForm):
     class Meta:
         model = Document
-        fields = ['pay_period','income','residency_photo','income_photo']
+        fields = ['residency_photo','income_photo']
 
 class AccountForm(ModelForm):
     isAccountNameSame = forms.ChoiceField(required=True, initial=None, 

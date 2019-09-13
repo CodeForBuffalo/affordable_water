@@ -1,0 +1,24 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    {% csrf_token %}
+    <div class="container">
+        <legend class="border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</legend>
+        <div class="row justify-content-center">
+            <p class="text-center">What's the best way to provide your annual household income?</p>
+        </div>
+        <div class="container">
+            <div class="row justify-content-center py-2">
+                <a role="button" href="{% url 'pathways-apply-exact-income' %}" class="btn btn-primary">
+                    {% trans "I can provide the exact amount" %}</a>
+            </div>
+            <div class="row justify-content-center py-2">
+                <a role="button" href="{% url 'pathways-apply-hourly-income' %}" class="btn btn-primary">
+                    {% trans "I can provide my hourly wage" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

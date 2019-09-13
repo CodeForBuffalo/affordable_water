@@ -9,16 +9,10 @@ class Application(models.Model):
     last_name = models.CharField(max_length=100)
 
     phone_number = models.CharField(validators=[RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
-        message="Please use a valid phone number format such as 716-555-5555.")],
-        max_length=17) # validators should be a list
-    # Validates for:
-    # 7165555555
-    # 716-333-4444
-    # (716) 333-4444
-    # (716)333-4444
+        message="Please use a valid phone number format such as 716-555-5555.")], max_length=17) # validators should be a list
+    # Validates for: 7163334444, 716-333-4444, (716) 333-4444, (716)333-4444
 
     email_address = models.EmailField(blank=True)
-
     own_or_rent = models.CharField(max_length=5, default='Own', choices=(
         ('Own',"Own"),
         ('Rent',"Rent")

@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .forms import ApplicationForm, DocumentForm, AccountForm
+from .forms import ApplicationForm, DocumentForm, AccountForm, HouseholdForm, AutoEligibleForm, ExactIncomeForm
 from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
 from .models import Application
 
 # Create your views here.
 def home(request):
     context = {}
+    #request.session['app_id'] = None
     if request.session.has_key('app_id'):
         context['app_id'] = request.session['app_id']
     return render(request, 'pathways/home.html', context)
@@ -27,6 +29,54 @@ class ApplicationView(FormView):
         app_id = application.id
         self.request.session['app_id'] = app_id
         return super().form_valid(form)
+
+# Step 1
+class HouseholdView(FormView):
+    template_name = 'pathways/apply.html'
+    form_class = HouseholdForm
+    success_url = '/apply/household-eligible/'
+
+    def form_valid(self, form):
+        self.request.session['household'] = form.cleaned_data['household']
+        household = self.request.session['household']
+        return super().form_valid(form)
+
+# Step 2
+class AutoEligibleView(FormView):
+    template_name = 'pathways/apply-autoqualify.html'
+    form_class = AutoEligibleForm
+    success_url = '/apply/income-methods/'
+
+    def form_valid(self, form):
+        hasHouseholdBenefits = form.cleaned_data['hasHouseholdBenefits']
+        self.request.session['hasHouseholdBenefits'] = form.cleaned_data['hasHouseholdBenefits']
+        return super().form_valid(form)
+
+# Step 3
+class IncomeMethodsView(TemplateView):
+    template_name = 'pathways/apply-income-methods.html'
+
+# Step 4 (exact)
+class ExactIncomeView(FormView):
+    template_name = 'pathways/apply-exact-income.html'
+    form_class = ExactIncomeForm
+    success_url = 'debug/'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+# Step 4 (hourly)
+class HourlyIncomeView(FormView):
+    template_name = 'pathways/apply-hourly-income.html'
+    form_class = ExactIncomeForm
+    success_url = 'debug/'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+def debugsessionview(request):
+    context = {}
+    return render(request, 'pathways/debug-session.html', context)
 
 class DocumentView(FormView):
     template_name = 'pathways/apply.html'
