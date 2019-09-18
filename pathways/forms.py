@@ -40,17 +40,40 @@ class AutoEligibleForm(forms.Form):
     ))
 
 class ExactIncomeForm(forms.Form):
-    income = forms.IntegerField(min_value=0, label=_("Enter how much you earn"))
     pay_period = forms.ChoiceField(choices=[
-        ('WK',"Every week"),
-        ('TWK',"Every two weeks"),
-        ('TMO','Twice a month'),
-        ('MO','Every month'),
-        ('YR','Every year'),
-        ], label=_("How often?"), required=False)
+        ('weekly',"Every week"),
+        ('biweekly',"Every two weeks"),
+        ('semimonthly','Twice a month'),
+        ('monthly','Every month'),
+        ], label=_("How often do you get paid?"), required=False, initial=('SE',"Select a pay period"))
+    income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"))
 
     def __init__(self, *args, **kwargs):
         super(ExactIncomeForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+
+class HourlyIncomeForm(forms.Form):
+    income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
+    pay_period = forms.IntegerField(min_value=0, label=_("How many hours a week do you work?"), required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(HourlyIncomeForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+class EstimateIncomeForm(forms.Form):
+    income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"), label_suffix="")
+    pay_period = forms.ChoiceField(choices=[
+        ('weekly',"Every week"),
+        ('biweekly',"Every two weeks"),
+        ('semimonthly','Twice a month'),
+        ('monthly','Every month'),
+        ], label=_("How often?"), required=False, initial=('select',"Select a pay period"))
+
+    def __init__(self, *args, **kwargs):
+        super(EstimateIncomeForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
