@@ -6,7 +6,7 @@
     <div class="img"></div>
     <div class="darken"></div>
     <div class="container text-white">
-        <div class="row">
+        <div class="row pt-3">
             <div class="col-md-8">
                     <h1 class="text-white font-weight-bold">{% trans "Get help paying your Buffalo water bill" %}</h1>
                     <p class="lead">{% trans "Apply for assistance in 5 minutes" %}</p>
@@ -21,7 +21,4 @@
 </div>
 {% endblock jumbotron %}
 {% block content %}
-
-<h1>{% trans "Home Page" %}</h1>
-<div>Your app_id is: {{ request.session.app_id }}</div>
 {% endblock content %}

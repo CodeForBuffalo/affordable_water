@@ -6,5 +6,8 @@
         <h1 class="h6">Debug Session Info</h1>
         <div>Household: {{ request.session.household }}</div>
         <div>Household Benefits: {{ request.session.hasHouseholdBenefits }}</div>
+        <div>Income: {{ request.session.income }}</div>
+        <div>Pay Period: {{ request.session.pay_period }}</div>
+        <div>Annual Income: {{ request.session.annual_income }}</div>
     </div>
 {% endblock content %}
