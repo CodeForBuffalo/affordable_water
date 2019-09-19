@@ -29,6 +29,7 @@ class HouseholdView(FormView):
 
     def form_valid(self, form):
         self.request.session['household'] = form.cleaned_data['household']
+        self.request.session['active_app'] = True
         return super().form_valid(form)
 
 # Step 2
@@ -41,11 +42,23 @@ class AutoEligibleView(FormView):
         hasHouseholdBenefits = form.cleaned_data['hasHouseholdBenefits']
         self.request.session['hasHouseholdBenefits'] = form.cleaned_data['hasHouseholdBenefits']
         return super().form_valid(form)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AutoEligibleView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
 
-# TODO: Refactor IncomeViews into single view with conditional for which method was selected
+# TODO: Refactor IncomeViews into single view with conditional for which method was selected, using ContextMixins
 # Step 3
 class IncomeMethodsView(TemplateView):
     template_name = 'pathways/apply-income-methods.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(IncomeMethodsView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
 
 # Step 4 (exact)
 class ExactIncomeView(FormView):
@@ -56,6 +69,12 @@ class ExactIncomeView(FormView):
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
         return super().form_valid(form)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ExactIncomeView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
 
 # Step 4 (hourly)
 class HourlyIncomeView(FormView):
@@ -67,6 +86,12 @@ class HourlyIncomeView(FormView):
         self.request.session = processIncomeHelper(self,form)
         return super().form_valid(form)
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(HourlyIncomeView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
 # Step 4 (estimate)
 class EstimateIncomeView(FormView):
     template_name = 'pathways/apply-estimate-income.html'
@@ -76,6 +101,12 @@ class EstimateIncomeView(FormView):
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
         return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(EstimateIncomeView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
 
 # Income Helpers
 def processIncomeHelper(general_income_view, form):
@@ -108,11 +139,22 @@ def calculateIncomeHelper(income, pay_period):
 class ReviewEligibilityView(TemplateView):
     template_name = 'pathways/apply-review-eligibility.html'
 
+    # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3/12021673
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ReviewEligibilityView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
 
+# Step 6
+class EligibilityView(TemplateView):
+    template_name = 'pathways/apply.html'
 
-def eligibleView(request):
-    if isEligibleHelper(request.session):
-        return render(request, 'pathways/apply-qualify.html')
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(EligibilityView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
     
 def isEligibleHelper(session):
     """Returns boolean of whether applicant is eligible based on session info """
