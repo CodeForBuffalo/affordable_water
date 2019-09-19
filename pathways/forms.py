@@ -64,7 +64,8 @@ class HourlyIncomeForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class EstimateIncomeForm(forms.Form):
-    income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"), label_suffix="")
+    income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
+        label_suffix="", help_text=_("Include spouse and any children. Only include roommates if you purchase more than half of your meals together."))
     pay_period = forms.ChoiceField(choices=[
         ('weekly',"Every week"),
         ('biweekly',"Every two weeks"),
