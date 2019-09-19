@@ -134,8 +134,7 @@ def calculateIncomeHelper(income, pay_period):
         annual_income = income*12
     else:
         annual_income = income*pay_period*50 #Hourly
-    locale.setlocale( locale.LC_ALL, '' )
-    return locale.currency(annual_income, grouping=True)
+    return annual_income
 # End Income Helpers
 
 # Step 5
@@ -148,18 +147,37 @@ class ReviewEligibilityView(TemplateView):
             return super(ReviewEligibilityView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['apply_step'] = 'review-eligibility'
+        locale.setlocale( locale.LC_ALL, '' )
+        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        return context
 
 # Step 6
 class EligibilityView(TemplateView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply-eligibility.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
             return super(EligibilityView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
-    
-def isEligibleHelper(session):
-    """Returns boolean of whether applicant is eligible based on session info """
-    return True
+
+incomeLimits = {
+    1: 41850,
+    2: 47800,
+    3: 53800,
+    4: 59750,
+    5: 64550,
+    6: 69350,
+    7: 74100,
+    8: 78900,
+}
 

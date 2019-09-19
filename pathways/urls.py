@@ -19,5 +19,7 @@ urlpatterns = [
         name='pathways-apply-estimate-income'),
     path('apply/review-eligibility/', views.ReviewEligibilityView.as_view(),
         name='pathways-apply-review-eligibility'),
+    path('apply/eligibility/', views.EligibilityView.as_view(),
+        name='pathways-apply-eligibility'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]

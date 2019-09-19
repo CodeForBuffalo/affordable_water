@@ -1,7 +1,6 @@
 {% extends "pathways/base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
-
 {% block content %}
 <div class="content-section">
     {% csrf_token %}
@@ -9,18 +8,22 @@
         <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
         <div class="row justify-content-center">
             <h2 class="h6 font-weight-normal">
-                {% trans "Let's review what you told us about your application" %}
+                {% if isEligible %}
+                    {% trans "You are eligible for assistance on your water bill!" %}
+                {% endif %}
             </h2>
         </div>
         <div class="container">
             <!-- Household size -->
+            {% if apply_step == 'review-eligibility' %}
             <div class="row justify-content-center py-1">
                 <p class="text-center">
                     {% trans "Your household size:" %}
                     <br><span class="font-weight-bold" style="color: green">
-                        {{ request.session.household }}</span>
+                        {{ request.session.household }} </span>
                 </p>
             </div>
+            {% endif %}
             <!-- Estimated Household Income -->
             <div class="row justify-content-center py-1">
                 <p class="text-center">
@@ -30,7 +33,7 @@
                 </p>
             </div>
             <!-- Other Assistance Programs Status -->
-            {% if request.session.hasHouseholdBenefits == 'False'%}
+            {% if request.session.hasHouseholdBenefits == 'False' and apply_step == 'review-eligiblity'%}
             <div class="row justify-content-center py-1">
                 <p class="text-center">
                     {% trans "You indicated <strong>no one</strong> in your household is enrolled in other assistance programs." %}
@@ -39,7 +42,7 @@
             {% endif %}
             <!-- Interaction buttons -->
             <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-eligibility' %}" class="btn btn-primary">
+                <a role="button" href="{% url 'pathways-apply-hourly-income' %}" class="btn btn-primary">
                     {% trans "This looks correct" %}</a>
             </div>
             <div class="row justify-content-center py-2">
