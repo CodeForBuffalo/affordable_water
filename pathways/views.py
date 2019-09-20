@@ -249,10 +249,19 @@ class AddressView(FormView):
 class ContactInfoView(FormView):
     template_name = 'pathways/apply.html'
     form_class = forms.ContactInfoForm
-    success_url = '/debug/'
+    success_url = '/apply/account-number/'
 
     def form_valid(self, form):
         self.request.session['phone_number'] = form.cleaned_data['phone_number']
         self.request.session['email_address'] = form.cleaned_data['email_address']
+        return super().form_valid(form)
+        
+class AccountNumberView(FormView):
+    template_name = 'pathways/apply-account-number.html'
+    form_class = forms.AccountNumberForm
+    success_url = '/debug/'
+
+    def form_valid(self, form):
+        self.request.session['account_number'] = form.cleaned_data['account_number']
         return super().form_valid(form)
 

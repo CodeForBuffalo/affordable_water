@@ -129,6 +129,9 @@ class AccountHolderForm(forms.Form):
     account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"), widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
     account_middle = forms.CharField(max_length=5, required=False, label=_("What is the account holder's middle initial?"), empty_value=(""))
 
+class AccountNumberForm(forms.Form):
+    account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
+
 class DocumentForm(ModelForm):
     class Meta:
         model = Document
