@@ -80,7 +80,7 @@ class EstimateIncomeForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 # End Income Forms
-class ResidenInfoForm(forms.Form):
+class ResidentInfoForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"))
     last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"))
     middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 

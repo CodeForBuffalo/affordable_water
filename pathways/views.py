@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import (
     ApplicationForm, DocumentForm, AccountForm, HouseholdForm, AutoEligibleForm,
-     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidenInfoForm)
+     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidentInfoForm)
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
@@ -199,7 +199,7 @@ class AdditionalQuestionsView(TemplateView):
 # Step 8
 class ResidentInfoView(FormView):
     template_name = 'pathways/apply.html'
-    form_class = ResidenInfoForm
+    form_class = ResidentInfoForm
     success_url = '/debug/'
 
     def form_valid(self, form):
