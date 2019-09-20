@@ -1,9 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from .forms import (
-    ApplicationForm, DocumentForm, AccountForm, HouseholdForm, AutoEligibleForm,
-     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidentInfoForm, AccountHolderForm)
+from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
@@ -27,7 +25,7 @@ def debugsessionview(request):
 # Step 1
 class HouseholdView(FormView):
     template_name = 'pathways/apply.html'
-    form_class = HouseholdForm
+    form_class = forms.HouseholdForm
     success_url = '/apply/household-eligible/'
 
     def form_valid(self, form):
@@ -38,7 +36,7 @@ class HouseholdView(FormView):
 # Step 2
 class AutoEligibleView(FormView):
     template_name = 'pathways/apply-household-benefits.html'
-    form_class = AutoEligibleForm
+    form_class = forms.AutoEligibleForm
     success_url = '/apply/income-methods/'
 
     def form_valid(self, form):
@@ -66,7 +64,7 @@ class IncomeMethodsView(TemplateView):
 # Step 4 (exact)
 class ExactIncomeView(FormView):
     template_name = 'pathways/apply-exact-income.html'
-    form_class = ExactIncomeForm
+    form_class = forms.ExactIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
@@ -82,7 +80,7 @@ class ExactIncomeView(FormView):
 # Step 4 (hourly)
 class HourlyIncomeView(FormView):
     template_name = 'pathways/apply-hourly-income.html'
-    form_class = HourlyIncomeForm
+    form_class = forms.HourlyIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
@@ -98,7 +96,7 @@ class HourlyIncomeView(FormView):
 # Step 4 (estimate)
 class EstimateIncomeView(FormView):
     template_name = 'pathways/apply-estimate-income.html'
-    form_class = EstimateIncomeForm
+    form_class = forms.EstimateIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
@@ -199,8 +197,8 @@ class AdditionalQuestionsView(TemplateView):
 # Step 8
 class ResidentInfoView(FormView):
     template_name = 'pathways/apply.html'
-    form_class = ResidentInfoForm
-    success_url = '/debug/'
+    form_class = forms.ResidentInfoForm
+    success_url = '/apply/address/'
 
     def form_valid(self, form):
         self.request.session['first_name'] = form.cleaned_data['first_name']
@@ -222,8 +220,8 @@ class ResidentInfoView(FormView):
 # Step 9
 class AccountHolderView(FormView):
     template_name = 'pathways/apply.html'
-    form_class = AccountHolderForm
-    success_url = '/debug/'
+    form_class = forms.AccountHolderForm
+    success_url = '/apply/address/'
 
     def form_valid(self, form):
         self.request.session['account_first'] = form.cleaned_data['account_first']
@@ -236,3 +234,15 @@ class AccountHolderView(FormView):
             return super(AccountHolderView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
+
+class AddressView(FormView):
+    template_name = 'pathways/apply.html'
+    form_class = forms.AddressForm
+    success_url = '/debug/'
+
+    def form_valid(self, form):
+        self.request.session['street_address'] = form.cleaned_data['street_address']
+        self.request.session['apartment_unit'] = form.cleaned_data['apartment_unit']
+        self.request.session['zip_code'] = form.cleaned_data['zip_code']
+        return super().form_valid(form)
+

@@ -4,15 +4,18 @@
 {% block content %}
     <div class="content-section">
         <h1 class="h6">Debug Session Info</h1>
-        <div>Household: {{ request.session.household }}</div>
-        <div>Household Benefits: {{ request.session.hasHouseholdBenefits }}</div>
-        <div>Income: {{ request.session.income }}</div>
-        <div>Pay Period: {{ request.session.pay_period }}</div>
-        <div>Annual Income: {{ request.session.annual_income }}</div>
-        <div>First name: {{ request.session.first_name }}</div>
-        <div>Last name: {{ request.session.last_name }}</div>
-        <div>Middle initial: {{ request.session.middle_initial }}</div>
-        <div>Rent or own: {{ request.session.rent_or_own }}</div>
-        <div>Account holder: {{ request.session.account_holder }}</div>
+        <div>household: {{ request.session.household }}</div>
+        <div>hasHouseholdBenefits: {{ request.session.hasHouseholdBenefits }}</div>
+        <div>income: {{ request.session.income }}</div>
+        <div>pay_period: {{ request.session.pay_period }}</div>
+        <div>annual_income: {{ request.session.annual_income }}</div>
+        <div>first_name: {{ request.session.first_name }}</div>
+        <div>last_name: {{ request.session.last_name }}</div>
+        <div>middle_initial: {{ request.session.middle_initial }}</div>
+        <div>rent_or_own: {{ request.session.rent_or_own }}</div>
+        <div>account_holder: {{ request.session.account_holder }}</div>
+        <div>street_address: {{ request.session.street_address }}</div>
+        <div>apartment_unit: {{ request.session.apartment_unit }}</div>
+        <div>zip_code: {{ request.session.zip_code }}</div>
     </div>
 {% endblock content %}

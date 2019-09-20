@@ -80,10 +80,14 @@ class EstimateIncomeForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 # End Income Forms
+
 class ResidentInfoForm(forms.Form):
-    first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"))
-    last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"))
-    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), empty_value=(""))
+    first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("First name")}))
+    last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
+    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 
+        empty_value=(""))
     rent_or_own = forms.ChoiceField(choices=(
         ('rent',_("Rent")),
         ('own',_("Own")),
@@ -95,9 +99,18 @@ class ResidentInfoForm(forms.Form):
     ), required=True, label=_("Who is responsible for paying the water bill?"), 
     help_text=_("This is the name of the account holder listed on your water bill"))
 
+class AddressForm(forms.Form):
+    street_address = forms.CharField(max_length=200, label=_("What is your street address?"), validators=[RegexValidator(
+        regex=r'^\d+ .*', message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
+        ], widget=forms.TextInput(attrs={'placeholder': "123 Main St"}))
+    apartment_unit = forms.CharField(required=False, max_length=10, label=_("If this is an apartment, what is the apartment unit?"), help_text=_("Skip this if you don't live in an apartment"))
+    zip_code = forms.CharField(label=_("What is your 5 digit ZIP code?"), validators=[RegexValidator(
+        regex=r'^\d{5}$', message=_("Your ZIP code must be exactly 5 digits")
+    )])
+
 class AccountHolderForm(forms.Form):
-    account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"))
-    account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"))
+    account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"), widget=forms.TextInput(attrs={'placeholder': _("First name")}))
+    account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"), widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
     account_middle = forms.CharField(max_length=5, required=False, label=_("What is the account holder's middle initial?"), empty_value=(""))
 
 class DocumentForm(ModelForm):
