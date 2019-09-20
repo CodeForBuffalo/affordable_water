@@ -258,9 +258,11 @@ class ContactInfoView(FormView):
 class AccountNumberView(FormView):
     template_name = 'pathways/apply-account-number.html'
     form_class = forms.AccountNumberForm
-    success_url = '/debug/'
+    success_url = '/apply/review-application/'
 
     def form_valid(self, form):
         self.request.session['account_number'] = form.cleaned_data['account_number']
         return super().form_valid(form)
 
+class ReviewApplicationView(TemplateView):
+    template_name = 'pathways/apply-review-application.html'

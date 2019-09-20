@@ -2,8 +2,9 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <h1 class="h6">Debug Session Info</h1>
+<div class="content-section">
+    <h1 class="h6">Debug Session Info</h1>
+    <div class="container justify-content-center">
         <div>household: {{ request.session.household }}</div>
         <div>hasHouseholdBenefits: {{ request.session.hasHouseholdBenefits }}</div>
         <div>income: {{ request.session.income }}</div>
@@ -14,10 +15,14 @@
         <div>middle_initial: {{ request.session.middle_initial }}</div>
         <div>rent_or_own: {{ request.session.rent_or_own }}</div>
         <div>account_holder: {{ request.session.account_holder }}</div>
+        <div>account_first: {{ request.session.account_holder }}</div>
+        <div>account_last: {{ request.session.account_last }}</div>
+        <div>account_middle: {{ request.session.account_middle }}</div>
         <div>street_address: {{ request.session.street_address }}</div>
         <div>apartment_unit: {{ request.session.apartment_unit }}</div>
         <div>zip_code: {{ request.session.zip_code }}</div>
         <div>phone_number: {{ request.session.phone_number }}</div>
         <div>email_address: {{ request.session.email_address }}</div>
     </div>
+</div>
 {% endblock content %}

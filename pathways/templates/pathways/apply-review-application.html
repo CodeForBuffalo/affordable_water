@@ -1,0 +1,39 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+        <div class="container">
+                <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
+                <div class="container justify-content-center">
+                    <div>household: {{ request.session.household }}</div>
+                    <div>hasHouseholdBenefits: {{ request.session.hasHouseholdBenefits }}</div>
+                    <div>income: {{ request.session.income }}</div>
+                    <div>pay_period: {{ request.session.pay_period }}</div>
+                    <div>annual_income: {{ request.session.annual_income }}</div>
+                    <div>first_name: {{ request.session.first_name }}</div>
+                    <div>last_name: {{ request.session.last_name }}</div>
+                    <div>middle_initial: {{ request.session.middle_initial }}</div>
+                    <div>rent_or_own: {{ request.session.rent_or_own }}</div>
+                    <div>account_holder: {{ request.session.account_holder }}</div>
+                    <div>account_first: {{ request.session.account_holder }}</div>
+                    <div>account_last: {{ request.session.account_last }}</div>
+                    <div>account_middle: {{ request.session.account_middle }}</div>
+                    <div>street_address: {{ request.session.street_address }}</div>
+                    <div>apartment_unit: {{ request.session.apartment_unit }}</div>
+                    <div>zip_code: {{ request.session.zip_code }}</div>
+                    <div>phone_number: {{ request.session.phone_number }}</div>
+                    <div>email_address: {{ request.session.email_address }}</div>
+                </div>
+        </div>
+        <div class="row justify-content-center py-2">
+                <a role="button" href="{% url 'pathways-debug' %}" class="btn btn-primary">
+                    {% trans "This looks correct" %}</a>
+            </div>
+            <div class="row justify-content-center py-2">
+                <a role="button" href="{% url 'pathways-apply' %}"
+                    class="btn btn-sm btn-outline-secondary">
+                    {% trans "Change my answers" %}</a>
+            </div>
+</div>
+{% endblock content %}
