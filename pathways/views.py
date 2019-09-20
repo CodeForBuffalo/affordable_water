@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import (
     ApplicationForm, DocumentForm, AccountForm, HouseholdForm, AutoEligibleForm,
-     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm)
+     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidenInfoForm)
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
@@ -192,8 +192,29 @@ class AdditionalQuestionsView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
-            return super(EligibilityView, self).dispatch(request, *args, **kwargs)
+            return super(AdditionalQuestionsView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
 
+# Step 8
+class ResidentInfoView(FormView):
+    template_name = 'pathways/apply.html'
+    form_class = ResidenInfoForm
+    success_url = '/debug/'
 
+    def form_valid(self, form):
+        self.request.session['first_name'] = form.cleaned_data['first_name']
+        self.request.session['last_name'] = form.cleaned_data['last_name']
+        self.request.session['middle_initial'] = form.cleaned_data['middle_initial']
+        self.request.session['rent_or_own'] = form.cleaned_data['rent_or_own']
+        self.request.session['account_holder'] = form.cleaned_data['account_holder']
+        #  Redirects to fill in account holder info
+        if self.request.session['account_holder'] in ['landlord', 'other']:
+            self.success_url = '/about/'
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ResidentInfoView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')

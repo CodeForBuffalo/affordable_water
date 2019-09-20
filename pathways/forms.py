@@ -39,13 +39,14 @@ class AutoEligibleForm(forms.Form):
         (False,_('No')),
     ))
 
+# Income Forms
 class ExactIncomeForm(forms.Form):
     pay_period = forms.ChoiceField(choices=[
-        ('weekly',"Every week"),
-        ('biweekly',"Every two weeks"),
-        ('semimonthly','Twice a month'),
-        ('monthly','Every month'),
-        ], label=_("How often do you get paid?"), required=False, initial=('SE',"Select a pay period"))
+        ('weekly',_("Every week")),
+        ('biweekly',_("Every two weeks")),
+        ('semimonthly',_('Twice a month')),
+        ('monthly',_('Every month')),
+        ], label=_("How often do you get paid?"), required=False)
     income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"))
 
     def __init__(self, *args, **kwargs):
@@ -67,17 +68,33 @@ class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
         label_suffix="", help_text=_("Include spouse and any children. Only include roommates if you purchase more than half of your meals together."))
     pay_period = forms.ChoiceField(choices=[
-        ('weekly',"Every week"),
-        ('biweekly',"Every two weeks"),
-        ('semimonthly','Twice a month'),
-        ('monthly','Every month'),
-        ], label=_("How often?"), required=False, initial=('select',"Select a pay period"))
+        ('weekly',_("Every week")),
+        ('biweekly',_("Every two weeks")),
+        ('semimonthly',_('Twice a month')),
+        ('monthly',_('Every month')),
+        ], label=_("How often?"), required=False)
 
     def __init__(self, *args, **kwargs):
         super(EstimateIncomeForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
+# End Income Forms
+class ResidenInfoForm(forms.Form):
+    first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"))
+    last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"))
+    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 
+    empty_value=(""))
+    rent_or_own = forms.ChoiceField(choices=(
+        ('rent',_("Rent")),
+        ('own',_("Own")),
+    ), required=True, label=_("Do you rent or own your home?"))
+    account_holder = forms.ChoiceField(choices=(
+        ('me',_("Me")),
+        ('landlord',_("My landlord")),
+        ('other',_("Another person")),
+    ), required=True, label=_("Who is responsible for paying the water bill?"), 
+    help_text=_("This is the name of the account holder listed on your water bill"))
 
 class DocumentForm(ModelForm):
     class Meta:
