@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application
 import locale
 
 # Create your views here.
