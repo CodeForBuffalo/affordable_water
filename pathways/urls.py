@@ -29,5 +29,7 @@ urlpatterns = [
         name='pathways-apply-account-holder'),
     path('apply/address/', views.AddressView.as_view(),
         name='pathways-apply-address'),
+    path('apply/contact-info/', views.ContactInfoView.as_view(),
+        name='pathways-apply-contact-info'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]

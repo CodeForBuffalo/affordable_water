@@ -108,6 +108,22 @@ class AddressForm(forms.Form):
         regex=r'^\d{5}$', message=_("Your ZIP code must be exactly 5 digits")
     )])
 
+class ContactInfoForm(forms.Form):
+    phone_number = forms.CharField(label=_("What is your phone number?"), validators=[ # validators should be a list
+        RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
+            message="Please use a valid phone number format such as 716-555-5555.")],
+        max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
+    email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+        phone = phone.replace('-','')
+        phone = phone.replace('(','')
+        phone = phone.replace(')','')
+        phone = phone.replace(' ','')
+        phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
+        return phone
+
 class AccountHolderForm(forms.Form):
     account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"), widget=forms.TextInput(attrs={'placeholder': _("First name")}))
     account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"), widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
