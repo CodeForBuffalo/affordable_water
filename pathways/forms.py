@@ -83,8 +83,7 @@ class EstimateIncomeForm(forms.Form):
 class ResidentInfoForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"))
     last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"))
-    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 
-    empty_value=(""))
+    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), empty_value=(""))
     rent_or_own = forms.ChoiceField(choices=(
         ('rent',_("Rent")),
         ('own',_("Own")),
@@ -95,6 +94,11 @@ class ResidentInfoForm(forms.Form):
         ('other',_("Another person")),
     ), required=True, label=_("Who is responsible for paying the water bill?"), 
     help_text=_("This is the name of the account holder listed on your water bill"))
+
+class AccountHolderForm(forms.Form):
+    account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"))
+    account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"))
+    account_middle = forms.CharField(max_length=5, required=False, label=_("What is the account holder's middle initial?"), empty_value=(""))
 
 class DocumentForm(ModelForm):
     class Meta:

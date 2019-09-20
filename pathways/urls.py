@@ -25,5 +25,7 @@ urlpatterns = [
         name='pathways-apply-additional-questions'),
     path('apply/resident-info/', views.ResidentInfoView.as_view(),
         name='pathways-apply-resident-info'),
+    path('apply/account-holder/', views.AccountHolderView.as_view(),
+        name='pathways-apply-account-holder'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]

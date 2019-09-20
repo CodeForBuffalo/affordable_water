@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from .forms import (
     ApplicationForm, DocumentForm, AccountForm, HouseholdForm, AutoEligibleForm,
-     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidentInfoForm)
+     ExactIncomeForm, HourlyIncomeForm, EstimateIncomeForm, ResidentInfoForm, AccountHolderForm)
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
@@ -210,11 +210,29 @@ class ResidentInfoView(FormView):
         self.request.session['account_holder'] = form.cleaned_data['account_holder']
         #  Redirects to fill in account holder info
         if self.request.session['account_holder'] in ['landlord', 'other']:
-            self.success_url = '/about/'
+            self.success_url = '/apply/account-holder/'
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
             return super(ResidentInfoView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+# Step 9
+class AccountHolderView(FormView):
+    template_name = 'pathways/apply.html'
+    form_class = AccountHolderForm
+    success_url = '/debug/'
+
+    def form_valid(self, form):
+        self.request.session['account_first'] = form.cleaned_data['account_first']
+        self.request.session['account_last'] = form.cleaned_data['account_last']
+        self.request.session['account_middle'] = form.cleaned_data['account_middle']
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AccountHolderView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
