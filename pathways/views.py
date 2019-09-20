@@ -162,6 +162,8 @@ class EligibilityView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
+        locale.setlocale( locale.LC_ALL, '' )
+        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
         return context
 
     def dispatch(self, request, *args, **kwargs):
