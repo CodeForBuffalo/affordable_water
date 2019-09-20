@@ -21,5 +21,7 @@ urlpatterns = [
         name='pathways-apply-review-eligibility'),
     path('apply/eligibility/', views.EligibilityView.as_view(),
         name='pathways-apply-eligibility'),
+    path('apply/additional-questions/', views.AdditionalQuestionsView.as_view(),
+        name='pathways-apply-additional-questions'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]

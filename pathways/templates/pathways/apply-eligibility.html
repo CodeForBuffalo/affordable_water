@@ -7,23 +7,18 @@
     <div class="container">
         <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
         <div class="row justify-content-center">
-            <h2 class="h6 font-weight-normal">
+            <h2 class="h5 font-weight-normal text-center">
                 {% if isEligible %}
-                    {% trans "You are eligible for assistance on your water bill!" %}
+                    {% blocktrans %}
+                    You are <span class="font-weight-bold" style="color: green">eligible
+                    </span> for assistance on your water bill!
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
                 {% endif %}
             </h2>
         </div>
         <div class="container">
-            <!-- Household size -->
-            {% if apply_step == 'review-eligibility' %}
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% trans "Your household size:" %}
-                    <br><span class="font-weight-bold" style="color: green">
-                        {{ request.session.household }} </span>
-                </p>
-            </div>
-            {% endif %}
             <!-- Estimated Household Income -->
             <div class="row justify-content-center py-1">
                 <p class="text-center">
@@ -32,24 +27,28 @@
                         {{ income_formatted }}</span>
                 </p>
             </div>
-            <!-- Other Assistance Programs Status -->
-            {% if request.session.hasHouseholdBenefits == 'False' and apply_step == 'review-eligiblity'%}
+            <!-- Income Limit -->
             <div class="row justify-content-center py-1">
                 <p class="text-center">
-                    {% trans "You indicated <strong>no one</strong> in your household is enrolled in other assistance programs." %}
+                    {% blocktrans with household=request.session.household %}
+                    The pre-tax annual income limit for a household size of <strong>
+                        {{ household }}</strong> is <strong>{{ income_limit }}</strong>.
+                    {% endblocktrans %}
                 </p>
             </div>
-            {% endif %}
             <!-- Interaction buttons -->
+            {% if isEligible %}
             <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-hourly-income' %}" class="btn btn-primary">
-                    {% trans "This looks correct" %}</a>
-            </div>
+                    <a role="button" href="{% url 'pathways-apply-additional-questions' %}" class="btn btn-primary">
+                        {% trans "Continue" %}</a>
+                </div>
+            {% else %}
             <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-income-methods' %}"
-                    class="btn btn-sm btn-outline-secondary">
-                    {% trans "Change my answers" %}</a>
-            </div>
+                    <a role="button" href="{% url 'pathways-home' %}" class="btn btn-primary">
+                        {% trans "Learn more" %}</a>
+                </div>
+            {% endif %}
+            
         </div>
     </div>
 </div>

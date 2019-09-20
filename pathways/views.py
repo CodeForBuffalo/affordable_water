@@ -163,7 +163,10 @@ class EligibilityView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
         locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        context['income_formatted'] = locale.currency(
+            self.request.session['annual_income'], grouping=True)
+        context['income_limit'] = locale.currency(
+            incomeLimits[int(self.request.session['household'])], grouping=True)
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -182,4 +185,15 @@ incomeLimits = {
     7: 74100,
     8: 78900,
 }
+
+# Step 7
+class AdditionalQuestionsView(TemplateView):
+    template_name = 'pathways/apply-additional-questions.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(EligibilityView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
 
