@@ -293,7 +293,6 @@ class ReviewApplicationView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['apply_step'] = 'review-eligibility'
         locale.setlocale( locale.LC_ALL, '' )
         context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
         return context
