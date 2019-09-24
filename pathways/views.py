@@ -239,6 +239,12 @@ class AddressView(FormView):
     form_class = forms.AddressForm
     success_url = '/apply/contact-info/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AddressView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['street_address'] = form.cleaned_data['street_address']
         self.request.session['apartment_unit'] = form.cleaned_data['apartment_unit']
@@ -250,6 +256,12 @@ class ContactInfoView(FormView):
     form_class = forms.ContactInfoForm
     success_url = '/apply/account-number/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ContactInfoView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['phone_number'] = form.cleaned_data['phone_number']
         self.request.session['email_address'] = form.cleaned_data['email_address']
@@ -260,9 +272,28 @@ class AccountNumberView(FormView):
     form_class = forms.AccountNumberForm
     success_url = '/apply/review-application/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AccountNumberView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['account_number'] = form.cleaned_data['account_number']
         return super().form_valid(form)
 
 class ReviewApplicationView(TemplateView):
     template_name = 'pathways/apply-review-application.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ReviewApplicationView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['apply_step'] = 'review-eligibility'
+        locale.setlocale( locale.LC_ALL, '' )
+        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        return context
