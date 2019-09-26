@@ -119,7 +119,13 @@ class AccountHolderForm(forms.Form):
 class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
 
+class LegalForm(forms.Form):
+    agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
+        'required': _("You must agree to the terms to continue"),
+    })
 
+class SignatureForm(forms.Form):
+    signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"))
 
 # class ApplicationForm(ModelForm):
 #     class Meta:

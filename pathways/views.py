@@ -296,3 +296,25 @@ class ReviewApplicationView(TemplateView):
         locale.setlocale( locale.LC_ALL, '' )
         context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
         return context
+
+class LegalView(FormView):
+    template_name = 'pathways/apply-legal.html'
+    form_class = forms.LegalForm
+    success_url = '/apply/signature/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(LegalView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+class SignatureView(FormView):
+    template_name = 'pathways/apply-signature.html'
+    form_class = forms.SignatureForm
+    success_url = '/debug/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(SignatureView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
