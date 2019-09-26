@@ -6,8 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class HouseholdForm(forms.Form):
-    household = forms.ChoiceField(label="What is your household size?",
-        help_text="Typically how many people you regularly purchase and prepare food with, including yourself.",
+    household = forms.ChoiceField(label=_("What is your household size?"),
+        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself."),
         choices=(
             (1,_('Just me')),
             (2,_('2 people')),
@@ -98,7 +98,7 @@ class AddressForm(forms.Form):
 class ContactInfoForm(forms.Form):
     phone_number = forms.CharField(label=_("What is your phone number?"), validators=[ # validators should be a list
         RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
-            message="Please use a valid phone number format such as 716-555-5555.")],
+            message=_("Please use a valid phone number format such as 716-555-5555."))],
         max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
     email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
 
