@@ -79,11 +79,11 @@ class ResidentInfoForm(forms.Form):
         ('rent',_("Rent")),
         ('own',_("Own")),
     ), required=True, label=_("Do you rent or own your home?"))
-    account_holder = forms.ChoiceField(choices=(
+    account_holder = forms.ChoiceField(choices=[
         ('me',_("Me")),
         ('landlord',_("My landlord")),
         ('other',_("Another person")),
-    ), required=True, label=_("Who is responsible for paying the water bill?"), 
+    ], required=True, label=_("Who is responsible for paying the water bill?"), 
     help_text=_("This is the name of the account holder listed on your water bill"))
 
 class AddressForm(forms.Form):
@@ -120,7 +120,7 @@ class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
 
 class LegalForm(forms.Form):
-    agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
+    legal_agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
         'required': _("You must agree to the terms to continue"),
     })
 

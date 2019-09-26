@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
+from .models import Application, Income
 import locale
 
 # Create your views here.
@@ -208,6 +209,10 @@ class ResidentInfoView(FormView):
         #  Redirects to fill in account holder info
         if self.request.session['account_holder'] in ['landlord', 'other']:
             self.success_url = '/apply/account-holder/'
+        else:
+            self.request.session['account_first'] = form.cleaned_data['first_name']
+            self.request.session['account_last'] = form.cleaned_data['last_name']
+            self.request.session['account_middle'] = form.cleaned_data['middle_initial']
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -307,6 +312,10 @@ class LegalView(FormView):
             return super(LegalView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
+    
+    def form_valid(self, form):
+        self.request.session['legal_agreement'] = form.cleaned_data['legal_agreement']
+        return super().form_valid(form)
 
 class SignatureView(FormView):
     template_name = 'pathways/apply-signature.html'
@@ -318,3 +327,44 @@ class SignatureView(FormView):
             return super(SignatureView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
+
+    def form_valid(self, form):
+        self.request.session['signature'] = form.cleaned_data['signature']
+
+        app = Application()
+        
+        # Personal Info
+        app.first_name = self.request.session['first_name']
+        app.last_name = self.request.session['last_name']
+        app.middle_initial = self.request.session['middle_initial']
+        app.rent_or_own = self.request.session['rent_or_own']
+
+        app.street_address = self.request.session['street_address']
+        app.apartment_unit = self.request.session['apartment_unit']
+        app.zip_code = self.request.session['zip_code']
+
+        app.phone_number = self.request.session['phone_number']
+        app.email_address = self.request.session['email_address']
+
+        # Billing Info
+        app.account_holder = self.request.session['account_holder']
+        app.account_first = self.request.session['account_first']
+        app.account_last = self.request.session['account_last']
+        app.account_middle = self.request.session['account_middle']
+        app.account_number = self.request.session['account_number']
+
+        # Eligibility Info
+        app.household_size = self.request.session['household']
+        app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
+
+        # Legal and Signature Info
+        app.legal_agreement = self.request.session['legal_agreement']
+        app.signature = self.request.session['signature']
+
+        app.save()
+
+        if self.request.session['hasHouseholdBenefits'] == 'False':
+            income = Income(application = app)
+            income.annual_income = self.request.session['annual_income']
+            income.save()
+        return super().form_valid(form)
