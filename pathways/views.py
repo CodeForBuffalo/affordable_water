@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
+from .models import Application, Income
 import locale
 
 # Create your views here.
@@ -208,6 +209,10 @@ class ResidentInfoView(FormView):
         #  Redirects to fill in account holder info
         if self.request.session['account_holder'] in ['landlord', 'other']:
             self.success_url = '/apply/account-holder/'
+        else:
+            self.request.session['account_first'] = form.cleaned_data['first_name']
+            self.request.session['account_last'] = form.cleaned_data['last_name']
+            self.request.session['account_middle'] = form.cleaned_data['middle_initial']
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -239,6 +244,12 @@ class AddressView(FormView):
     form_class = forms.AddressForm
     success_url = '/apply/contact-info/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AddressView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['street_address'] = form.cleaned_data['street_address']
         self.request.session['apartment_unit'] = form.cleaned_data['apartment_unit']
@@ -250,6 +261,12 @@ class ContactInfoView(FormView):
     form_class = forms.ContactInfoForm
     success_url = '/apply/account-number/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ContactInfoView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['phone_number'] = form.cleaned_data['phone_number']
         self.request.session['email_address'] = form.cleaned_data['email_address']
@@ -260,9 +277,94 @@ class AccountNumberView(FormView):
     form_class = forms.AccountNumberForm
     success_url = '/apply/review-application/'
 
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(AccountNumberView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
     def form_valid(self, form):
         self.request.session['account_number'] = form.cleaned_data['account_number']
         return super().form_valid(form)
 
 class ReviewApplicationView(TemplateView):
     template_name = 'pathways/apply-review-application.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(ReviewApplicationView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        locale.setlocale( locale.LC_ALL, '' )
+        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        return context
+
+class LegalView(FormView):
+    template_name = 'pathways/apply-legal.html'
+    form_class = forms.LegalForm
+    success_url = '/apply/signature/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(LegalView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+    
+    def form_valid(self, form):
+        self.request.session['legal_agreement'] = form.cleaned_data['legal_agreement']
+        return super().form_valid(form)
+
+class SignatureView(FormView):
+    template_name = 'pathways/apply-signature.html'
+    form_class = forms.SignatureForm
+    success_url = '/debug/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(SignatureView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        self.request.session['signature'] = form.cleaned_data['signature']
+
+        app = Application()
+        
+        # Personal Info
+        app.first_name = self.request.session['first_name']
+        app.last_name = self.request.session['last_name']
+        app.middle_initial = self.request.session['middle_initial']
+        app.rent_or_own = self.request.session['rent_or_own']
+
+        app.street_address = self.request.session['street_address']
+        app.apartment_unit = self.request.session['apartment_unit']
+        app.zip_code = self.request.session['zip_code']
+
+        app.phone_number = self.request.session['phone_number']
+        app.email_address = self.request.session['email_address']
+
+        # Billing Info
+        app.account_holder = self.request.session['account_holder']
+        app.account_first = self.request.session['account_first']
+        app.account_last = self.request.session['account_last']
+        app.account_middle = self.request.session['account_middle']
+        app.account_number = self.request.session['account_number']
+
+        # Eligibility Info
+        app.household_size = self.request.session['household']
+        app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
+
+        # Legal and Signature Info
+        app.legal_agreement = self.request.session['legal_agreement']
+        app.signature = self.request.session['signature']
+
+        app.save()
+
+        if self.request.session['hasHouseholdBenefits'] == 'False':
+            income = Income(application = app)
+            income.annual_income = self.request.session['annual_income']
+            income.save()
+        return super().form_valid(form)

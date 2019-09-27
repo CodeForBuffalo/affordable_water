@@ -6,8 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class HouseholdForm(forms.Form):
-    household = forms.ChoiceField(label="What is your household size?",
-        help_text="Typically how many people you regularly purchase and prepare food with, including yourself.",
+    household = forms.ChoiceField(label=_("What is your household size?"),
+        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself."),
         choices=(
             (1,_('Just me')),
             (2,_('2 people')),
@@ -79,11 +79,11 @@ class ResidentInfoForm(forms.Form):
         ('rent',_("Rent")),
         ('own',_("Own")),
     ), required=True, label=_("Do you rent or own your home?"))
-    account_holder = forms.ChoiceField(choices=(
+    account_holder = forms.ChoiceField(choices=[
         ('me',_("Me")),
         ('landlord',_("My landlord")),
         ('other',_("Another person")),
-    ), required=True, label=_("Who is responsible for paying the water bill?"), 
+    ], required=True, label=_("Who is responsible for paying the water bill?"), 
     help_text=_("This is the name of the account holder listed on your water bill"))
 
 class AddressForm(forms.Form):
@@ -98,7 +98,7 @@ class AddressForm(forms.Form):
 class ContactInfoForm(forms.Form):
     phone_number = forms.CharField(label=_("What is your phone number?"), validators=[ # validators should be a list
         RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
-            message="Please use a valid phone number format such as 716-555-5555.")],
+            message=_("Please use a valid phone number format such as 716-555-5555."))],
         max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
     email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
 
@@ -119,7 +119,13 @@ class AccountHolderForm(forms.Form):
 class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
 
+class LegalForm(forms.Form):
+    legal_agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
+        'required': _("You must agree to the terms to continue"),
+    })
 
+class SignatureForm(forms.Form):
+    signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"))
 
 # class ApplicationForm(ModelForm):
 #     class Meta:
