@@ -362,13 +362,12 @@ class SignatureView(FormView):
         app.legal_agreement = self.request.session['legal_agreement']
         app.signature = self.request.session['signature']
 
+        if self.request.session['hasHouseholdBenefits'] == 'False':
+            app.annual_income = self.request.session['annual_income']
+
         app.save()
         self.request.session['app_id'] = app.id
 
-        if self.request.session['hasHouseholdBenefits'] == 'False':
-            income = Income(application = app)
-            income.annual_income = self.request.session['annual_income']
-            income.save()
         return super().form_valid(form)
 
 class DocumentView(FormView):
