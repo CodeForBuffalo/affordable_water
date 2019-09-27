@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Income
+from .models import Application, Income, Document
 import locale
 
 # Create your views here.
@@ -320,7 +320,7 @@ class LegalView(FormView):
 class SignatureView(FormView):
     template_name = 'pathways/apply-signature.html'
     form_class = forms.SignatureForm
-    success_url = '/debug/'
+    success_url = '/apply/documents/'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -356,15 +356,35 @@ class SignatureView(FormView):
         # Eligibility Info
         app.household_size = self.request.session['household']
         app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
+        app.annual_income = self.request.session['annual_income']
 
         # Legal and Signature Info
         app.legal_agreement = self.request.session['legal_agreement']
         app.signature = self.request.session['signature']
 
         app.save()
+        self.request.session['app_id'] = app.id
 
         if self.request.session['hasHouseholdBenefits'] == 'False':
             income = Income(application = app)
             income.annual_income = self.request.session['annual_income']
             income.save()
+        return super().form_valid(form)
+
+class DocumentView(FormView):
+    template_name = 'pathways/apply-documents.html'
+    form_class = forms.DocumentForm
+    success_url = '/debug/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(DocumentView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        # get Document object based on Application object
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        app.income_photo = form.cleaned_data['income_photo']
+        app.save()
         return super().form_valid(form)

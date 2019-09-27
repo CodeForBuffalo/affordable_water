@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, widgets
 from django.core.validators import RegexValidator
-from .models import Application
+from .models import Application, Document
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -121,11 +121,13 @@ class AccountNumberForm(forms.Form):
 
 class LegalForm(forms.Form):
     legal_agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
-        'required': _("You must agree to the terms to continue"),
-    })
+        'required': _("You must agree to the terms to continue"),})
 
 class SignatureForm(forms.Form):
     signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"))
+
+class DocumentForm(forms.Form):
+    income_photo = forms.ImageField(label=_("Upload a pay stub from the last 30 days"), help_text=_("This is for any income you get form a job. If you are paid in cash, you can just submit a letter from your employer."))
 
 # class ApplicationForm(ModelForm):
 #     class Meta:
