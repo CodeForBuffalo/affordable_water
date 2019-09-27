@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Income, Document
+from .models import Application
 import locale
 
 # Create your views here.
@@ -383,7 +383,6 @@ class DocumentView(FormView):
             return redirect('pathways-home')
 
     def form_valid(self, form):
-        # get Document object based on Application object
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         app.income_photo = form.cleaned_data['income_photo']
         app.save()
