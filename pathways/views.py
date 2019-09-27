@@ -386,3 +386,6 @@ class DocumentView(FormView):
         app.income_photo = form.cleaned_data['income_photo']
         app.save()
         return super().form_valid(form)
+
+class ConfirmationView(TemplateView):
+    template_name = 'pathways/apply-confirmation.html'

@@ -41,5 +41,7 @@ urlpatterns = [
         name='pathways-apply-signature'),
     path('apply/documents/', views.DocumentView.as_view(),
         name='pathways-apply-documents'),
+    path('apply/confirmation/', views.ConfirmationView.as_view(),
+        name='pathways-apply-confirmation'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]
