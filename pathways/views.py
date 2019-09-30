@@ -372,7 +372,7 @@ class SignatureView(FormView):
 
 class DocumentView(FormView):
     template_name = 'pathways/apply-documents.html'
-    form_class = forms.DocumentForm
+    form_class = forms.DocumentIncomeForm
     success_url = '/debug/'
 
     def dispatch(self, request, *args, **kwargs):
