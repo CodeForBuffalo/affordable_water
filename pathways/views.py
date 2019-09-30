@@ -370,7 +370,7 @@ class SignatureView(FormView):
 
         return super().form_valid(form)
 
-class DocumentView(FormView):
+class DocumentIncomeView(FormView):
     template_name = 'pathways/apply-documents.html'
     form_class = forms.DocumentIncomeForm
     success_url = '/debug/'
