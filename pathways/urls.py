@@ -39,7 +39,7 @@ urlpatterns = [
         name='pathways-apply-legal'),
     path('apply/signature/', views.SignatureView.as_view(),
         name='pathways-apply-signature'),
-    path('apply/documents/', views.DocumentView.as_view(),
+    path('apply/documents/', views.DocumentIncomeView.as_view(),
         name='pathways-apply-documents'),
     path('apply/confirmation/', views.ConfirmationView.as_view(),
         name='pathways-apply-confirmation'),
