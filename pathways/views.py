@@ -371,13 +371,13 @@ class SignatureView(FormView):
         return super().form_valid(form)
 
 class DocumentIncomeView(FormView):
-    template_name = 'pathways/apply-documents.html'
+    template_name = 'pathways/docs-income.html'
     form_class = forms.DocumentIncomeForm
-    success_url = '/debug/'
+    success_url = '/apply/documents-residence/'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
-            return super(DocumentView, self).dispatch(request, *args, **kwargs)
+            return super(DocumentIncomeView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
 
@@ -386,6 +386,27 @@ class DocumentIncomeView(FormView):
         app.income_photo = form.cleaned_data['income_photo']
         app.save()
         return super().form_valid(form)
+
+class DocumentResidenceView(FormView):
+    template_name = 'pathways/docs-residence.html'
+    success_url = '/debug/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.session['rent_or_own'] == 'rent':
+            self.form_class = forms.DocumentTenantForm
+        else:
+            self.form_class = forms.DocumentHomeownerForm
+        if 'active_app' in request.session:
+            return super(DocumentResidenceView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        app.residence_photo = form.cleaned_data['residence_photo']
+        app.save()
+        return super().form_valid(form)
+        
 
 class ConfirmationView(TemplateView):
     template_name = 'pathways/apply-confirmation.html'

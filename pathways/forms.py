@@ -128,3 +128,9 @@ class SignatureForm(forms.Form):
 
 class DocumentIncomeForm(forms.Form):
     income_photo = forms.ImageField(label=_("Upload a pay stub from the last 30 days"), help_text=_("This is for any income you get form a job. If you are paid in cash, you can just submit a letter from your employer."))
+
+class DocumentHomeownerForm(forms.Form):
+    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), help_text=_("This can be any proof of ownership if you are the homeowner."))
+
+class DocumentTenantForm(forms.Form):
+    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), help_text=_("This can be either a copy of your lease or a landlord statement showing that you (the tenant) are responsible for paying the water bill."))
