@@ -320,7 +320,7 @@ class LegalView(FormView):
 class SignatureView(FormView):
     template_name = 'pathways/apply-signature.html'
     form_class = forms.SignatureForm
-    success_url = '/apply/documents/'
+    success_url = '/apply/documents-overview/'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -369,6 +369,16 @@ class SignatureView(FormView):
         self.request.session['app_id'] = app.id
 
         return super().form_valid(form)
+
+class DocumentOverviewView(TemplateView):
+    template_name = 'pathways/docs-overview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        context['rent_or_own'] = app.rent_or_own
+        return context
 
 class DocumentIncomeView(FormView):
     template_name = 'pathways/docs-income.html'
