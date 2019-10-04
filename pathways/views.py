@@ -399,7 +399,7 @@ class DocumentIncomeView(FormView):
 
 class DocumentResidenceView(FormView):
     template_name = 'pathways/docs-residence.html'
-    success_url = '/debug/'
+    success_url = '/apply/confirmation/'
 
     def dispatch(self, request, *args, **kwargs):
         if request.session['rent_or_own'] == 'rent':
