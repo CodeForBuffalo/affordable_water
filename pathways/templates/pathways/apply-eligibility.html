@@ -5,7 +5,39 @@
 <div class="content-section">
     {% csrf_token %}
     <div class="container">
-        <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
+            <div class="form-card form-card--transition">
+                    <div class="form-card__header">
+                      <div class="illustration illustration--success">Success</div>
+                      <h1 class="form-card__title">Great! It looks like your household will likely qualify for CalFresh.</h1>
+                    </div>
+                    <div class="form-card__content">
+                      <div class="summary-table">
+                        <div class="grid">
+                          <div class="grid__item width-one-third">
+                            <p class="summary-table__label">Household size</p>
+                            <p class="summary-table__value">1 <span class="icon icon-person"></span></p>
+                          </div>
+                          <div class="grid__item width-one-third">
+                            <p class="summary-table__label">Last month's income</p>
+                            <p class="summary-table__value">$1000</p>
+                          </div>
+                          <div class="grid__item width-one-third">
+                            <p class="summary-table__label">County</p>
+                            <p class="summary-table__value">Marin</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-card__footer">
+                      <button class="button button--primary">Continue <i class="icon icon-arrow_forward"></i></button>
+                      <button class="button">Go back <i class="icon icon-replay"></i></button>
+                    </div>
+                  </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
         <div class="row justify-content-center">
             <h2 class="h5 font-weight-normal text-center">
                 {% if isEligible %}
@@ -19,7 +51,6 @@
             </h2>
         </div>
         <div class="container">
-            <!-- Estimated Household Income -->
             <div class="row justify-content-center py-1">
                 <p class="text-center">
                     {% trans "Your estimated annual household income:" %}
@@ -27,7 +58,6 @@
                         {{ income_formatted }}</span>
                 </p>
             </div>
-            <!-- Income Limit -->
             <div class="row justify-content-center py-1">
                 <p class="text-center">
                     {% blocktrans with household=request.session.household %}
@@ -36,7 +66,6 @@
                     {% endblocktrans %}
                 </p>
             </div>
-            <!-- Interaction buttons -->
             {% if isEligible %}
             <div class="row justify-content-center py-2">
                     <a role="button" href="{% url 'pathways-apply-additional-questions' %}" class="btn btn-primary">
@@ -49,7 +78,4 @@
                 </div>
             {% endif %}
             
-        </div>
-    </div>
-</div>
-{% endblock content %}
+        </div> -->

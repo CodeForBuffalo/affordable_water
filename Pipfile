@@ -14,6 +14,7 @@ boto3 = "*"
 gunicorn = "*"
 python-dotenv = "*"
 django-heroku = "*"
+django-libsass = "*"
 
 [requires]
 python_version = "3.7"

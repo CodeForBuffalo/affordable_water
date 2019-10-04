@@ -9,14 +9,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
 
     <!-- Compatibility -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'pathways/main.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'pathways/main.css' %}"> -->
+    {% load compress %}
+
+    {% compress css %}
+    <link type="text/x-scss" media="screen" rel="stylesheet" href="{% static 'pathways/stylesheets/cfa_styleguide_main.scss' %}">
+    {% endcompress %}
 
     {% if title %}
     <title>{% trans "Affordable Water"%} - {{ title }}</title>
