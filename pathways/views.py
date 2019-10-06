@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Income
+from .models import Application
 import locale
 
 # Create your views here.
@@ -320,7 +320,7 @@ class LegalView(FormView):
 class SignatureView(FormView):
     template_name = 'pathways/apply-signature.html'
     form_class = forms.SignatureForm
-    success_url = '/debug/'
+    success_url = '/apply/documents-overview/'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -356,15 +356,67 @@ class SignatureView(FormView):
         # Eligibility Info
         app.household_size = self.request.session['household']
         app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
+        app.annual_income = self.request.session['annual_income']
 
         # Legal and Signature Info
         app.legal_agreement = self.request.session['legal_agreement']
         app.signature = self.request.session['signature']
 
-        app.save()
-
         if self.request.session['hasHouseholdBenefits'] == 'False':
-            income = Income(application = app)
-            income.annual_income = self.request.session['annual_income']
-            income.save()
+            app.annual_income = self.request.session['annual_income']
+
+        app.save()
+        self.request.session['app_id'] = app.id
+
         return super().form_valid(form)
+
+class DocumentOverviewView(TemplateView):
+    template_name = 'pathways/docs-overview.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        context['rent_or_own'] = app.rent_or_own
+        return context
+
+class DocumentIncomeView(FormView):
+    template_name = 'pathways/docs-income.html'
+    form_class = forms.DocumentIncomeForm
+    success_url = '/apply/documents-residence/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(DocumentIncomeView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        app.income_photo = form.cleaned_data['income_photo']
+        app.save()
+        return super().form_valid(form)
+
+class DocumentResidenceView(FormView):
+    template_name = 'pathways/docs-residence.html'
+    success_url = '/apply/confirmation/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.session['rent_or_own'] == 'rent':
+            self.form_class = forms.DocumentTenantForm
+        else:
+            self.form_class = forms.DocumentHomeownerForm
+        if 'active_app' in request.session:
+            return super(DocumentResidenceView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        app.residence_photo = form.cleaned_data['residence_photo']
+        app.save()
+        return super().form_valid(form)
+        
+
+class ConfirmationView(TemplateView):
+    template_name = 'pathways/apply-confirmation.html'

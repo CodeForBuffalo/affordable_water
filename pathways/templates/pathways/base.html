@@ -41,8 +41,12 @@
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="http://localhost:8000/en/">English</a>
-                    <a class="nav-item nav-link" href="http://localhost:8000/es/">Español</a>
+                        <form id="languageForm" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                                <input name="next" type="hidden" value="{{ redirect_to }}">
+                                <input type="hidden" name="language">
+                            </form>
+                    <div class="nav-item nav-link" onclick="changeLanguage('en')">English</div>
+                    <div class="nav-item nav-link" onclick="changeLanguage('es')">Español</div>
                     {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
@@ -57,11 +61,11 @@
             <div class="col pt-2">
                 <!-- Alerts and messages -->
                 {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
                 {% endif %}
 
                 <!-- Content of page -->
@@ -86,7 +90,7 @@
                             <li><a href="#">Privacy Policy</a></li>
                             <li><a href="#">About this website</a></li>
                             <li><a href="#">Nondiscriminiation statement</a></li>
-                        </ul>                  
+                        </ul>
                     </div>
                     <div class="col-md-2 ">
                         <img src="" alt="">
@@ -109,6 +113,12 @@
     </script>
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/e8427b15fb.js"></script>
+    <script>
+        function changeLanguage(newLanguage) {
+            $('input[name="language"]').val(newLanguage)
+            $('#languageForm').submit();
+        }
+    </script>
 </body>
 
 </html>

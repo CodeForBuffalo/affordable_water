@@ -39,5 +39,13 @@ urlpatterns = [
         name='pathways-apply-legal'),
     path('apply/signature/', views.SignatureView.as_view(),
         name='pathways-apply-signature'),
+    path('apply/documents-overview/', views.DocumentOverviewView.as_view(),
+        name='pathways-apply-documents-overview'),
+    path('apply/documents-income/', views.DocumentIncomeView.as_view(),
+        name='pathways-apply-documents-income'),
+    path('apply/documents-residence/', views.DocumentResidenceView.as_view(),
+        name='pathways-apply-documents-residence'),
+    path('apply/confirmation/', views.ConfirmationView.as_view(),
+        name='pathways-apply-confirmation'),
     path('debug/', views.debugsessionview, name='pathways-debug'),
 ]

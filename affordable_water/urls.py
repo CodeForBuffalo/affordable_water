@@ -21,7 +21,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from users import views as user_views
 
-urlpatterns = []
+urlpatterns = [path('i18n/', include('django.conf.urls.i18n'), name='set_language'),]
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
@@ -40,4 +40,4 @@ urlpatterns += i18n_patterns(
         name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
         name='password_reset_complete'),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

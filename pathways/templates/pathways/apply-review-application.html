@@ -250,6 +250,25 @@
                     </div>
                 </div>
                 {% endif %}
+                <!-- Account Number -->
+                <div class="row py-1">
+                        <div class="col justify-content-center">
+                            <div class="row justify-content-center">
+                                <h3 class="h6 pb-0 mb-0">
+                                    <strong>{% trans "Account Number" %}</strong>
+                                </h3>
+                            </div>
+                            <div class="row justify-content-center">
+                                <p class="h5 font-weight-normal">
+                                    {% if request.session.account_number %}
+                                    {{ request.session.account_number }}
+                                    {% else %}
+                                    No account number provided.
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                 <!-- Change Water Bill Info -->
                 <div class="row justify-content-center py-2">
