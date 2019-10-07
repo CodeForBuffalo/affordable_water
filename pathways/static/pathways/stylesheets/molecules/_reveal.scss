@@ -40,3 +40,17 @@
     }
   }
 }
+
+.reveal__heading {
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1.5em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.reveal__bullet-list {
+  list-style-type: disc;
+  list-style-position: inside;
+  padding-left: .75em;
+}
