@@ -1,8 +1,8 @@
 @mixin retina-bg($name, $size, $extension: png) {
-  background-image: image-url("#{$name}.#{$extension}");
+  background-image: url("/static/pathways/images/#{$name}.#{$extension}");
 
   @media only screen and (min-resolution: 1.3dppx), only screen and (min-resolution: 125dpi) {
-    background-image: image-url("#{$name}@2x.#{$extension}");
+    background-image: url("/static/pathways/images/#{$name}@2x.#{$extension}");
     background-size: $size;
   }
 }
