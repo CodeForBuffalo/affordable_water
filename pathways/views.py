@@ -10,6 +10,7 @@ import locale
 # Create your views here.
 def home(request):
     context = {}
+    context['isHomepage'] = True
     return render(request, 'pathways/home.html', context)
 
 def about(request):

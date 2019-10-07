@@ -8,121 +8,86 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
-
     <!-- Compatibility -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
 
     <!-- Custom CSS -->
-    <!-- <link rel="stylesheet" href="{% static 'pathways/main.css' %}"> -->
     {% load compress %}
-
     {% compress css %}
-    <link type="text/x-scss" media="screen" rel="stylesheet" href="{% static 'pathways/stylesheets/cfa_styleguide_main.scss' %}">
+    <link type="text/x-scss" media="screen" rel="stylesheet"
+        href="{% static 'pathways/stylesheets/cfa_styleguide_main.scss' %}">
     {% endcompress %}
 
     {% if title %}
-    <title>{% trans "Affordable Water"%} - {{ title }}</title>
+    <title>{{ title }}</title>
     {% else %}
-    <title>{% trans "Affordable Water"%}</title>
+    <title>{% trans "GetBuffaloWater"%}</title>
     {% endif %}
 </head>
 
-<body class="mt-5">
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
-        <div class="container">
-            <a class="navbar-brand mr-4" href="/">{% trans "Affordable Water"%}</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
-                aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-                <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'pathways-home' %}">{% trans "Home" %}</a>
-                    <a class="nav-item nav-link" href="{% url 'pathways-apply' %}">{% trans "Apply" %}</a>
-                    <a class="nav-item nav-link" href="{% url 'pathways-debug' %}">{% trans "Debug" %}</a>
-                </div>
-                <!-- Navbar Right Side -->
-                <div class="navbar-nav">
-                        <form id="languageForm" action="{% url 'set_language' %}" method="post">{% csrf_token %}
-                                <input name="next" type="hidden" value="{{ redirect_to }}">
-                                <input type="hidden" name="language">
-                            </form>
-                    <div class="nav-item nav-link" onclick="changeLanguage('en')">English</div>
-                    <div class="nav-item nav-link" onclick="changeLanguage('es')">Español</div>
-                    {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                    {% else %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-    {% block jumbotron %}{% endblock jumbotron %}
-    <main role="main" class="container pt-4">
-        <div class="row">
-            <div class="col pt-2">
-                <!-- Alerts and messages -->
-                {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-                {% endfor %}
-                {% endif %}
 
-                <!-- Content of page -->
-                {% block content %}{% endblock content %}
-            </div>
-
-        </div>
-    </main>
-    <footer class="footer pt-5">
-        <div class="container-fluid bg-light">
-            <div class="container p-4 pb-5">
-                <div class="row">
-                    <div class="col-md-5">
-                        <ul class="list-inline">
-                            <a href="#">Assister sign in</a>
-                            <a href="#"></a>
-                        </ul>
-                    </div>
-                    <div class="col-md-5">
-                        <ul class="list-inline">
-                            <li><a href="#">Español</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">About this website</a></li>
-                            <li><a href="#">Nondiscriminiation statement</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-2 ">
-                        <img src="" alt="">
+<body {% if isHomepage %} class="template--homepage" {% else %} class="template--question" {% endif %}>
+    <div class="page-wrapper">
+        <header class="main-header">
+            <div class="toolbar toolbar--hide-text-when-small">
+                <div class="toolbar__left">
+                    <div class="main-header__title">
+                        <a class="main-header__logo toolbar__logo-text" href="/en">GetBuffaloWater</a>
                     </div>
                 </div>
+                <div class="toolbar__right">
+                    <form id="languageForm" action="{% url 'set_language' %}" method="post" aria-hidden="true">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}">
+                        <input type="hidden" name="language">
+                    </form>
+                    <a class="toolbar__item text--small link--subtle" href="#"
+                        onclick="changeLanguage('en')">English</a>
+                    <a class="toolbar__item text--small link--subtle" href="#"
+                        onclick="changeLanguage('es')">Español</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Alerts and messages -->
+        {% if messages %}
+            {% for message in messages %}
+            <div class="flash flash--{{ message.tags }}">
+                <p class="flash__message">{{ message }}</p>
+                <a href="#" class="flash__dismiss" aria-label="Dismiss"><span class="icon icon-close"></span></a>                
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Content of page -->
+        {% block content %}{% endblock content %}
+        
+    </div>
+
+    <footer class="main-footer">
+        <!-- Extra footer -->
+        {% block homefooter %}{% endblock homefooter %}
+        <div class="grid">
+            <div class="grid__item">
+                <p class="text--small">GetBuffaloWater.org was created by <a class="link--subtle"
+                        href="https://www.codeforamerica.org">Code for America</a> and <a class="link--subtle"
+                        href="http://www.codeforbuffalo.org">Code for Buffalo</a> on behalf of the people of
+                    Buffalo, New York.</p>
             </div>
         </div>
+
+        <!-- Javascript -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+        </script>
+        <script src="{% static 'pathways/javascripts/cfa_styleguide_main.js' %}"></script>
+        <script>
+            function changeLanguage(newLanguage) {
+                $('input[name="language"]').val(newLanguage)
+                $('#languageForm').submit();
+            }
+        </script>
     </footer>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
-    <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/e8427b15fb.js"></script>
-    <script>
-        function changeLanguage(newLanguage) {
-            $('input[name="language"]').val(newLanguage)
-            $('#languageForm').submit();
-        }
-    </script>
 </body>
 
 </html>
