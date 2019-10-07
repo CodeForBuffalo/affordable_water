@@ -5,8 +5,10 @@ from . import views
 urlpatterns = [
     path('', views.home, name='pathways-home'),
     path('about/', views.about,name='pathways-about'),
-    path('apply/', views.HouseholdView.as_view(),
+    path('apply/', views.ApplyView.as_view(),
         name='pathways-apply'),
+    path('apply/household-size/', views.HouseholdView.as_view(),
+        name='pathways-apply-household-size'),
     path('apply/household-eligible/', views.AutoEligibleView.as_view(),
         name='pathways-apply-household-eligible'),
     path('apply/income-methods/', views.IncomeMethodsView.as_view(),

@@ -7,16 +7,16 @@ from django.utils.translation import ugettext_lazy as _
 
 class HouseholdForm(forms.Form):
     household = forms.ChoiceField(label=_("What is your household size?"),
-        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself."),
+        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
         choices=(
-            (1,_('Just me')),
-            (2,_('2 people')),
-            (3,_('3 people')),
-            (4,_('4 people')),
-            (5,_('5 people')),
-            (6,_('6 people')),
-            (7,_('7 people')),
-            (8,_('8 people')),
+            (1,_('1')),
+            (2,_('2')),
+            (3,_('3')),
+            (4,_('4')),
+            (5,_('5')),
+            (6,_('6')),
+            (7,_('7')),
+            (8,_('8+')),
         ), required=False)
 
 class AutoEligibleForm(forms.Form):

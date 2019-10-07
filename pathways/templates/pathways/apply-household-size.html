@@ -1,0 +1,56 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-card__content">
+            <div class="form-card__header">
+                <div class="with-padding-med emoji emoji--big emoji--house"></div>
+                <h1 class="form-card__title">{{ form.household.label }}</h1>
+                <p class="form-card__body-text">{{ form.household.help_text }}</p>
+            </div>
+
+            <div class="reveal text--small">
+                <p><a href="#" class="reveal__link">Not sure who counts?</a></p>
+                <div class="reveal__content text--left">
+
+                    <ul class="list--bulleted text--small with-padding-small">
+                        <li><strong>Roommates</strong>: Do not include roommates unless you buy and prepare more than
+                            half of your meals together.</li>
+                        <li><strong>Immigrants</strong>: Any immigrant can choose to opt-out and will not be asked about
+                            their immigration status. They still need to be included on this application. </li>
+                        <li><strong>Separation/divorce</strong>: In cases of separation or divorce, only include the
+                            other person if they live with you. Include your children if they eat most of their meals
+                            with you. Children cannot be on multiple cases at once.</li>
+                        <li><strong>Pregnant mothers</strong>: Do not include unborn children on this application. </li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="sr-only" for="id_household">{{ form.household.label }}</label>
+                <p class="sr-only text--help">{{ form.household.help_text }}</p>
+                <radiogroup class="input-group--inline">
+                    {% for value, text in form.household.field.choices %}
+                    <label for="radio_inline_{{ value }}" class="radio-button">
+                        <input type="radio" name="radio_inline" id="radio_inline_{{ value }}">{{ value }}
+                    </label>
+                    {% endfor %}
+                </radiogroup>
+            </div>
+
+            <div class="form-card__footer">
+                <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                    class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                    <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock question %}

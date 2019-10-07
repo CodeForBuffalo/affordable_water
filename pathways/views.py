@@ -23,9 +23,11 @@ def debugsessionview(request):
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
-# Step 1
+class ApplyView(TemplateView):
+    template_name = 'pathways/apply-overview.html'
+
 class HouseholdView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply-household-size.html'
     form_class = forms.HouseholdForm
     success_url = '/apply/household-eligible/'
 
