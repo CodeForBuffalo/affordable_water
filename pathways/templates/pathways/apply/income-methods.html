@@ -1,28 +1,26 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
-<div class="content-section">
-    {% csrf_token %}
-    <div class="container">
-        <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
-        <div class="row justify-content-center">
-            <p class="text-center">What's the best way to provide your annual household income?</p>
-        </div>
-        <div class="container">
-            <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-exact-income' %}" class="btn btn-primary">
-                    {% trans "I can provide the exact amount" %}</a>
-            </div>
-            <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-hourly-income' %}" class="btn btn-primary">
-                    {% trans "I can provide my hourly wage" %}</a>
-            </div>
-            <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-estimate-income' %}" class="btn btn-outline-secondary">
-                    {% trans "I can only provide an estimate" %}</a>
-            </div>
-        </div>
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <h1 class="form-card__title">
+            {% trans "What’s the best way to provide your household's pre-tax earnings from the last 30 days?" %}</h1>
     </div>
+
+    <p>
+        <a class="button button--primary"
+            href="{% url 'pathways-apply-exact-income' %}">{% trans "I can provide the exact amount" %}</a>
+    </p>
+    <p>
+        <a class="button button--primary"
+            href="{% url 'pathways-apply-hourly-income' %}">{% trans "I can provide my hourly wage" %}</a>
+    </p>
+    <p>
+        <a class="button button--link"
+            href="{% url 'pathways-apply-hourly-income' %}">{% trans "I can only provide an estimate" %}</a>
+    </p>
+
 </div>
-{% endblock content %}
+{% endblock question %}
