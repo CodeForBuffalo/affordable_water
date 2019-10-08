@@ -32,16 +32,21 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group {% if form.household.errors %}form-group--error{% endif %}">
                 <label class="sr-only" for="id_household">{{ form.household.label }}</label>
                 <p class="sr-only text--help">{{ form.household.help_text }}</p>
                 <radiogroup class="input-group--inline">
                     {% for value, text in form.household.field.choices %}
-                    <label for="radio_inline_{{ value }}" class="radio-button">
-                        <input type="radio" name="radio_inline" id="radio_inline_{{ value }}" required>{{ value }}
+                    <label for="id_household_{{ value }}" class="radio-button">
+                        <input type="radio" name="household" id="id_household_{{ value }}" value="{{ value }}">{{ value }}
                     </label>
                     {% endfor %}
                 </radiogroup>
+                {% if form.household.errors %}
+                    {% for error in form.household.errors %}
+                        <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <div class="form-card__footer">

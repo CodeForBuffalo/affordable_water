@@ -17,7 +17,11 @@ class HouseholdForm(forms.Form):
             (6,_('6')),
             (7,_('7')),
             (8,_('8+')),
-        ), required=False)
+        ), required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(HouseholdForm, self).__init__(*args, **kwargs)
+        self.fields['household'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
