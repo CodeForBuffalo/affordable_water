@@ -26,3 +26,10 @@
 .vertical-steps__step:not(:last-child) {
   margin-bottom: $padding-large;
 }
+
+.vertical-steps__title {
+  font-size: 1.9rem;
+  font-weight: bold;
+  line-height: 2.5rem;
+  margin-bottom: 0.5rem;
+}
