@@ -38,7 +38,7 @@
                 <radiogroup class="input-group--inline">
                     {% for value, text in form.household.field.choices %}
                     <label for="radio_inline_{{ value }}" class="radio-button">
-                        <input type="radio" name="radio_inline" id="radio_inline_{{ value }}">{{ value }}
+                        <input type="radio" name="radio_inline" id="radio_inline_{{ value }}" required>{{ value }}
                     </label>
                     {% endfor %}
                 </radiogroup>
