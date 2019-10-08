@@ -49,7 +49,7 @@ class HouseholdBenefitsView(FormView):
     
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
-            return super(AutoEligibleView, self).dispatch(request, *args, **kwargs)
+            return super(HouseholdBenefitsView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
 
