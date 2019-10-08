@@ -24,10 +24,10 @@ def debugsessionview(request):
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
 class ApplyView(TemplateView):
-    template_name = 'pathways/apply-overview.html'
+    template_name = 'pathways/apply/overview.html'
 
 class HouseholdView(FormView):
-    template_name = 'pathways/apply-household-size.html'
+    template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdForm
     success_url = '/apply/household-eligible/'
 
@@ -38,7 +38,7 @@ class HouseholdView(FormView):
 
 # Step 2
 class AutoEligibleView(FormView):
-    template_name = 'pathways/apply-household-benefits.html'
+    template_name = 'pathways/apply/household-benefits.html'
     form_class = forms.AutoEligibleForm
     success_url = '/apply/income-methods/'
 
@@ -56,7 +56,7 @@ class AutoEligibleView(FormView):
 # TODO: Refactor IncomeViews into single view with conditional for which method was selected, using ContextMixins
 # Step 3
 class IncomeMethodsView(TemplateView):
-    template_name = 'pathways/apply-income-methods.html'
+    template_name = 'pathways/apply/income-methods.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -66,7 +66,7 @@ class IncomeMethodsView(TemplateView):
 
 # Step 4 (exact)
 class ExactIncomeView(FormView):
-    template_name = 'pathways/apply-exact-income.html'
+    template_name = 'pathways/apply/exact-income.html'
     form_class = forms.ExactIncomeForm
     success_url = '/apply/review-eligibility/'
 
@@ -82,7 +82,7 @@ class ExactIncomeView(FormView):
 
 # Step 4 (hourly)
 class HourlyIncomeView(FormView):
-    template_name = 'pathways/apply-hourly-income.html'
+    template_name = 'pathways/apply/hourly-income.html'
     form_class = forms.HourlyIncomeForm
     success_url = '/apply/review-eligibility/'
 
@@ -98,7 +98,7 @@ class HourlyIncomeView(FormView):
 
 # Step 4 (estimate)
 class EstimateIncomeView(FormView):
-    template_name = 'pathways/apply-estimate-income.html'
+    template_name = 'pathways/apply/estimate-income.html'
     form_class = forms.EstimateIncomeForm
     success_url = '/apply/review-eligibility/'
 
@@ -140,7 +140,7 @@ def calculateIncomeHelper(income, pay_period):
 
 # Step 5
 class ReviewEligibilityView(TemplateView):
-    template_name = 'pathways/apply-review-eligibility.html'
+    template_name = 'pathways/apply/review-eligibility.html'
 
     # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3/12021673
     def dispatch(self, request, *args, **kwargs):
@@ -158,7 +158,7 @@ class ReviewEligibilityView(TemplateView):
 
 # Step 6
 class EligibilityView(TemplateView):
-    template_name = 'pathways/apply-eligibility.html'
+    template_name = 'pathways/apply/eligibility.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -189,7 +189,7 @@ incomeLimits = {
 
 # Step 7
 class AdditionalQuestionsView(TemplateView):
-    template_name = 'pathways/apply-additional-questions.html'
+    template_name = 'pathways/apply/additional-questions.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -276,7 +276,7 @@ class ContactInfoView(FormView):
         return super().form_valid(form)
         
 class AccountNumberView(FormView):
-    template_name = 'pathways/apply-account-number.html'
+    template_name = 'pathways/apply/account-number.html'
     form_class = forms.AccountNumberForm
     success_url = '/apply/review-application/'
 
@@ -291,7 +291,7 @@ class AccountNumberView(FormView):
         return super().form_valid(form)
 
 class ReviewApplicationView(TemplateView):
-    template_name = 'pathways/apply-review-application.html'
+    template_name = 'pathways/apply/review-application.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -306,7 +306,7 @@ class ReviewApplicationView(TemplateView):
         return context
 
 class LegalView(FormView):
-    template_name = 'pathways/apply-legal.html'
+    template_name = 'pathways/apply/legal.html'
     form_class = forms.LegalForm
     success_url = '/apply/signature/'
 
@@ -321,7 +321,7 @@ class LegalView(FormView):
         return super().form_valid(form)
 
 class SignatureView(FormView):
-    template_name = 'pathways/apply-signature.html'
+    template_name = 'pathways/apply/signature.html'
     form_class = forms.SignatureForm
     success_url = '/apply/documents-overview/'
 
@@ -422,4 +422,4 @@ class DocumentResidenceView(FormView):
         
 
 class ConfirmationView(TemplateView):
-    template_name = 'pathways/apply-confirmation.html'
+    template_name = 'pathways/apply/confirmation.html'
