@@ -1,29 +1,53 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
-<div class="content-section">
-    <form method="POST">
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+
+    <div class="emoji emoji--big emoji--money with-padding-med"></div>
+    <h1 class="form-card__title" id=income_labelledby>{{ form.income.label }}</h1>
+
+    <form style="display: inline-block;" method="POST">
         {% csrf_token %}
-        <div class="container">
-            <fieldset class="form-group">
-                <legend class="h5 font-weight-normal border-bottom mb-4 text-center">
-                    {% trans "Apply for Affordable Water" %}</legend>
-                <div class="form-group">
-                    {{ form.income.label_tag }}
-                    {{ form.income }}
-                </div>
-                <div class="form-group">
-                    {{ form.pay_period.label_tag }}
-                    {{ form.pay_period }}
-                </div>
-            </fieldset>
-            <div class="row justify-content-center">
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit">{% trans "Next" %}</button>
+
+        <div class="form-group {% if form.income.errors %}form-group--error{% endif %}">
+            <div class="text-input-group-container">
+                <div class="text-input-group form-width--short">
+                    <div class="text-input-group__prefix">$</div>
+                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="number"
+                        class="text-input" step=".01" aria-labelledby="income_labelledby" name="income"
+                        id="id_income" />
+                    <div class="text-input-group__postfix">/hr</div>
                 </div>
             </div>
+            {% if form.income.errors %}
+            {% for error in form.income.errors %}
+            <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <h2 class="form-card__title" id=pay_period_labelledby>{{ form.pay_period.label }}</h2>
+        <p class="form-card__body-text" id=pay_period_describedby>{{ form.pay_period.help_text }}</p>
+        <div class="form-group {% if form.pay_period.errors %}form-group--error{% endif %}">
+            <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="number"
+                class="text-input form-width--short" aria-labelledby="pay_period_labelledby"
+                aria-describedby="pay_period_describedby" name="pay_period" id="id_pay_period" />
+            {% if form.pay_period.errors %}
+            {% for error in form.pay_period.errors %}
+            <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
         </div>
     </form>
 </div>
-{% endblock content %}
+{% endblock question %}

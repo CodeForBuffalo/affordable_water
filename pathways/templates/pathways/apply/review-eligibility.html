@@ -1,53 +1,62 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
+{% load static %}
 
-{% block content %}
-<div class="content-section">
-    {% csrf_token %}
-    <div class="container">
-        <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
-        <div class="row justify-content-center">
-            <h2 class="h6 font-weight-normal">
-                {% trans "Let's review what you told us about your application" %}
-            </h2>
-        </div>
-        <div class="container">
-            <!-- Household size -->
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% trans "Your household size:" %}
-                    <br><span class="font-weight-bold" style="color: green">
-                        {{ request.session.household }}</span>
-                </p>
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="form-card__title">{% trans "Let's review what you told us about your application so far." %}</h1>
+            <div class="vertical-steps">
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
+                    <div class="vertical-steps__title">{{ income_formatted }}
+                        {% if pay_period == 'weekly' %}
+                        {% trans "per week" %}
+                        {% elif pay_period == 'biweekly' %}
+                        {% trans "every 2 weeks" %}
+                        {% elif pay_period == 'semimonthly' %}
+                        {% trans "twice a month" %}
+                        {% elif pay_period == 'monthly' %}
+                        {% trans "per month" %}
+                        {% elif income_method == 'hourly' %}
+                        {% trans "per hour" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if income_method == 'estimate' %}
+                        {% trans "Estimated income before taxes" %}
+                        {% elif income_method == 'hourly' %}
+                        {{ pay_period }} {% trans "hours per week" %}
+                        {% else %}
+                        {% trans "Income before taxes" %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--big emoji--house"></span></div>
+                    <div class="vertical-steps__title">{{ request.session.household }}</div>
+                    <div class="form-card__body-text">{% trans "Household size" %}</div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="notice">
+                        <div class="form-card__body-text">
+                            {% trans "Based on this info, your annual eligible income is" %}</div>
+                        <div class="vertical-steps__title">{{ annual_income_formatted }} per year</div>
+                    </div>
+                </div>
+
             </div>
-            <!-- Estimated Household Income -->
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% trans "Your estimated annual household income:" %}
-                    <br><span class="font-weight-bold" style="color: green">
-                        {{ income_formatted }}</span>
-                </p>
-            </div>
-            <!-- Other Assistance Programs Status -->
-            {% if request.session.hasHouseholdBenefits == 'False'%}
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% trans "You indicated <strong>no one</strong> in your household is enrolled in other assistance programs." %}
-                </p>
-            </div>
-            {% endif %}
-            <!-- Interaction buttons -->
-            <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-eligibility' %}" class="btn btn-primary">
-                    {% trans "This looks correct" %}</a>
-            </div>
-            <div class="row justify-content-center py-2">
-                <a role="button" href="{% url 'pathways-apply-income-methods' %}"
-                    class="btn btn-sm btn-outline-secondary">
+
+            <p><a class="button button--primary" href="{% url 'pathways-apply-eligibility' %}">
+                    {% trans "This looks correct" %}</a></p>
+            <p><a class="button" href="{% url 'pathways-apply-income-methods' %}">
                     {% trans "Change my answers" %}</a>
-            </div>
+            </p>
         </div>
     </div>
 </div>
-{% endblock content %}
+{% endblock question %}

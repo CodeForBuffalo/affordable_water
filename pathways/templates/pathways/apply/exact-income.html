@@ -58,31 +58,3 @@
     </form>
 </div>
 {% endblock question %}
-
-{% block e%}
-<div class="content-section">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="container">
-            <fieldset class="form-group">
-                <legend class="h5 font-weight-normal border-bottom mb-4 text-center">
-                    {% trans "Apply for Affordable Water" %}</legend>
-                <div class="form-group">
-                    {{ form.pay_period.label_tag }}
-                    {{ form.pay_period }}
-
-                </div>
-                <div class="form-group">
-                    {{ form.income.label_tag }}
-                    {{ form.income }}
-                </div>
-            </fieldset>
-            <div class="row justify-content-center">
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit">{% trans "Next" %}</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-{% endblock e%}

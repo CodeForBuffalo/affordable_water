@@ -52,16 +52,21 @@ class ExactIncomeForm(forms.Form):
 
 class HourlyIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
-    pay_period = forms.IntegerField(min_value=0, label=_("How many hours a week do you work?"), required=True)
+    pay_period = forms.IntegerField(min_value=0, label=_("How many hours a week do you work?"), required=True, 
+        help_text=_("If this changes, give an average for the last 30 days."))
 
     def __init__(self, *args, **kwargs):
         super(HourlyIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['income'].error_messages = {'required': _("Be sure to provide an hourly wage.")}
+        self.fields['pay_period'].error_messages = {'required': _("Be sure to provide hours a week.")}
+
+        
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
-        label_suffix="", help_text=_("Include spouse and any children. Only include roommates if you purchase more than half of your meals together."))
+        label_suffix="", help_text=_("If you live with them, include income from spouse and any children over 22. Only include roommates if you purchase more than half of your meals together."))
     pay_period = forms.ChoiceField(choices=[
         ('weekly',_("Every week")),
         ('biweekly',_("Every two weeks")),

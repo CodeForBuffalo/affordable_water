@@ -72,6 +72,7 @@ class ExactIncomeView(FormView):
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'exact'
         return super().form_valid(form)
     
     def dispatch(self, request, *args, **kwargs):
@@ -88,6 +89,7 @@ class HourlyIncomeView(FormView):
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'hourly'
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -104,6 +106,7 @@ class EstimateIncomeView(FormView):
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'estimate'
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -153,7 +156,13 @@ class ReviewEligibilityView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['apply_step'] = 'review-eligibility'
         locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+
+        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
+        # context['annual_income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+        # context['income_formatted'] = locale.currency(self.request.session['income'], grouping=True)
+        context['pay_period'] = self.request.session['pay_period']
+        context['income_method'] = self.request.session['income_method']
         return context
 
 # Step 6
