@@ -33,11 +33,15 @@ class ExactIncomeForm(forms.Form):
         ('biweekly',_("Every two weeks")),
         ('semimonthly',_('Twice a month')),
         ('monthly',_('Every month')),
-        ], label=_("How often do you get paid?"), required=False)
-    income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"))
+        ], label=_("How often do you get paid?"), required=True)
+    income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"),
+        help_text=_("If this changes with each pay period, average the pay amounts for the last 30 days."))
 
     def __init__(self, *args, **kwargs):
         super(ExactIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['income'].error_messages = {'required': _("Be sure to provide your job income before taxes")}
+        self.fields['pay_period'].error_messages = {'required': _("Select a pay period")}
+
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
