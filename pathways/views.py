@@ -208,7 +208,7 @@ class AdditionalQuestionsView(TemplateView):
 
 # Step 8
 class ResidentInfoView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/resident-info.html'
     form_class = forms.ResidentInfoForm
     success_url = '/apply/address/'
 

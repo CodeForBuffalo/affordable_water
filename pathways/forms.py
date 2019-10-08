@@ -99,6 +99,14 @@ class ResidentInfoForm(forms.Form):
     ], required=True, label=_("Who is responsible for paying the water bill?"), 
     help_text=_("This is the name of the account holder listed on your water bill"))
 
+    def __init__(self, *args, **kwargs):
+        super(ResidentInfoForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].error_messages = {'required': _("Make sure to provide a first name.")}
+        self.fields['last_name'].error_messages = {'required': _("Make sure to provide a last name.")}
+        self.fields['rent_or_own'].error_messages = {'required': _("Make sure to indicate whether you own or rent.")}
+        self.fields['account_holder'].error_messages = {'required': _("Make sure to indicate who officially pays the water bill.")}
+    
+
 class AddressForm(forms.Form):
     street_address = forms.CharField(max_length=200, label=_("What is your street address?"), validators=[RegexValidator(
         regex=r'^\d+ .*', message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
