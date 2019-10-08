@@ -29,7 +29,7 @@ class ApplyView(TemplateView):
 class HouseholdView(FormView):
     template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdForm
-    success_url = '/apply/household-eligible/'
+    success_url = '/apply/household-benefits/'
 
     def form_valid(self, form):
         self.request.session['household'] = form.cleaned_data['household']
@@ -37,9 +37,9 @@ class HouseholdView(FormView):
         return super().form_valid(form)
 
 # Step 2
-class AutoEligibleView(FormView):
+class HouseholdBenefitsView(FormView):
     template_name = 'pathways/apply/household-benefits.html'
-    form_class = forms.AutoEligibleForm
+    form_class = forms.HouseholdBenefitsForm
     success_url = '/apply/income-methods/'
 
     def form_valid(self, form):

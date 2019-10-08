@@ -19,12 +19,12 @@ class HouseholdForm(forms.Form):
             (8,_('8+')),
         ), required=False)
 
-class AutoEligibleForm(forms.Form):
+class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
         (True,_('Yes')),
         (False,_('No')),
-    ))
+    ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
 # Income Forms
 class ExactIncomeForm(forms.Form):
