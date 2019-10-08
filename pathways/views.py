@@ -374,7 +374,7 @@ class SignatureView(FormView):
         return super().form_valid(form)
 
 class DocumentOverviewView(TemplateView):
-    template_name = 'pathways/docs-overview.html'
+    template_name = 'pathways/docs/overview.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -384,7 +384,7 @@ class DocumentOverviewView(TemplateView):
         return context
 
 class DocumentIncomeView(FormView):
-    template_name = 'pathways/docs-income.html'
+    template_name = 'pathways/docs/income.html'
     form_class = forms.DocumentIncomeForm
     success_url = '/apply/documents-residence/'
 
@@ -401,7 +401,7 @@ class DocumentIncomeView(FormView):
         return super().form_valid(form)
 
 class DocumentResidenceView(FormView):
-    template_name = 'pathways/docs-residence.html'
+    template_name = 'pathways/docs/residence.html'
     success_url = '/apply/confirmation/'
 
     def dispatch(self, request, *args, **kwargs):
