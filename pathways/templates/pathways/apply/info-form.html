@@ -16,7 +16,7 @@
                 <label for="{{field.name}}" class="form-question">{{ field.label }}</label>
                 <p class="text--help nudge--tiny">{{ field.help_text }}</p>
                 <input type="text" class="text-input form-width--name" id="{{field.name}}"
-                    placeholder="{{ field.placeholder }}" name="{{field.name}}">
+                    placeholder="{{ field.placeholder }}" name="{{field.name}}" onblur="enteredAccountNumber()">
                 {% if field.errors %}
                 {% for error in field.errors %}
                 <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
@@ -28,11 +28,25 @@
 
 
         <div class="form-card__footer">
-            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
-                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
-                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            <button name="button" type="submit" class="button button--primary">
+                <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
+                </i>{% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
             </button>
+            {% if isAccountNumberView %}
+            <input type="hidden" id="hasAccountNumber" name="hasAccountNumber" value="False" aria-hidden="false">
+            <button name="button" type="submit" class="button">
+                <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
+            </i>{% trans "I can't find my account number" %}</button>
+            {% endif %}
         </div>
     </form>
+    <script>
+        function enteredAccountNumber() {
+            if (typeof $('input[name="account_number"]').val() !== 'undefined' && $('input[name="account_number"]').val() != ''){
+                $('input[name="hasAccountNumber"').val('True');
+            } else {
+                $('input[name="hasAccountNumber"').val('False')
+            }
+        }</script>
 </div>
 {% endblock question %}

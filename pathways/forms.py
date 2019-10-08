@@ -83,9 +83,9 @@ class EstimateIncomeForm(forms.Form):
 
 class ResidentInfoForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"), 
-        widget=forms.TextInput(attrs={'placeholder': _("First name")}))
+        widget=forms.TextInput(attrs={'placeholder': _("First name")}), help_text=_("Legally as it appears on your ID."))
     last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"), 
-        widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
+        widget=forms.TextInput(attrs={'placeholder': _("Last name")}), help_text=_("Legally as it appears on your ID."))
     middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 
         empty_value=(""))
     rent_or_own = forms.ChoiceField(choices=(
@@ -116,12 +116,21 @@ class AddressForm(forms.Form):
         regex=r'^\d{5}$', message=_("Your ZIP code must be exactly 5 digits")
     )])
 
+    card_title = _("Where are you currently living?")
+
+    def __init__(self, *args, **kwargs):
+        super(AddressForm, self).__init__(*args, **kwargs)
+        self.fields['street_address'].error_messages = {'required': _("Make sure to provide a street address.")}
+        self.fields['zip_code'].error_messages = {'required': _("Make sure to provide a 5 digit ZIP code.")}
+
 class ContactInfoForm(forms.Form):
     phone_number = forms.CharField(label=_("What is your phone number?"), validators=[ # validators should be a list
         RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
             message=_("Please use a valid phone number format such as 716-555-5555."))],
         max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
     email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
+
+    card_title = _("Okay, let's get your contact info.")
 
     def clean_phone_number(self):
         phone = self.cleaned_data.get('phone_number')
@@ -132,13 +141,28 @@ class ContactInfoForm(forms.Form):
         phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
         return phone
 
+    def __init__(self, *args, **kwargs):
+        super(ContactInfoForm, self).__init__(*args, **kwargs)
+        self.fields['phone_number'].error_messages = {'required': _("Make sure to provide a valid phone number.")}
+        self.fields['email_address'].error_messages = {'required': _("Make sure to provide an email address.")}
+
 class AccountHolderForm(forms.Form):
     account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"), widget=forms.TextInput(attrs={'placeholder': _("First name")}))
     account_last = forms.CharField(max_length=100, required=True, label=_("What is the account holder's last name?"), widget=forms.TextInput(attrs={'placeholder': _("Last name")}))
     account_middle = forms.CharField(max_length=5, required=False, label=_("What is the account holder's middle initial?"), empty_value=(""))
 
+    card_title = _("Whose name is officially on your water bill?")
+
+    def __init__(self, *args, **kwargs):
+        super(AccountHolderForm, self).__init__(*args, **kwargs)
+        self.fields['account_first'].error_messages = {'required': _("Make sure to provide a first name.")}
+        self.fields['account_last'].error_messages = {'required': _("Make sure to provide a last name.")}
+
 class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
+    hasAccountNumber = forms.BooleanField(required=False, widget=forms.HiddenInput())
+    card_title = _("Almost done! Let's get info on your water account.")
+
 
 class LegalForm(forms.Form):
     legal_agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={

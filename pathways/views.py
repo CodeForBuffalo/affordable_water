@@ -235,7 +235,7 @@ class ResidentInfoView(FormView):
 
 # Step 9
 class AccountHolderView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/info-form.html'
     form_class = forms.AccountHolderForm
     success_url = '/apply/address/'
 
@@ -244,6 +244,11 @@ class AccountHolderView(FormView):
         self.request.session['account_last'] = form.cleaned_data['account_last']
         self.request.session['account_middle'] = form.cleaned_data['account_middle']
         return super().form_valid(form)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -252,7 +257,7 @@ class AccountHolderView(FormView):
             return redirect('pathways-home')
 
 class AddressView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AddressForm
     success_url = '/apply/contact-info/'
 
@@ -268,8 +273,13 @@ class AddressView(FormView):
         self.request.session['zip_code'] = form.cleaned_data['zip_code']
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
+
 class ContactInfoView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.ContactInfoForm
     success_url = '/apply/account-number/'
 
@@ -283,9 +293,14 @@ class ContactInfoView(FormView):
         self.request.session['phone_number'] = form.cleaned_data['phone_number']
         self.request.session['email_address'] = form.cleaned_data['email_address']
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
         
 class AccountNumberView(FormView):
-    template_name = 'pathways/apply/account-number.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountNumberForm
     success_url = '/apply/review-application/'
 
@@ -295,8 +310,15 @@ class AccountNumberView(FormView):
         else:
             return redirect('pathways-home')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        context['isAccountNumberView'] = True
+        return context
+
     def form_valid(self, form):
         self.request.session['account_number'] = form.cleaned_data['account_number']
+        self.request.session['hasAccountNumber'] = form.cleaned_data['hasAccountNumber']
         return super().form_valid(form)
 
 class ReviewApplicationView(TemplateView):

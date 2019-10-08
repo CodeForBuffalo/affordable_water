@@ -68,7 +68,7 @@
                 </label>
                 <div class="select">
                     <select class="select__element" name="account_holder" id="id_account_holder">
-                        <option selected disabled>{% trans "Select the water bill payer" %}</option>
+                        <option selected disabled>{% trans "Select bill payer" %}</option>
                         {% for value, text in form.account_holder.field.choices %}
                         <option value="{{ value }}">{{ text }}</option>
                         {% endfor %}
