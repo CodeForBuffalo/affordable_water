@@ -1,81 +1,43 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
-<div class="content-section">
-    {% csrf_token %}
-    <div class="container">
-            <div class="form-card form-card--transition">
-                    <div class="form-card__header">
-                      <div class="illustration illustration--success">Success</div>
-                      <h1 class="form-card__title">Great! It looks like your household will likely qualify for CalFresh.</h1>
-                    </div>
-                    <div class="form-card__content">
-                      <div class="summary-table">
-                        <div class="grid">
-                          <div class="grid__item width-one-third">
-                            <p class="summary-table__label">Household size</p>
-                            <p class="summary-table__value">1 <span class="icon icon-person"></span></p>
-                          </div>
-                          <div class="grid__item width-one-third">
-                            <p class="summary-table__label">Last month's income</p>
-                            <p class="summary-table__value">$1000</p>
-                          </div>
-                          <div class="grid__item width-one-third">
-                            <p class="summary-table__label">County</p>
-                            <p class="summary-table__value">Marin</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-card__footer">
-                      <button class="button button--primary">Continue <i class="icon icon-arrow_forward"></i></button>
-                      <button class="button">Go back <i class="icon icon-replay"></i></button>
-                    </div>
-                  </div>
-    </div>
-</div>
-{% endblock content %}
+{% load static %}
 
-<!-- <h1 class="h5 font-weight-normal border-bottom mb-4 text-center">{% trans "Apply for Affordable Water" %}</h1>
-        <div class="row justify-content-center">
-            <h2 class="h5 font-weight-normal text-center">
-                {% if isEligible %}
-                    {% blocktrans %}
-                    You are <span class="font-weight-bold" style="color: green">eligible
-                    </span> for assistance on your water bill!
-                    {% endblocktrans %}
-                {% else %}
-                    {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
-                {% endif %}
-            </h2>
-        </div>
-        <div class="container">
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% trans "Your estimated annual household income:" %}
-                    <br><span class="font-weight-bold" style="color: green">
-                        {{ income_formatted }}</span>
-                </p>
-            </div>
-            <div class="row justify-content-center py-1">
-                <p class="text-center">
-                    {% blocktrans with household=request.session.household %}
-                    The pre-tax annual income limit for a household size of <strong>
-                        {{ household }}</strong> is <strong>{{ income_limit }}</strong>.
-                    {% endblocktrans %}
-                </p>
-            </div>
-            {% if isEligible %}
-            <div class="row justify-content-center py-2">
-                    <a role="button" href="{% url 'pathways-apply-additional-questions' %}" class="btn btn-primary">
-                        {% trans "Continue" %}</a>
-                </div>
-            {% else %}
-            <div class="row justify-content-center py-2">
-                    <a role="button" href="{% url 'pathways-home' %}" class="btn btn-primary">
-                        {% trans "Learn more" %}</a>
-                </div>
-            {% endif %}
-            
-        </div> -->
+{% block question %}
+<div class="form-card form-card--transition">
+  <div class="form-card__header">
+    <h1 class="form-card__title">
+      {% if isEligible %}
+      {% blocktrans %}
+      You are eligible for assistance on your water bill!
+      {% endblocktrans %}
+      {% else %}
+      {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
+      {% endif %}
+    </h1>
+  </div>
+  <div class="form-card__content">
+    {% if isEligible %}
+    <div class="emoji emoji--big emoji--thumbs-up"></div>
+    {% else %}
+    <div class="emoji emoji--big emoji--frowning-face"></div>
+    {% endif %}
+    <p>{% blocktrans with household=request.session.household %}
+      The pre-tax annual income limit for a household size of <strong>
+        {{ household }}</strong> is <strong>{{ income_limit }}</strong>.
+      {% endblocktrans %}</p>
+    <p>
+      {% if isEligible %}
+      {% trans "Based on your answers, you look to be <strong>under</strong> the pre-tax income limit." %}
+      {% else %}
+      {% trans "Based on your answers, you look to be <strong>over</strong> the pre-tax income limit." %}
+      {% endif %}
+    </p>
+  </div>
+  <div class="form-card__footer">
+    <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
+        {% trans "Continue" %} <i class="icon icon-arrow_forward"></i></a>
+        <a class="button" href="{% url 'pathways-apply-review-eligibility' %}">
+            {% trans "Go back" %} <i class="icon icon-replay"></i></a>
+  </div>
+</div>
+{% endblock question %}
