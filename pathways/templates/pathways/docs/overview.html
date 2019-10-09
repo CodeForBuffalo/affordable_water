@@ -1,65 +1,65 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
+{% load static %}
 
-{% block content %}
-<div class="content-section">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <!-- card-body -->
-                <div class="card-header">
-                        <h1 class="h4 text-center">
-                                {% trans "Remember your application cannot be approved until you submit proof." %}</h1>
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="form-card__title">
+                {% trans "Remember your application cannot be approved until you submit proof." %}</h1>
+            <p>{% trans "Based on your answers you will need:" %}</p>
+            <div class="vertical-steps">
+
+                {% if hasHouseholdBenefits %}
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--clipboard"></span>
                     </div>
-                <div class="card-body">
-                    <div class="container px-6">
-                        <div class="row justify-content-center">
-                            <p class="text-center">{% trans "Based on your answers you will need:" %}</p>
-                        </div>
-                        <div class="row justify-content-center">
-                            {% if hasHouseholdBenefits %}
-                            <h2 class="h5 text-center">{% trans "Proof from other benefit programs" %}</h2>
-                            <p class="text-center">
-                                {% trans "Any documents that prove you are currently enrolled in one of the following programs:" %}
-                            </p>
-                            <ul>
-                                <li>{% trans "Supplemental Security Income (SSI)" %}</li>
-                                <li>{% trans "Public Assistance" %}</li>
-                                <li>{% trans "Supplemental Nutrition Assistance Program (SNAP/Food Stamps)" %}</li>
-                                <li>{% trans "Home Energy Assistance Program (HEAP)" %}</li>
-                            </ul>
-                            {% else %}
-                            <h2 class="h5 text-center">{% trans "A paystub from the last 30 days" %}</h2>
-                            <p class="text-center">
-                                {% trans "This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer." %}
-                            </p>
-                            {% endif %}
-                        </div>
-                        <hr>
-                        <div class="row justify-content-center">
-                            {% if rent_or_own == 'own' %}
-                            <h2 class="h5 text-center">{% trans "Proof of home ownership" %}</h2>
-                            <p class="text-center">
-                                {% trans "This could be a deed or any official document that indicates you own your home." %}
-                            </p>
-                            {% else %}
-                            <h2 class="h5 text-center">{% trans "Proof of tenant status" %}</h2>
-                            <p class="text-center">
-                                {% trans "This can be either a copy of your lease or a landlord statement showing that you (the tenant) are responsible for paying the water bill." %}
-                            </p>
-                            {% endif %}
-                        </div>
-                        <hr>
-                        <div class="row justify-content-center py-2">
-                                <a role="button" href="{% url 'pathways-apply-documents-income' %}" class="btn btn-primary">
-                                    {% trans "Continue" %}</a>
-                            </div>
+                    <div class="vertical-steps__title">{% trans "Proof from other benefit programs" %}</div>
+                    <div class="form-card__body-text">
+                        {% trans "Any documents that prove you are currently enrolled in one of the following programs:" %}
+                        <ul class="list--bulleted">
+                            <li>{% trans "Supplemental Security Income (SSI)" %}</li>
+                            <li>{% trans "Public Assistance" %}</li>
+                            <li>{% trans "Supplemental Nutrition Assistance Program (SNAP/Food Stamps)" %}</li>
+                            <li>{% trans "Home Energy Assistance Program (HEAP)" %}</li>
+                        </ul>
                     </div>
                 </div>
-                <!-- end card-body -->
+                {% else %}
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--money"></span></div>
+                    <div class="vertical-steps__title">{% trans "A paystub from the last 30 days" %}</div>
+                    <div class="form-card__body-text">
+                        {% trans "This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer." %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--house"></span></div>
+                    <div class="vertical-steps__title">
+                        {% if rent_or_own == 'own' %}
+                        {% trans "Proof of home ownership" %}
+                        {% else %}
+                        {% trans "Proof of tenant status" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if rent_or_own == 'own' %}
+                        {% trans "This could be a deed or any official document that indicates you own your home." %}
+                        {% else %}
+                        {% trans "This can be either a copy of your lease or a landlord statement showing that you (the tenant) are responsible for paying the water bill." %}
+                        {% endif %}
+                    </div>
+                </div>
+
             </div>
+
+            <p><a class="button button--primary" href="{% url 'pathways-apply-documents-income' %}">
+                    {% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i></a></p>
+            </button>
         </div>
     </div>
 </div>
-{% endblock content %}
+{% endblock question %}
