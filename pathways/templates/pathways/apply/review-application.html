@@ -1,291 +1,183 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
+{% load static %}
 
-<div class="content-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <h1 class="h5 text-center pt-4">
-                {% trans "Let's review what you told us about your application" %}
-            </h1>
-        </div>
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="form-card__title">{% trans "Let's review what you told us about your application." %}</h1>
 
-        <hr>
-
-        <!-- Eligibility -->
-        <div class="row py-1">
-            <div class="col">
-                <div class="row justify-content-center">
-                    <h2 class="h4">{% trans "Eligibility Info" %}</h2>
+            <!-- Eligibility Info -->
+            <h2>{% trans "Eligibility Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
+                    <div class="vertical-steps__title">{{ request.session.household }}</div>
+                    <div class="form-card__body-text">{% trans "Household size" %}</div>
                 </div>
-                <!-- Household Size -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Household Size" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-heavy" style="color: green">
-                                {{ request.session.household }}
-                            </p>
-                        </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
+                    <div class="vertical-steps__title">{{ income_formatted }}
+                        {% if pay_period == 'weekly' %}
+                        {% trans "per week" %}
+                        {% elif pay_period == 'biweekly' %}
+                        {% trans "every 2 weeks" %}
+                        {% elif pay_period == 'semimonthly' %}
+                        {% trans "twice a month" %}
+                        {% elif pay_period == 'monthly' %}
+                        {% trans "per month" %}
+                        {% elif income_method == 'hourly' %}
+                        {% trans "per hour" %}
+                        {% endif %}
                     </div>
-                </div>
-                <!-- Qualifying Benefits -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Existing Household Benefits" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h6 font-weight-normal text-center">
-                                {% if request.session.hasHouseholdBenefits == 'True' %}
-                                {% trans "You indicated <strong>no one</strong> in your household is enrolled in existing assistance programs like HEAP or SNAP." %}
-                                {% else %}
-                                {% trans "You indicated <strong>someone</strong> in your household is enrolled in existing assistance programs like HEAP or SNAP." %}
-                                {% endif %}
-                            </p>
-                        </div>
+                    <div class="form-card__body-text">
+                        {% if income_method == 'estimate' %}
+                        {% trans "Estimated income before taxes" %}
+                        {% elif income_method == 'hourly' %}
+                        {{ pay_period }} {% trans "hours per week" %}
+                        {% else %}
+                        {% trans "Annual income before taxes" %}
+                        {% endif %}
                     </div>
                 </div>
 
-                {% if request.session.hasHouseholdBenefits == 'False' %}
-                <!-- Income -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Annual Household Income" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-heavy text-center" style="color: green">
-                                {{ income_formatted }}
-                            </p>
-                        </div>
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--clipboard"></span>
                     </div>
-                </div>
-                {% endif %}
-
-                <!-- Change Eligibility Answers -->
-                <div class="row justify-content-center py-2">
-                    <a role="button" href="{% url 'pathways-apply' %}" class="btn btn-sm btn-outline-secondary">
-                        {% trans "Change my eligibility answers" %}</a>
-                </div>
-            </div>
-        </div>
-        <!-- End Eligibility Info -->
-
-        <hr>
-
-        <!-- Personal Info -->
-        <div class="row py-1">
-            <div class="col">
-                <div class="row justify-content-center">
-                    <h2 class="h4">{% trans "Personal Info" %}</h2>
-                </div>
-
-                <!-- Full Name -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Full Name" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal">
-                                {{ request.session.first_name }} {{ request.session.middle_initial }}
-                                {{ request.session.last_name }}
-                            </p>
-                        </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.hasHouseholdBenefits == 'True' %}
+                        {% trans "Current household benefits" %}
+                        {% else %}
+                        {% trans "No current household benefits" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.hasHouseholdBenefits == 'True' %}
+                        {% trans "You indicated <strong>someone</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance" %}
+                        {% else %}
+                        {% trans "You indicated <strong>no one</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance." %}
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- Rent or own -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 mb-0">
-                                <strong>{% trans "Status" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal">
-                                {% blocktrans with rentOwn=request.session.rent_or_own%}
-                                You <strong style="color: green">{{ rentOwn }}</strong> your home.
-                                {% endblocktrans %}
-                            </p>
-                        </div>
+                <div class="vertical-steps__step">
+                    <div class="notice">
+                        <div class="form-card__body-text">
+                            {% trans "Based on this info, your annual eligible income is" %}</div>
+                        <div class="vertical-steps__title">{{ annual_income_formatted }} per year</div>
                     </div>
                 </div>
-
-                <!-- Street Address -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Street Address" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal text-center">
-                                {{ request.session.street_address }}
-                                <br>
-                                {% if request.session.apartment_unit %}
-                                Apartment {{ request.session.apartment_unit }}
-                                {% endif %}
-                                <br>
-                                Buffalo, NY {{ request.session.zip_code }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Phone Number -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Phone Number" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal">
-                                {{ request.session.phone_number }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Email Address -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "Email Address" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal">
-                                {% if request.session.email_address %}
-                                {{ request.session.email_address }}
-                                {% else %}
-                                No email address provided.
-                                {% endif %}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-center py-2">
-                        <a role="button" href="{% url 'pathways-apply-resident-info' %}" class="btn btn-sm btn-outline-secondary">
-                            {% trans "Change my personal info" %}</a>
-                    </div>
-            </div>
-        </div>
-        <!-- End Personal Info -->
-
-        <hr>
-
-        <!-- Water Bill Info -->
-        <div class="row py-1">
-            <div class="col">
-                <div class="row justify-content-center">
-                    <h2 class="h4">{% trans "Water Bill Info" %}</h2>
-                </div>
-                <!-- Bill payer -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                <strong>{% trans "" %}</strong>
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h6 font-weight-normal text-center">
-                                {% if request.session.account_holder == 'me' %}
-                                {% blocktrans %}
-                                You indicated <strong>you</strong> pay your own water bill.
-                                {% endblocktrans %}
-                                {% elif request.session.account_holder == 'landlord' %}
-                                {% blocktrans %}
-                                You indicated <strong>your landlord</strong> pays the water bill (included in your
-                                rent).
-                                {% endblocktrans %}
-                                {% else %}
-                                {% blocktrans %}
-                                You indicated <strong>someone else</strong> pays your own water bill (neither you nor
-                                your landlord).
-                                {% endblocktrans %}
-                                {% endif %}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {% if request.session.account_holder != 'me' %}
-                <!-- Account Name -->
-                <div class="row py-1">
-                    <div class="col justify-content-center">
-                        <div class="row justify-content-center">
-                            <h3 class="h6 pb-0 mb-0">
-                                {% if request.session.account_holder == 'landlord' %}
-                                <strong>{% trans "Your Landlord" %}</strong>
-                                {% else %}
-                                <strong>{% trans "Person who pays the water bill" %}</strong>
-                                {% endif %}
-                            </h3>
-                        </div>
-                        <div class="row justify-content-center">
-                            <p class="h5 font-weight-normal text-center">
-                                {{ request.session.account_first }} {{ request.session.account_middle }}
-                                {{ request.session.account_last }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                <!-- Account Number -->
-                <div class="row py-1">
-                        <div class="col justify-content-center">
-                            <div class="row justify-content-center">
-                                <h3 class="h6 pb-0 mb-0">
-                                    <strong>{% trans "Account Number" %}</strong>
-                                </h3>
-                            </div>
-                            <div class="row justify-content-center">
-                                <p class="h5 font-weight-normal">
-                                    {% if request.session.account_number %}
-                                    {{ request.session.account_number }}
-                                    {% else %}
-                                    No account number provided.
-                                    {% endif %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                <!-- Change Water Bill Info -->
-                <div class="row justify-content-center py-2">
-                        <a role="button" href="{% url 'pathways-apply-resident-info' %}" class="btn btn-sm btn-outline-secondary">
-                            {% trans "Change my water bill info" %}</a>
-                    </div>
 
             </div>
-        </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-household-size' %}">
+                    {% trans "Change my eligibility info" %}</a>
+            </p>
 
-        <hr>
+            <!-- Personal Info -->
+            <h2>{% trans "Personal Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--bust"></span></div>
+                    <div class="vertical-steps__title">{{ request.session.first_name }}
+                        {{ request.session.middle_initial }}
+                        {{ request.session.last_name }}</div>
+                    <div class="form-card__body-text">
+                        {% trans "Your full name" %}</div>
+                </div>
 
-        <div class="row justify-content-center py-2">
-            <a role="button" href="{% url 'pathways-apply-legal' %}" class="btn btn-lg btn-primary">
-                {% trans "This all looks correct" %}</a>
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.rentOwn == 'rent' %}
+                        {% trans "Renter" %}
+                        {% else %}
+                        {% trans "Homeowner" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.rentOwn == 'rent' %}
+                        {% trans "You indicated you rent your home at" %}
+                        {% else %}
+                        {% trans "You indicated you own your home at" %}
+                        {% endif %}
+                        <br>
+                        {{ request.session.street_address }}
+                        <br>
+                        Buffalo, NY {{ request.session.zip_code }}
+                    </div>
+                </div>
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--receiver"></span>
+                    </div>
+                    <div class="vertical-steps__title">{{ request.session.phone_number }}</div>
+                    <div class="form-card__body-text">
+                        {% trans "Your phone number" %}</div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--email"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.email_address %}
+                        {{ request.session.email_address }}
+                        {% else %}
+                        No email address provided.
+                        {% endif %}</div>
+                    <div class="form-card__body-text">
+                        {% if request.session.email_address %}
+                        {% trans "Your email address" %}{% endif %}</div>
+                </div>
+            </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-resident-info' %}">
+                    {% trans "Change my personal info" %}</a>
+            </p>
+
+            <!-- Water Account Info -->
+            <h2>{% trans "Water Account Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--bust"></span></div>
+                    <div class="vertical-steps__title">
+                        {{ request.session.account_first }}
+                        {{ request.session.account_middle }}
+                        {{ request.session.account_last }}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.account_holder == 'me' %}
+                        {% trans "You pay your own water bill." %}
+                        {% elif request.session.account_holder == 'landlord' %}
+                        {{ request.session.account_first }}
+                        {{ request.session.account_middle }}
+                        {{ request.session.account_last }}
+                        {% trans "Your landlord pays the water bill." %}
+                        {% else %}
+                        {% trans "This person pays your water bill" %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--faucet"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.account_number %}
+                        {{ request.session.account_number }}
+                        {% else %}
+                        No account number provided.
+                        {% endif %}</div>
+                    <div class="form-card__body-text">
+                        {% if request.session.account_number %}
+                        {% trans "Your Buffalo Water account number" %}{% endif %}</div>
+                </div>
+            </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-resident-info' %}">
+                    {% trans "Change water account info" %}</a></p>
+
+            <p><a class="button button--primary" href="{% url 'pathways-apply-legal' %}">
+                    {% trans "This all looks correct" %}</a></p>
         </div>
     </div>
-
 </div>
-{% endblock content %}
+{% endblock question %}
