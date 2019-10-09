@@ -1,47 +1,73 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
-{% block content %}
-<div class="content-section">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="container">
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4 text-center">{% trans "Legal Terms and Conditions" %}</legend>
-                <h1 class="h6">{% trans "Summary" %}</h1>
-                <div class="row justify-content-center">
-                    <ul>
-                        <li>{% trans "You have been honest on this application." %}</li>
-                        <li>{% trans "You agree to the terms of the privacy policy." %}</li>
-                        <li>{% trans "Getting financial credits from Buffalo Water will not affect your or your family’s immigration status. Immigration information is private and confidential." %}</li>
-                        <li>{% blocktrans %}
-                            If you do not agree with these terms you can use another application found at <a href="https://buffalowater.org/wp-content/uploads/2019/06/ResidentialAffordabilityProgram.pdf">www.buffalowater.org</a>
-                            {% endblocktrans %}
-                        </li>
-                    </ul>
-                </div>
-                <h1 class="h6">{% trans "Details" %}</h1>
-                <p>{% trans "I hereby certify, under penalty of perjury (making false statements), that:" %}</p>
-                <div class="row justify-content-center">
-                    <ul>
-                        <li>{% trans "My answers to the questions are true and complete to the best of my knowledge." %}</li>
-                        <li>{% trans "I understand that if I receive financial credits from Buffalo Water, I must inform Buffalo Water within ten (10) days of any change in my household financial status that changes my eligibility for this assistance." %}</li>
-                        <li>{% trans "Buffalo Water may request additional financial information from me at any time in its discretion, to support or confirm the information in this application." %}</li>
-                        <li>{% trans "If Buffalo Water determines that the information provided in this application is incomplete, false, or misleading, or if I do not fully cooperate with providing additional information, Buffalo Water may revoke and reverse any financial credits applied, and seek restitution in full for all financial credits provided, and otherwise exercise any rights allowed by law." %}</li>
-                    </ul>
-                </div>
-                <div class="row justify-content-center">
-                    {{ form|crispy }}
+{% load static %}
+
+{% block question %}
+<div class="form-card">
+    <div class="form-card__header ">
+        <h1 class="form-card__title margin-bottom--none" id="card_labelledby">{% trans "The legal stuff." %}</h1>
+        <div class="form-card__body-text margin-bottom--none margin-top--medium">
+            {% trans "Scroll down to agree. You will sign on the next page." %}</div>
+    </div>
+
+    <div class="form-card__content">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-card__content">
+                <div class="textwell">
+                    <section class="legal" id="card_describedby">
+                        <h3>{% trans "Summary" %}</h3>
+                        <ul class="list--bulleted text--small">
+                            <li>{% trans "You have been honest on this application." %}</li>
+                            <li>{% trans "You agree to the terms of the privacy policy." %}</li>
+                            <li>{% trans "Getting financial credits from Buffalo Water will not affect your or your family’s immigration status. Immigration information is private and confidential." %}
+                            </li>
+                            <li>{% blocktrans %}
+                                If you do not agree with these terms you can use another application found at <a
+                                    href="https://buffalowater.org/wp-content/uploads/2019/06/ResidentialAffordabilityProgram.pdf">www.buffalowater.org</a>
+                                {% endblocktrans %}
+                            </li>
+                        </ul>
+                        <h3>{% trans "Details" %}</h3>
+                        <p>{% trans "I hereby certify, under penalty of perjury (making false statements), that:" %}</p>
+                        <ul class="list--bulleted text--small">
+                            <li>{% trans "My answers to the questions are true and complete to the best of my knowledge." %}
+                            </li>
+                            <li>{% trans "I understand that if I receive financial credits from Buffalo Water, I must inform Buffalo Water within ten (10) days of any change in my household financial status that changes my eligibility for this assistance." %}
+                            </li>
+                            <li>{% trans "Buffalo Water may request additional financial information from me at any time in its discretion, to support or confirm the information in this application." %}
+                            </li>
+                            <li>{% trans "If Buffalo Water determines that the information provided in this application is incomplete, false, or misleading, or if I do not fully cooperate with providing additional information, Buffalo Water may revoke and reverse any financial credits applied, and seek restitution in full for all financial credits provided, and otherwise exercise any rights allowed by law." %}
+                            </li>
+                        </ul>
+                    </section>
                 </div>
 
-            </fieldset>
-        </div>
-        <div class="row justify-content-center">
-            <div class="form-group">
-                <button class="btn btn-primary" type="submit">{% trans "Continue" %}</button>
+                <span></span>
+                <fieldset class="input-group--inline">
+                    <label class="checkbox">
+                        <input type="checkbox" name="legal_agreement" id="legal_agreement"
+                            aria-labelledby="card_labelledby"
+                            aria-describedby="card_describedby" />{% trans "I agree" %}
+                    </label>
+                    {% if form.legal_agreement.errors %}
+                    {% for error in form.legal_agreement.errors %}
+                    <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </fieldset>
+
             </div>
-        </div>
 
-    </form>
+            <div class="form-card__footer">
+                <button name="button" type="submit" class="button button--primary">
+                    <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
+                    </i>{% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+                </button>
+            </div>
+        </form>
+
+    </div>
 </div>
-{% endblock content %}
+</div>
+{% endblock question %}
