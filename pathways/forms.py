@@ -172,10 +172,17 @@ class SignatureForm(forms.Form):
     signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"), error_messages={'required':_("You must sign the application to continue.")})
 
 class DocumentIncomeForm(forms.Form):
-    income_photo = forms.ImageField(label=_("Upload a pay stub from the last 30 days"), help_text=_("This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer."))
+    income_photo = forms.ImageField(label=_("Upload a pay stub from the last 30 days"), 
+    help_text=_("This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer."))
+
+class DocumentBenefitsForm(forms.Form):
+    benefits_photo = forms.ImageField(label=_("Upload proof of your household's assistance enrollment"), 
+    help_text=_("This can be a photo of any document that proves a member of your household is enrolled in SNAP, HEAP, SSI, or Public Assistance."))
 
 class DocumentHomeownerForm(forms.Form):
-    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), help_text=_("This can be any proof of ownership if you are the homeowner."))
+    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), 
+    help_text=_("This could be a deed, tax document, or any official document that indicates you own your home."))
 
 class DocumentTenantForm(forms.Form):
-    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), help_text=_("This can be either a copy of your lease or a landlord statement showing that you (the tenant) are responsible for paying the water bill."))
+    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), 
+    help_text=_("This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill."))

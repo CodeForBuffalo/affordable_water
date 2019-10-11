@@ -26,6 +26,11 @@ def debugsessionview(request):
 class ApplyView(TemplateView):
     template_name = 'pathways/apply/overview.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        return super(ApplyView, self).dispatch(request, *args, **kwargs)
+
 class HouseholdView(FormView):
     template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdForm
@@ -45,6 +50,8 @@ class HouseholdBenefitsView(FormView):
     def form_valid(self, form):
         hasHouseholdBenefits = form.cleaned_data['hasHouseholdBenefits']
         self.request.session['hasHouseholdBenefits'] = form.cleaned_data['hasHouseholdBenefits']
+        if hasHouseholdBenefits == 'True':
+            self.success_url = '/apply/eligibility/'
         return super().form_valid(form)
     
     def dispatch(self, request, *args, **kwargs):
@@ -169,12 +176,16 @@ class EligibilityView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
-        locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(
-            self.request.session['annual_income'], grouping=True)
-        context['income_limit'] = locale.currency(
-            incomeLimits[int(self.request.session['household'])], grouping=True)
+        context['hasHouseholdBenefits'] = self.request.session['hasHouseholdBenefits']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            context['isEligible'] = True
+        else:
+            context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
+            locale.setlocale( locale.LC_ALL, '' )
+            context['income_formatted'] = locale.currency(
+                self.request.session['annual_income'], grouping=True)
+            context['income_limit'] = locale.currency(
+                incomeLimits[int(self.request.session['household'])], grouping=True)
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -233,7 +244,7 @@ class ResidentInfoView(FormView):
 
 # Step 9
 class AccountHolderView(FormView):
-    template_name = 'pathways/info-form.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountHolderForm
     success_url = '/apply/address/'
 
@@ -330,11 +341,15 @@ class ReviewApplicationView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        locale.setlocale( locale.LC_ALL, '' )
-        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
-        context['pay_period'] = self.request.session['pay_period']
-        context['income_method'] = self.request.session['income_method']
+        context['hasHouseholdBenefits'] = self.request.session['hasHouseholdBenefits']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            context['isEligible'] = True
+        else:
+            locale.setlocale( locale.LC_ALL, '' )
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
+            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+            context['pay_period'] = self.request.session['pay_period']
+            context['income_method'] = self.request.session['income_method']
         return context
 
 class LegalView(FormView):
@@ -391,7 +406,8 @@ class SignatureView(FormView):
         # Eligibility Info
         app.household_size = self.request.session['household']
         app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
-        app.annual_income = self.request.session['annual_income']
+        if self.request.session['hasHouseholdBenefits'] == 'False':
+            app.annual_income = self.request.session['annual_income']
 
         # Legal and Signature Info
         app.legal_agreement = self.request.session['legal_agreement']
@@ -416,11 +432,15 @@ class DocumentOverviewView(TemplateView):
         return context
 
 class DocumentIncomeView(FormView):
-    template_name = 'pathways/docs/income.html'
+    template_name = 'pathways/docs/upload-form.html'
     form_class = forms.DocumentIncomeForm
     success_url = '/apply/documents-residence/'
 
     def dispatch(self, request, *args, **kwargs):
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            self.form_class = forms.DocumentBenefitsForm
+        else:
+            self.form_class = forms.DocumentIncomeForm
         if 'active_app' in request.session:
             return super(DocumentIncomeView, self).dispatch(request, *args, **kwargs)
         else:
@@ -428,16 +448,19 @@ class DocumentIncomeView(FormView):
 
     def form_valid(self, form):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        app.income_photo = form.cleaned_data['income_photo']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            app.benefits_photo = form.cleaned_data['benefits_photo']
+        else:
+            app.income_photo = form.cleaned_data['income_photo']
         app.save()
         return super().form_valid(form)
 
 class DocumentResidenceView(FormView):
-    template_name = 'pathways/docs/residence.html'
+    template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.session['rent_or_own'] == 'rent':
+        if self.request.session['rent_or_own'] == 'rent':
             self.form_class = forms.DocumentTenantForm
         else:
             self.form_class = forms.DocumentHomeownerForm
@@ -455,3 +478,15 @@ class DocumentResidenceView(FormView):
 
 class ConfirmationView(TemplateView):
     template_name = 'pathways/apply/confirmation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        if app.income_photo:
+            context['has_income_photo'] = True
+        if app.benefits_photo:
+            context['has_benefits_photo'] = True
+        if app.residence_photo:
+            context['has_residence_photo'] = True
+        return context

@@ -17,9 +17,11 @@
                     <div class="form-card__body-text">{% trans "Household size" %}</div>
                 </div>
 
+                {% if hasHouseholdBenefits == 'False' %}
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
-                    <div class="vertical-steps__title">{{ income_formatted }}
+                    <div class="vertical-steps__title">
+                        {{ income_formatted }}
                         {% if pay_period == 'weekly' %}
                         {% trans "per week" %}
                         {% elif pay_period == 'biweekly' %}
@@ -42,6 +44,7 @@
                         {% endif %}
                     </div>
                 </div>
+                {% endif %}
 
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--clipboard"></span>
@@ -62,11 +65,23 @@
                     </div>
                 </div>
 
+
                 <div class="vertical-steps__step">
                     <div class="notice">
                         <div class="form-card__body-text">
-                            {% trans "Based on this info, your annual eligible income is" %}</div>
-                        <div class="vertical-steps__title">{{ annual_income_formatted }} per year</div>
+                            {% if hasHouseholdBenefits == 'True' %}
+                            {% blocktrans %}
+                            Based on this info, you are <br><strong>automatically eligible.</strong>
+                            {% endblocktrans %}
+                            {% else %}
+                            {% trans "Based on this info, your annual eligible income is" %}
+                            {% endif %}
+                        </div>
+                        <div class="vertical-steps__title">
+                            {% if hasHouseholdBenefits == 'False' %}
+                            {{ annual_income_formatted }} per year
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
 
@@ -90,14 +105,14 @@
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
                     <div class="vertical-steps__title">
-                        {% if request.session.rentOwn == 'rent' %}
+                        {% if request.session.rent_or_own == 'rent' %}
                         {% trans "Renter" %}
                         {% else %}
                         {% trans "Homeowner" %}
                         {% endif %}
                     </div>
                     <div class="form-card__body-text">
-                        {% if request.session.rentOwn == 'rent' %}
+                        {% if request.session.rent_or_own == 'rent' %}
                         {% trans "You indicated you rent your home at" %}
                         {% else %}
                         {% trans "You indicated you own your home at" %}
@@ -148,9 +163,6 @@
                         {% if request.session.account_holder == 'me' %}
                         {% trans "You pay your own water bill." %}
                         {% elif request.session.account_holder == 'landlord' %}
-                        {{ request.session.account_first }}
-                        {{ request.session.account_middle }}
-                        {{ request.session.account_last }}
                         {% trans "Your landlord pays the water bill." %}
                         {% else %}
                         {% trans "This person pays your water bill" %}

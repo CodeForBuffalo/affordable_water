@@ -1,0 +1,56 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card">
+    {% for field in form.visible_fields %}
+    <div class="form-card__header form-card__header--with-icon">
+        <div class="form-card__icon emoji emoji--med emoji--money"></div>
+        <h1 class="form-card__title margin-bottom--none" id="card_labelledby">{{ field.label }}</h1>
+        <div class="form-card__body-text margin-bottom--none margin-top--medium" id="card_describedby">
+            {{ field.help_text }}</div>
+    </div>
+
+    <div class="form-card__content">
+        <div class="form-card__content">
+            <div class="doc-preview-container"></div>
+
+            <form class="{{field.name}}" id="{{field.name}}" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                <div class="document-upload with-padding-med">
+                    <div class="file-upload">
+                        <input class="form__documentuploader" type="file" name="{{field.name}}" id="{{field.name}}" accept="image/*">  
+                        <label for="{{field.name}}" class="sr-only">{% trans "Upload a picture" %}</label>
+                        
+                        <!-- <input class="form__documentuploader" data-upload-immediately="true"
+                            data-uploading="Uploading&amp;hellip;" data-reference="c3e5c5f385f772eb5b85481a3fed002d"
+                            include_hidden="false" type="file" name="document[file]" id="document_file"
+                            accept="image/*" />
+                        <label class="button is-tablet-hidden--inline" style="display: none !important;"
+                            for="document_file">
+                            <i class="button__icon--left icon-file_upload"></i>
+                            {% trans "Pick a file from this computer" %}</label>
+                        <label class="button is-desktop-hidden--inline" style="display: none !important;"
+                            for="document_file">
+                            <i class="button__icon--left icon-add_a_photo"></i>
+                            {% trans "Take a picture" %}</label> -->
+                    </div>
+                </div>
+
+                <button name="button" type="submit" class="button button--primary">{% trans "Upload" %}</button>
+            </form>
+        </div>
+        {% endfor %}
+
+        <div class="form-card__footer">
+            <div class="toolbar">
+                <div class="toolbar__left">
+                    <a class="button" href="#">{% trans "Nothing to submit now" %}</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock question %}

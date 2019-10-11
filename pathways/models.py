@@ -71,6 +71,9 @@ class Application(models.Model):
     # Income Photo
     income_photo = models.ImageField(upload_to='income_docs', blank=True)
 
+    # Benefits Photo
+    benefits_photo = models.ImageField(upload_to='benefits_docs', blank=True)
+
     # Residence Photo
     residence_photo = models.ImageField(upload_to='residence_docs', blank=True)
 
