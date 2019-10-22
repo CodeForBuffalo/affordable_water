@@ -10,9 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "bourbon": "^6.0.0",
-    "normalize.css": "^8.0.1"
-  },
-  "devDependencies": {
+    "normalize.css": "^8.0.1",
     "gulp-sass": "^4.0.2",
     "node-sass": "^4.12.0"
   }
