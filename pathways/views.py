@@ -6,6 +6,7 @@ from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
 import locale
+import datetime
 
 # Create your views here.
 def home(request):
@@ -455,6 +456,11 @@ class DocumentIncomeView(FormView):
         app.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = '/apply/documents-residence/'
+        return context
+
 class DocumentResidenceView(FormView):
     template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
@@ -474,6 +480,11 @@ class DocumentResidenceView(FormView):
         app.residence_photo = form.cleaned_data['residence_photo']
         app.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = '/apply/confirmation/'
+        return context
         
 
 class ConfirmationView(TemplateView):
@@ -481,6 +492,7 @@ class ConfirmationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['confirm_timestamp'] = datetime.datetime.now().strftime("%m/%d/%Y")
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
         if app.income_photo:

@@ -1,33 +1,56 @@
-{% extends "pathways/base.html" %}
+{% extends "pathways/snippets/question.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
+{% load static %}
 
-{% block content %}
-<div class="content-section">
-    <div class="card">
-        <div class="card-header">
-            <div class="p-2">
-                <div class="row justify-content-center">
-                    <i class="fas fa-check fa-3x" style="color: green"></i>
-                </div>
-                <h1 class="h4 text-center">{% trans "Your application has been successfully submitted!" %}
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header form-card__header--confirmation">
+        <div class="emoji emoji--checkmark emoji--med"></div>
+        <h1 class="form-card__title">
+            {% trans "Your application has been successfully submitted!" %}
+        </h1>
+        <p class="form-card__body-text margin-bottom--none">
+            {% blocktrans %}
+            Submitted to Buffalo Water on {{ confirm_timestamp }}
+            {% endblocktrans %}
+        </p>
+    </div>
+
+    <div class="form-card__content">
+        <h3 class="with-padding-med">
+            What to expect next:
+        </h3>
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--clipboard"></div>
+            </div>
+            <div class="media-box__content">
+                {% trans "<strong>Your application will be reviewed</strong> by Buffalo Water." %}
             </div>
         </div>
-        <div class="card-body">
-            <div class="container p-2">
-                <div class="row justify-content-center">
-                    <h2 class="h5 text-center font-weight-light">{% trans "What to expect next:" %}</h2>
-                </div>
-                <div class="row justify-content-center">
-                    <p class="text-center">{% trans "Buffalo Water will review your application for approved." %}</p>
-                </div>
-                <div class="row justify-content-center">
-                    <p class="text-center">
-                        {% trans "Once approved, you will receive a notice. Your next water bill will be marked with the quarterly discount." %}
-                    </p>
-                </div>
+
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--page-facing-up"></div>
+            </div>
+            <div class="media-box__content">
+                {% blocktrans %}
+                In some cases, <strong>Buffalo Water may ask you to send them additional proof</strong> of your
+                situation. You can upload additional documents at <a href="#">www.getbuffalowater.org/docs</a>
+                {% endblocktrans %}
+            </div>
+        </div>
+
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--dollar-sign"></div>
+            </div>
+            <div class="media-box__content">
+                {% blocktrans %}
+                <strong>You’ll receive a discount on your next water bill</strong> if approved.
+                {% endblocktrans %}
             </div>
         </div>
     </div>
 </div>
-{% endblock content %}
+{% endblock question %}
