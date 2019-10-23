@@ -7,7 +7,6 @@ verify_ssl = true
 
 [packages]
 django = "*"
-django-crispy-forms = "*"
 pillow = "*"
 django-storages = "*"
 boto3 = "*"
