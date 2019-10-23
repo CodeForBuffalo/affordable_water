@@ -11,6 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "bourbon": "^6.0.0",
+    "getbuffalowater-bourbon-neat": "^1.8.0",
+    "getbuffalowater-cfa-styleguide": "^0.8.2",
     "gulp-sass": "^4.0.2",
     "node-sass": "^4.12.0",
     "normalize.css": "^8.0.1",
