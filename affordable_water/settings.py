@@ -148,6 +148,10 @@ STATICFILES_FINDERS = [
     'compressor.finders.CompressorFinder',
 ]
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '_vendor'),
+]
+
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )

@@ -1,7 +1,7 @@
 /* Vendor */
-@import './././node_modules/bourbon/core/bourbon';
-@import './././neat-1.8.0/app/assets/stylesheets/neat';
-@import './././node_modules/normalize.css/normalize.css';
+@import '_vendor/bourbon/core/bourbon';
+@import '_vendor/neat-1.8.0/app/assets/stylesheets/neat';
+@import '_vendor/normalize.css/normalize';
 
 /* Variables */
 @import 'atoms/variables';

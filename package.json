@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "gulp"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "bourbon": "^6.0.0",
-    "normalize.css": "^8.0.1",
     "gulp-sass": "^4.0.2",
-    "node-sass": "^4.12.0"
+    "node-sass": "^4.12.0",
+    "normalize.css": "^8.0.1",
+    "npm": "^6.12.0"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
   }
 }
