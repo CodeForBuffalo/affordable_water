@@ -1,0 +1,26 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <h1 class="form-card__title">
+            {% trans "What’s the best way to provide your household's pre-tax earnings from the last 30 days?" %}</h1>
+    </div>
+
+    <p>
+        <a class="button button--primary"
+            href="{% url 'pathways-apply-exact-income' %}">{% trans "I can provide the exact amount" %}</a>
+    </p>
+    <p>
+        <a class="button button--primary"
+            href="{% url 'pathways-apply-hourly-income' %}">{% trans "I can provide my hourly wage" %}</a>
+    </p>
+    <p>
+        <a class="button button--link"
+            href="{% url 'pathways-apply-estimate-income' %}">{% trans "I can only provide an estimate" %}</a>
+    </p>
+
+</div>
+{% endblock question %}

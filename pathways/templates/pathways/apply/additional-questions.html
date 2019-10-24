@@ -1,0 +1,20 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <h1 class="form-card__title">{% trans "We just need a little more information to finish your application." %}</h1>
+    </div>
+    <div class="form-card__content">
+    <p>We need to know who you are, where you live, and how best to contact you.</p>
+    </div>
+    <div class="form-card__footer">
+        <p>
+            <a class="button button--primary" href="{% url 'pathways-apply-resident-info' %}">
+                {% trans "Continue" %} <i class="icon icon-arrow_forward"></i>
+            </a> </p>
+    </div>
+</div>
+{% endblock question %}

@@ -1,0 +1,39 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <div class="form-card__emoji--header emoji--fountain-pen"></div>
+        <h1 class="form-card__title" id=signature_labelledby>
+            {% trans "Type your full legal name here to sign this application." %}
+        </h1>
+        <br>
+        <p class="form-card__body-text" id=signature_describedby>
+            {% trans "By entering your name you agree that you want to apply for the Residential Affordable Water Program, that you have been honest on this application, and that you have read and agreed to the terms on the previous page." %}
+        </p>
+    </div>
+
+    <div class="form-card__content">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group {% if form.signature.errors %}form-group--error{% endif %}">
+                <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text"
+                    class="text-input form-width--long" aria-labelledby="signature_labelledby"
+                    aria-describedby="signature_describedby" name="signature" id="signature" />
+            </div>
+            {% if form.signature.errors %}
+                    {% for error in form.signature.errors %}
+                    <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                    {% endfor %}
+                    {% endif %}
+
+            <div class="form-card__footer">
+                <button name="button" type="submit"
+                    class="button button--primary">{% trans "Sign and submit application" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock question %}

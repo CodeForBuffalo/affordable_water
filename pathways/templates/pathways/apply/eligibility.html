@@ -1,0 +1,52 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+  <div class="form-card__header">
+    <h1 class="form-card__title">
+      {% if isEligible %}
+      {% trans "You are eligible for assistance on your water bill!" %}
+      {% else %}
+      {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
+      {% endif %}
+    </h1>
+  </div>
+  <div class="form-card__content">
+    {% if isEligible %}
+    <div class="emoji emoji--big emoji--thumbs-up"></div>
+    {% else %}
+    <div class="emoji emoji--big emoji--frowning-face"></div>
+    {% endif %}
+    {% if hasHouseholdBenefits %}
+    <p>
+      {% blocktrans %}
+      Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP, your
+      household is <strong>automatically eligible</strong> to receive a discount on your water bill.
+      {% endblocktrans %}
+    </p>
+    {% else %}
+    <p>
+      {% blocktrans with household=request.session.household %}
+      The pre-tax annual income limit for a household size of <strong>
+        {{ household }}</strong> is <strong>{{ income_limit }}</strong>.
+      {% endblocktrans %}
+    </p>
+    <p>
+      {% if isEligible %}
+      {% trans "Based on your answers, you look to be <strong>under</strong> the pre-tax income limit." %}
+      {% else %}
+      {% trans "Based on your answers, you look to be <strong>over</strong> the pre-tax income limit." %}
+      {% endif %}
+    </p>
+    {% endif %}
+  </div>
+  <div class="form-card__footer">
+    <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
+      {% trans "Continue" %} <i class="icon icon-arrow_forward"></i></a>
+    <a class="button" href="{% url 'pathways-apply-review-eligibility' %}">
+      {% trans "Go back" %} <i class="icon icon-replay"></i></a>
+  </div>
+</div>
+{% endblock question %}

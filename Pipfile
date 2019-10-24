@@ -7,13 +7,13 @@ verify_ssl = true
 
 [packages]
 django = "*"
-django-crispy-forms = "*"
 pillow = "*"
 django-storages = "*"
 boto3 = "*"
 gunicorn = "*"
 python-dotenv = "*"
 django-heroku = "*"
+django-libsass = "*"
 
 [requires]
 python_version = "3.7"

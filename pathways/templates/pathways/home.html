@@ -1,24 +1,152 @@
 {% extends "pathways/base.html" %}
+{% load static %}
 {% load i18n %}
 
-{% block jumbotron %}
-<div class="jumbotron jumbotron-billboard">
-    <div class="img"></div>
-    <div class="darken"></div>
-    <div class="container text-white">
-        <div class="row pt-3">
-            <div class="col-md-8">
-                    <h1 class="text-white font-weight-bold">{% trans "Get help paying your Buffalo water bill" %}</h1>
-                    <p class="lead">{% trans "Apply for assistance in 5 minutes" %}</p>
-                    <br class="my-4">
-                    <p class="lead">
-                        <a class="btn btn-primary btn-lg" href="{% url 'pathways-apply' %}" role="button">{% trans "Apply now" %}</a>
-                    </p>
+{% block content %}
+<section class="slab slab--hero">
+    <div class="grid">
+        <div class="grid__item width-three-fourths">
+            <h2>{% trans "Get help paying your Buffalo Water bill" %}</h2>
+            <h1>{% trans "Apply for assistance in 10 minutes" %}</h1>
+            <a class="button button--cta" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
+                    class="button__icon icon-arrow_forward"></i></a>
+        </div>
+    </div>
+</section>
+
+<section class="slab slab--half-padded slab--teal">
+    <div class="grid">
+        <div class="grid__item width-one-whole">
+            <b>
+                {% trans "SNAP, HEAP, SSI, and Public Assistance recipients are automatically eligible." %}
+                <a href="#" class="link--subtle">{% trans "Click here to learn more." %}</a>
+            </b>
+        </div>
+    </div>
+</section>
+
+<section class="slab slab--white">
+    <div class="grid">
+        <div class="grid__item width-seven-twelfths">
+            <a href="https://www.buffalowater.org/"
+                class="illustration illustration--buffalo-water with-padding-small">{% trans "Buffalo Water" %}</a>
+            <p class="form-card__body-text">
+                {% trans "Eligible Buffalo residents can receive a discount on their water bill between $60 and $90 a year." %}
+            </p>
+        </div>
+        <div class="grid__item width-one-fourth shift-one-sixth trust-badge">
+            <a href=""
+                class="illustration illustration--buffalo-seal with-padding-small">{% trans "Buffalo Water" %}</a>
+            <p class="form-card__body-text">{% trans "An authorized Affordable Water Program assistance tool" %}
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<section class="slab slab--padded">
+    <div class="grid">
+        <div class="grid__item">
+            <h1 class="with-padding-med">{% trans "Already started your application?" %}</h1>
+        </div>
+    </div>
+    <div class="grid">
+        <div class="grid__item width-one-half with-padding-med">
+            <p class="form-card__body-text">{% trans "Upload requested documents" %}</p>
+            <p class="with-no-padding"><a href="/en/docs" class="button">{% trans "Submit documents" %}</a></p>
+
+        </div>
+        <div class="grid__item width-one-half with-padding-med">
+            <p class="form-card__body-text">{% trans "For missed interviews or other issues" %}</p>
+            <p class="with-no-padding"><a href="/en/contact" class="button">{% trans "Contact Buffalo Water" %}</a></p>
+
+        </div>
+    </div>
+</section>
+
+<section class="slab slab--padded slab--white slab--steps text--centered">
+    <div class="grid with-padding-large">
+        <div class="grid__item width-one-third">
+            <div class="emoji emoji--big emoji--pencil"></div>
+            <p class="text--caption">{% trans "Apply in 10 minutes" %}</p>
+            <p class="form-card__body-text">
+                {% trans "Eligibility is determined by income and household size." %}
+            </p>
+        </div>
+        <div class="grid__item width-one-third">
+            <div class="emoji emoji--big emoji--page-facing-up"></div>
+            <p class="text--caption">{% trans "Verify documents" %}</p>
+            <p class="form-card__body-text">
+                {% trans "You'll need documents to verify your income and residency." %}</p>
+        </div>
+        <div class="grid__item width-one-third">
+            <div class="emoji emoji--big emoji--faucet"></div>
+            <p class="text--caption">{% trans "Get discount on water" %}</p>
+            <p class="form-card__body-text">
+                {% trans "If you’re approved, you’ll receive a discount on your next water bill." %}</p>
+        </div>
+    </div>
+    <hr>
+    <div class="grid">
+        <div class="grid__item width-five-sixths shift-one-twelfth">
+            <h2>{% trans "What if I need additional help?" %}</h2>
+            <p class="text--help">You may qualify for additional Pathways to Affordable Water. These include:
+                • Low Income Senior Citizen Discount (must be 65 years of age)
+                • Monthly Payment Plans
+                • Extended Repayment Periods
+                • Interest Charge Suspension
+                • Monthly Billing Option
+                • Leak Abatement Program</p>
+        </div>
+    </div>
+    <hr>
+    <div class="grid">
+        <div class="grid__item width-five-sixths shift-one-twelfth">
+            <h2>{% trans "Can I apply as a renter?" %}</h2>
+            <p class="text--help">
+                {% blocktrans %}
+                If you pay your own water bill, you may apply normally.
+                If you do not pay your own water bill or if water is included in your rent, you <strong>may
+                    still be eligible</strong> for water assistance.
+                {% endblocktrans %}
+            </p>
+            <p class="text--help">
+                {% blocktrans %}
+                If your landlord receives the discount on your behalf, you could deduct that amount from your
+                rent.
+                However, this is not legal advice and we <strong>highly recommend a written agreement</strong>
+                with your landlord.
+                {% endblocktrans %}
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block homefooter %}
+<div class="grid">
+    <div class="grid__item width-two-thirds">
+        <div class="main-footer__legal">
+            <div class="grid">
+                <div class="grid__item width-one-half with-padding-med">
+                    <p><a class="link--subtle" href="/en/login">Assister sign in</a></p>
+                    <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('en')">English</a></p>
+                    <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('es')">Español</a></p>
+                </div>
+                <div class="grid__item width-one-half with-padding-med">
+                    <p><a class="link--subtle" href="/en/about">About this website</a></p>
+                    <p><a class="link--subtle" href="/en/privacy">Privacy policy</a></p>
+                    <p><a class="link--subtle" href="/en/nondiscrimination">Nondiscrimination statement</a></p>
+                </div>
             </div>
-            <div class="col-md-4"></div>
+        </div>
+    </div>
+
+    <div class="grid__item width-one-fourth shift-one-twelfth">
+        <div class="main-footer__cfa-logo">
+            <a href="https://www.codeforamerica.org" class="illustration illustration--cfa-logo__dark">Code for
+                America</a>
         </div>
     </div>
 </div>
-{% endblock jumbotron %}
-{% block content %}
-{% endblock content %}
+{% endblock homefooter %}

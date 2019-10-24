@@ -1,0 +1,195 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="form-card__title">{% trans "Let's review what you told us about your application." %}</h1>
+
+            <!-- Eligibility Info -->
+            <h2>{% trans "Eligibility Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
+                    <div class="vertical-steps__title">{{ request.session.household }}</div>
+                    <div class="form-card__body-text">{% trans "Household size" %}</div>
+                </div>
+
+                {% if hasHouseholdBenefits == 'False' %}
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
+                    <div class="vertical-steps__title">
+                        {{ income_formatted }}
+                        {% if pay_period == 'weekly' %}
+                        {% trans "per week" %}
+                        {% elif pay_period == 'biweekly' %}
+                        {% trans "every 2 weeks" %}
+                        {% elif pay_period == 'semimonthly' %}
+                        {% trans "twice a month" %}
+                        {% elif pay_period == 'monthly' %}
+                        {% trans "per month" %}
+                        {% elif income_method == 'hourly' %}
+                        {% trans "per hour" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if income_method == 'estimate' %}
+                        {% trans "Estimated income before taxes" %}
+                        {% elif income_method == 'hourly' %}
+                        {{ pay_period }} {% trans "hours per week" %}
+                        {% else %}
+                        {% trans "Annual income before taxes" %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--clipboard"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.hasHouseholdBenefits == 'True' %}
+                        {% trans "Current household benefits" %}
+                        {% else %}
+                        {% trans "No current household benefits" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.hasHouseholdBenefits == 'True' %}
+                        {% trans "You indicated <strong>someone</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance" %}
+                        {% else %}
+                        {% trans "You indicated <strong>no one</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance." %}
+                        {% endif %}
+                    </div>
+                </div>
+
+
+                <div class="vertical-steps__step">
+                    <div class="notice">
+                        <div class="form-card__body-text">
+                            {% if hasHouseholdBenefits == 'True' %}
+                            {% blocktrans %}
+                            Based on this info, you are <br><strong>automatically eligible.</strong>
+                            {% endblocktrans %}
+                            {% else %}
+                            {% trans "Based on this info, your annual eligible income is" %}
+                            {% endif %}
+                        </div>
+                        <div class="vertical-steps__title">
+                            {% if hasHouseholdBenefits == 'False' %}
+                            {{ annual_income_formatted }} per year
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-household-size' %}">
+                    {% trans "Change my eligibility info" %}</a>
+            </p>
+
+            <!-- Personal Info -->
+            <h2>{% trans "Personal Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--bust"></span></div>
+                    <div class="vertical-steps__title">{{ request.session.first_name }}
+                        {{ request.session.middle_initial }}
+                        {{ request.session.last_name }}</div>
+                    <div class="form-card__body-text">
+                        {% trans "Your full name" %}</div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.rent_or_own == 'rent' %}
+                        {% trans "Renter" %}
+                        {% else %}
+                        {% trans "Homeowner" %}
+                        {% endif %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.rent_or_own == 'rent' %}
+                        {% trans "You indicated you rent your home at" %}
+                        {% else %}
+                        {% trans "You indicated you own your home at" %}
+                        {% endif %}
+                        <br>
+                        {{ request.session.street_address }}
+                        <br>
+                        Buffalo, NY {{ request.session.zip_code }}
+                    </div>
+                </div>
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--receiver"></span>
+                    </div>
+                    <div class="vertical-steps__title">{{ request.session.phone_number }}</div>
+                    <div class="form-card__body-text">
+                        {% trans "Your phone number" %}</div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--email"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.email_address %}
+                        {{ request.session.email_address }}
+                        {% else %}
+                        No email address provided.
+                        {% endif %}</div>
+                    <div class="form-card__body-text">
+                        {% if request.session.email_address %}
+                        {% trans "Your email address" %}{% endif %}</div>
+                </div>
+            </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-resident-info' %}">
+                    {% trans "Change my personal info" %}</a>
+            </p>
+
+            <!-- Water Account Info -->
+            <h2>{% trans "Water Account Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--bust"></span></div>
+                    <div class="vertical-steps__title">
+                        {{ request.session.account_first }}
+                        {{ request.session.account_middle }}
+                        {{ request.session.account_last }}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% if request.session.account_holder == 'me' %}
+                        {% trans "You pay your own water bill." %}
+                        {% elif request.session.account_holder == 'landlord' %}
+                        {% trans "Your landlord pays the water bill." %}
+                        {% else %}
+                        {% trans "This person pays your water bill" %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji"><span class="emoji emoji--med emoji--faucet"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {% if request.session.account_number %}
+                        {{ request.session.account_number }}
+                        {% else %}
+                        No account number provided.
+                        {% endif %}</div>
+                    <div class="form-card__body-text">
+                        {% if request.session.account_number %}
+                        {% trans "Your Buffalo Water account number" %}{% endif %}</div>
+                </div>
+            </div>
+            <p><a class="button button--link" href="{% url 'pathways-apply-resident-info' %}">
+                    {% trans "Change water account info" %}</a></p>
+
+            <p><a class="button button--primary" href="{% url 'pathways-apply-legal' %}">
+                    {% trans "This all looks correct" %}</a></p>
+        </div>
+    </div>
+</div>
+{% endblock question %}

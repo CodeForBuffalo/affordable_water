@@ -6,10 +6,12 @@ from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from .models import Application
 import locale
+import datetime
 
 # Create your views here.
 def home(request):
     context = {}
+    context['isHomepage'] = True
     return render(request, 'pathways/home.html', context)
 
 def about(request):
@@ -22,11 +24,18 @@ def debugsessionview(request):
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
-# Step 1
+class ApplyView(TemplateView):
+    template_name = 'pathways/apply/overview.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        return super(ApplyView, self).dispatch(request, *args, **kwargs)
+
 class HouseholdView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdForm
-    success_url = '/apply/household-eligible/'
+    success_url = '/apply/household-benefits/'
 
     def form_valid(self, form):
         self.request.session['household'] = form.cleaned_data['household']
@@ -34,26 +43,28 @@ class HouseholdView(FormView):
         return super().form_valid(form)
 
 # Step 2
-class AutoEligibleView(FormView):
-    template_name = 'pathways/apply-household-benefits.html'
-    form_class = forms.AutoEligibleForm
+class HouseholdBenefitsView(FormView):
+    template_name = 'pathways/apply/household-benefits.html'
+    form_class = forms.HouseholdBenefitsForm
     success_url = '/apply/income-methods/'
 
     def form_valid(self, form):
         hasHouseholdBenefits = form.cleaned_data['hasHouseholdBenefits']
         self.request.session['hasHouseholdBenefits'] = form.cleaned_data['hasHouseholdBenefits']
+        if hasHouseholdBenefits == 'True':
+            self.success_url = '/apply/eligibility/'
         return super().form_valid(form)
     
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
-            return super(AutoEligibleView, self).dispatch(request, *args, **kwargs)
+            return super(HouseholdBenefitsView, self).dispatch(request, *args, **kwargs)
         else:
             return redirect('pathways-home')
 
 # TODO: Refactor IncomeViews into single view with conditional for which method was selected, using ContextMixins
 # Step 3
 class IncomeMethodsView(TemplateView):
-    template_name = 'pathways/apply-income-methods.html'
+    template_name = 'pathways/apply/income-methods.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -63,12 +74,13 @@ class IncomeMethodsView(TemplateView):
 
 # Step 4 (exact)
 class ExactIncomeView(FormView):
-    template_name = 'pathways/apply-exact-income.html'
+    template_name = 'pathways/apply/exact-income.html'
     form_class = forms.ExactIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'exact'
         return super().form_valid(form)
     
     def dispatch(self, request, *args, **kwargs):
@@ -79,12 +91,13 @@ class ExactIncomeView(FormView):
 
 # Step 4 (hourly)
 class HourlyIncomeView(FormView):
-    template_name = 'pathways/apply-hourly-income.html'
+    template_name = 'pathways/apply/hourly-income.html'
     form_class = forms.HourlyIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'hourly'
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -95,12 +108,13 @@ class HourlyIncomeView(FormView):
 
 # Step 4 (estimate)
 class EstimateIncomeView(FormView):
-    template_name = 'pathways/apply-estimate-income.html'
+    template_name = 'pathways/apply/estimate-income.html'
     form_class = forms.EstimateIncomeForm
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
+        self.request.session['income_method'] = 'estimate'
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
@@ -137,7 +151,7 @@ def calculateIncomeHelper(income, pay_period):
 
 # Step 5
 class ReviewEligibilityView(TemplateView):
-    template_name = 'pathways/apply-review-eligibility.html'
+    template_name = 'pathways/apply/review-eligibility.html'
 
     # https://stackoverflow.com/questions/5433172/how-to-redirect-on-conditions-with-class-based-views-in-django-1-3/12021673
     def dispatch(self, request, *args, **kwargs):
@@ -150,21 +164,29 @@ class ReviewEligibilityView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['apply_step'] = 'review-eligibility'
         locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+
+        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
+        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+        context['pay_period'] = self.request.session['pay_period']
+        context['income_method'] = self.request.session['income_method']
         return context
 
 # Step 6
 class EligibilityView(TemplateView):
-    template_name = 'pathways/apply-eligibility.html'
+    template_name = 'pathways/apply/eligibility.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
-        locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(
-            self.request.session['annual_income'], grouping=True)
-        context['income_limit'] = locale.currency(
-            incomeLimits[int(self.request.session['household'])], grouping=True)
+        context['hasHouseholdBenefits'] = self.request.session['hasHouseholdBenefits']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            context['isEligible'] = True
+        else:
+            context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
+            locale.setlocale( locale.LC_ALL, '' )
+            context['income_formatted'] = locale.currency(
+                self.request.session['annual_income'], grouping=True)
+            context['income_limit'] = locale.currency(
+                incomeLimits[int(self.request.session['household'])], grouping=True)
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -186,7 +208,7 @@ incomeLimits = {
 
 # Step 7
 class AdditionalQuestionsView(TemplateView):
-    template_name = 'pathways/apply-additional-questions.html'
+    template_name = 'pathways/apply/additional-questions.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -196,7 +218,7 @@ class AdditionalQuestionsView(TemplateView):
 
 # Step 8
 class ResidentInfoView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/resident-info.html'
     form_class = forms.ResidentInfoForm
     success_url = '/apply/address/'
 
@@ -223,7 +245,7 @@ class ResidentInfoView(FormView):
 
 # Step 9
 class AccountHolderView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountHolderForm
     success_url = '/apply/address/'
 
@@ -232,6 +254,11 @@ class AccountHolderView(FormView):
         self.request.session['account_last'] = form.cleaned_data['account_last']
         self.request.session['account_middle'] = form.cleaned_data['account_middle']
         return super().form_valid(form)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -240,7 +267,7 @@ class AccountHolderView(FormView):
             return redirect('pathways-home')
 
 class AddressView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AddressForm
     success_url = '/apply/contact-info/'
 
@@ -256,8 +283,13 @@ class AddressView(FormView):
         self.request.session['zip_code'] = form.cleaned_data['zip_code']
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
+
 class ContactInfoView(FormView):
-    template_name = 'pathways/apply.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.ContactInfoForm
     success_url = '/apply/account-number/'
 
@@ -271,9 +303,14 @@ class ContactInfoView(FormView):
         self.request.session['phone_number'] = form.cleaned_data['phone_number']
         self.request.session['email_address'] = form.cleaned_data['email_address']
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        return context
         
 class AccountNumberView(FormView):
-    template_name = 'pathways/apply-account-number.html'
+    template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountNumberForm
     success_url = '/apply/review-application/'
 
@@ -283,12 +320,19 @@ class AccountNumberView(FormView):
         else:
             return redirect('pathways-home')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['card_title'] = self.form_class.card_title
+        context['isAccountNumberView'] = True
+        return context
+
     def form_valid(self, form):
         self.request.session['account_number'] = form.cleaned_data['account_number']
+        self.request.session['hasAccountNumber'] = form.cleaned_data['hasAccountNumber']
         return super().form_valid(form)
 
 class ReviewApplicationView(TemplateView):
-    template_name = 'pathways/apply-review-application.html'
+    template_name = 'pathways/apply/review-application.html'
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -298,12 +342,19 @@ class ReviewApplicationView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        locale.setlocale( locale.LC_ALL, '' )
-        context['income_formatted'] = locale.currency(self.request.session['annual_income'], grouping=True)
+        context['hasHouseholdBenefits'] = self.request.session['hasHouseholdBenefits']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            context['isEligible'] = True
+        else:
+            locale.setlocale( locale.LC_ALL, '' )
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
+            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+            context['pay_period'] = self.request.session['pay_period']
+            context['income_method'] = self.request.session['income_method']
         return context
 
 class LegalView(FormView):
-    template_name = 'pathways/apply-legal.html'
+    template_name = 'pathways/apply/legal.html'
     form_class = forms.LegalForm
     success_url = '/apply/signature/'
 
@@ -318,7 +369,7 @@ class LegalView(FormView):
         return super().form_valid(form)
 
 class SignatureView(FormView):
-    template_name = 'pathways/apply-signature.html'
+    template_name = 'pathways/apply/signature.html'
     form_class = forms.SignatureForm
     success_url = '/apply/documents-overview/'
 
@@ -356,7 +407,8 @@ class SignatureView(FormView):
         # Eligibility Info
         app.household_size = self.request.session['household']
         app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
-        app.annual_income = self.request.session['annual_income']
+        if self.request.session['hasHouseholdBenefits'] == 'False':
+            app.annual_income = self.request.session['annual_income']
 
         # Legal and Signature Info
         app.legal_agreement = self.request.session['legal_agreement']
@@ -371,7 +423,7 @@ class SignatureView(FormView):
         return super().form_valid(form)
 
 class DocumentOverviewView(TemplateView):
-    template_name = 'pathways/docs-overview.html'
+    template_name = 'pathways/docs/overview.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -381,11 +433,15 @@ class DocumentOverviewView(TemplateView):
         return context
 
 class DocumentIncomeView(FormView):
-    template_name = 'pathways/docs-income.html'
+    template_name = 'pathways/docs/upload-form.html'
     form_class = forms.DocumentIncomeForm
     success_url = '/apply/documents-residence/'
 
     def dispatch(self, request, *args, **kwargs):
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            self.form_class = forms.DocumentBenefitsForm
+        else:
+            self.form_class = forms.DocumentIncomeForm
         if 'active_app' in request.session:
             return super(DocumentIncomeView, self).dispatch(request, *args, **kwargs)
         else:
@@ -393,16 +449,24 @@ class DocumentIncomeView(FormView):
 
     def form_valid(self, form):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        app.income_photo = form.cleaned_data['income_photo']
+        if self.request.session['hasHouseholdBenefits'] == 'True':
+            app.benefits_photo = form.cleaned_data['benefits_photo']
+        else:
+            app.income_photo = form.cleaned_data['income_photo']
         app.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = '/apply/documents-residence/'
+        return context
+
 class DocumentResidenceView(FormView):
-    template_name = 'pathways/docs-residence.html'
+    template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.session['rent_or_own'] == 'rent':
+        if self.request.session['rent_or_own'] == 'rent':
             self.form_class = forms.DocumentTenantForm
         else:
             self.form_class = forms.DocumentHomeownerForm
@@ -416,7 +480,25 @@ class DocumentResidenceView(FormView):
         app.residence_photo = form.cleaned_data['residence_photo']
         app.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = '/apply/confirmation/'
+        return context
         
 
 class ConfirmationView(TemplateView):
-    template_name = 'pathways/apply-confirmation.html'
+    template_name = 'pathways/apply/confirmation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['confirm_timestamp'] = datetime.datetime.now().strftime("%m/%d/%Y")
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        if app.income_photo:
+            context['has_income_photo'] = True
+        if app.benefits_photo:
+            context['has_benefits_photo'] = True
+        if app.residence_photo:
+            context['has_residence_photo'] = True
+        return context

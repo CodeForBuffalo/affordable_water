@@ -5,6 +5,7 @@
 __pycache__
 db.sqlite3
 media
+staticfiles
 
 # Backup files # 
 *.bak 
@@ -115,3 +116,6 @@ GitHub.sublime-settings
 .vscode/extensions.json 
 .history
 node_modules
+
+# gulpjs
+_vendor

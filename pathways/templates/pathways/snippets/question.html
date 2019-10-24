@@ -1,0 +1,12 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="slab">
+    <div class="grid">
+        <div class="grid__item width-five-sixths shift-one-twelfth">
+            {% block question %}{% endblock question %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

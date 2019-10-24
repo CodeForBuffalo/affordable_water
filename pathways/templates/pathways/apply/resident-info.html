@@ -1,0 +1,94 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card">
+
+    <form style="display: inline-block;" method="POST">
+        {% csrf_token %}
+        <header class="form-card__header">
+            <h1 class="form-card__title">{% trans "Let’s get some basic information." %}</h1>
+        </header>
+        <div class="form-card__content">
+            <div class="form-group {% if form.first_name.errors %}form-group--error{% endif %}">
+                <label for="first_name" class="form-question">{{ form.first_name.label }}</label>
+                <input type="text" class="text-input form-width--name" id="first_name"
+                    placeholder="{{ form.first_name.placeholder }}" name="first_name">
+                {% if form.first_name.errors %}
+                {% for error in form.first_name.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.last_name.errors %}form-group--error{% endif %}">
+                <label for="last_name" class="form-question">{{ form.last_name.label }}</label>
+                <input type="text" class="text-input form-width--name" id="last_name"
+                    placeholder="{{ form.last_name.placeholder }}" name="last_name">
+                {% if form.last_name.errors %}
+                {% for error in form.last_name.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.middle_initial.errors %}form-group--error{% endif %}">
+                <label for="middle_initial" class="form-question">{{ form.middle_initial.label }}</label>
+                <input type="text" class="text-input form-width--name" id="middle_initial"
+                    placeholder="{{ form.middle_initial.placeholder }}" name="middle_initial">
+                {% if form.middle_initial.errors %}
+                {% for error in form.middle_initial.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.rent_or_own.errors %}form-group--error{% endif %}">
+                <label class="form-question" for="id_rent_or_own">{{ form.rent_or_own.label }}</label>
+                <p class="text--help">{{ form.rent_or_own.help_text }}</p>
+                <radiogroup class="input-group--inline">
+                    {% for value, text in form.rent_or_own.field.choices %}
+                    <label for="id_rent_or_own_{{ value }}" class="radio-button">
+                        <input type="radio" name="rent_or_own" id="id_rent_or_own_{{ value }}"
+                            value="{{ value }}">{{ text }}
+                    </label>
+                    {% endfor %}
+                </radiogroup>
+                {% if form.rent_or_own.errors %}
+                {% for error in form.rent_or_own.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.account_holder.errors %}form-group--error{% endif %}">
+                <label class="form-question" for="id_account_holder">
+                    <p class="form-question">{{ form.account_holder.label_tag }}</p>
+                </label>
+                <div class="select">
+                    <select class="select__element" name="account_holder" id="id_account_holder">
+                        <option selected disabled>{% trans "Select bill payer" %}</option>
+                        {% for value, text in form.account_holder.field.choices %}
+                        <option value="{{ value }}">{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if form.account_holder.errors %}
+                {% for error in form.account_holder.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock question %}

@@ -1,0 +1,56 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header form-card__header--confirmation">
+        <div class="emoji emoji--checkmark emoji--med"></div>
+        <h1 class="form-card__title">
+            {% trans "Your application has been successfully submitted!" %}
+        </h1>
+        <p class="form-card__body-text margin-bottom--none">
+            {% blocktrans %}
+            Submitted to Buffalo Water on {{ confirm_timestamp }}
+            {% endblocktrans %}
+        </p>
+    </div>
+
+    <div class="form-card__content">
+        <h3 class="with-padding-med">
+            What to expect next:
+        </h3>
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--clipboard"></div>
+            </div>
+            <div class="media-box__content">
+                {% trans "<strong>Your application will be reviewed</strong> by Buffalo Water." %}
+            </div>
+        </div>
+
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--page-facing-up"></div>
+            </div>
+            <div class="media-box__content">
+                {% blocktrans %}
+                In some cases, <strong>Buffalo Water may ask you to send them additional proof</strong> of your
+                situation. You can upload additional documents at <a href="#">www.getbuffalowater.org/docs</a>
+                {% endblocktrans %}
+            </div>
+        </div>
+
+        <div class="media-box with-padding-med">
+            <div class="media-box__media">
+                <div class="emoji emoji--med emoji--dollar-sign"></div>
+            </div>
+            <div class="media-box__content">
+                {% blocktrans %}
+                <strong>You’ll receive a discount on your next water bill</strong> if approved.
+                {% endblocktrans %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock question %}

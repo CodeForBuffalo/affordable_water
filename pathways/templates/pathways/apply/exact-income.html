@@ -1,0 +1,60 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="emoji emoji--big emoji--money with-padding-med"></div>
+        <h1 class="form-card__title">{{ form.pay_period.label_tag }}</h1>
+
+        <div class="form-group {% if form.pay_period.errors %}form-group--error{% endif %}">
+            <label class="sr-only" for="id_pay_period">
+                <p class="form-question">{% trans "Select a pay period" %}</p>
+            </label>
+            <div class="select">
+                <select class="select__element" name="pay_period" id="id_pay_period">
+                    <option selected disabled>{% trans "Choose a selection" %}</option>
+                    {% for value, text in form.pay_period.field.choices %}
+                    <option value="{{ value }}">{{ text }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if form.pay_period.errors %}
+                {% for error in form.pay_period.errors %}
+                    <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+
+        <h2 class="form-card__title" id="income_labelledby">{{ form.income.label_tag }}</h2>
+        <p class="form-card__body-text" id="income_describedby">{{ form.income.help_text }}</p>
+
+        <div class="form-group {% if form.income.errors %}form-group--error{% endif %}">
+            <div class="text-input-group-container">
+                <div class="text-input-group form-width--short">
+                    <div class="text-input-group__prefix">$</div>
+                    <input autocomplete="off" autocorrect="off"
+                        autocapitalize="off" spellcheck="false" type="number" class="text-input" step=".01"
+                        aria-labelledby="income_labelledby"
+                        aria-describedby="income_describedby" name="income" id="id_income"/>
+                </div>
+            </div>
+            {% if form.income.errors %}
+                {% for error in form.income.errors %}
+                    <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock question %}

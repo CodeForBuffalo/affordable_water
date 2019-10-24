@@ -1,0 +1,32 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <div class="form-card__emoji--header emoji-pair--disabled-money"></div>
+        <h1 id="household-benefits-yes-no-buttons" class="form-card__title">
+            {{ form.hasHouseholdBenefits.label }}
+        </h1>
+        <ul class="list--bulleted text--left">
+            <li>{% trans "Supplemental Nutrition Assistance Program (SNAP/Food Stamps)" %}</li>
+            <li>{% trans "Home Energy Assistance Program (HEAP)" %}</li>
+            <li>{% trans "Supplemental Security Income (SSI)" %}</li>
+            <li>{% trans "Public Assistance" %}</li>
+        </ul>
+    </div>
+
+    <form method="POST" style="display: inline-block;">
+        {% csrf_token %}
+        <label class="sr-only" for="id_hasHouseholdBenefits">{{ form.hasHouseholdBenefits.label }}</label>
+        <p class="sr-only text--help">{{ form.hasHouseholdBenefits.help_text }}</p>
+        <button type="submit" name="hasHouseholdBenefits" class="button" value="True"
+            aria-describedby="household-benefits-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span></i>{% trans "Yes" %}</button>
+        <button type="submit" name="hasHouseholdBenefits" class="button" value="False"
+            aria-describedby="household-benefits-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>{% trans "No" %}</button>
+    </form>
+</div>
+{% endblock question %}
