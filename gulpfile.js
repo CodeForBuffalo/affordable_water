@@ -24,12 +24,4 @@ function neat() {
     return src(files).pipe(dest('_vendor/neat'))
   }
 
-// Task 4: copy 'getbuffalowater-cfa-styleguide' assets to /_vendor/
-function cfa_styleguide() {
-  const files = [
-    'node_modules/getbuffalowater-cfa-styleguide/**/*'
-  ]
-  return src(files).pipe(dest('_vendor/cfa-styleguide'))
-}
-
-exports.default = series(bourbon, normalize, neat, cfa_styleguide)
+exports.default = series(bourbon, normalize, neat)
