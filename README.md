@@ -11,7 +11,7 @@ Make sure these are installed on your machine.
 - [Node.js](https://nodejs.org/en/) (12.13.0+)
 
 #### Windows users
-- [Visual C++ Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16). Read [Issue #11](https://github.com/CodeForBuffalo/affordable_water/issues/11) for instructions.
+- [Visual C++ Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16). Read [Issue #11](https://github.com/CodeForBuffalo/affordable_water/issues/11) for instructions. Required for some Python packages on Windows.
 
 ### Instructions
 We use **npm scripts** to speed up development. Manual instructions are also provided.
