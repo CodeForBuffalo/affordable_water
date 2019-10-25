@@ -41,7 +41,7 @@ This script automatically:
 - Uses [gulp.js](https://gulpjs.com/) to copy assets from `node_modules` to `_vendor` folder.
     - `gulp`
 - Collects Django `static` files, including the copied assets from `_vendor`
-    - `pipenv run manage.py collectstatic'
+    - `pipenv run manage.py collectstatic`
 
 #### Start local server
 ```
