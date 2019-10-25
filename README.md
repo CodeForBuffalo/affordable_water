@@ -6,9 +6,12 @@ This project is being developed as part of the [2019 Code for America Community 
 ## Development
 
 ### Requirements
-Make sure both are installed on your machine.
+Make sure these are installed on your machine.
 - [Python](https://www.python.org/downloads/release/python-374/) (3.7+)
 - [Node.js](https://nodejs.org/en/) (12.13.0+)
+
+#### Windows users
+- [Visual C++ Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16). Read [Issue #11](https://github.com/CodeForBuffalo/affordable_water/issues/11) for instructions.
 
 ### Instructions
 We use **npm scripts** to speed up development. Manual instructions are also provided.
@@ -26,7 +29,7 @@ This script automatically:
 1. Installs [pipenv](https://github.com/pypa/pipenv) to manage Python virtual environment and dependencies. [Learn more about pipenv.](https://realpython.com/pipenv-guide/)
     - `pip install pipenv`
 2. Creates a Python virtual environment using pipenv and installs dependencies in Pipfile
-    - `pipenv install`
+    - `pipenv install` 
 3. Installs node modules using npm
     - `npm install`
 
