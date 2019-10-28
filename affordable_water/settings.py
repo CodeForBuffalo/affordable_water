@@ -191,3 +191,5 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 SECURE_SSL_REDIRECT = (os.getenv('PRODUCTION_VALUE') == 'True')
 CSRF_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 SESSION_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
+
+django_heroku.settings(locals())
