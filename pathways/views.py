@@ -37,6 +37,12 @@ class HouseholdView(FormView):
     form_class = forms.HouseholdForm
     success_url = '/apply/household-benefits/'
 
+    def get_initial(self):
+        initial = super(HouseholdView, self).get_initial()
+        if 'household' in self.request.session:
+            initial['household'] = self.request.session['household']
+        return initial
+
     def form_valid(self, form):
         self.request.session['household'] = form.cleaned_data['household']
         self.request.session['active_app'] = True
