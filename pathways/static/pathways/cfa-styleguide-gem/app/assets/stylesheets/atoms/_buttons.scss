@@ -1,0 +1,109 @@
+.button {
+    @include outline;
+    transition: $animation-fast background-color;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    font-weight: 500;
+    border: 2px solid $color-grey-darkest;
+    box-shadow: 0 2px 2px $color-grey;
+    background-color: #FFFFFF;
+    padding: .5em 1em;
+    border-radius: $border-radius;
+    margin-bottom: .5em;
+    margin-right: .3em;
+    text-decoration: none;
+    color: $color-grey-darkest;
+
+    &:hover {
+        background-color: $color-grey-light;
+        color: $color-grey-darkest;
+    }
+    &:active {
+        background-color: $color-grey-light;
+        box-shadow: none;
+        top: 1px;
+    }
+
+  .emoji--checkmark, .emoji--crossmark {
+    background-size: auto 100%;
+    width: 1.2em;
+  }
+}
+
+.button--cta {
+  color: #FFFFFF;
+  background-color: $color-magenta;
+  border-color: $color-magenta;
+  box-shadow: 0 2px 2px $color-magenta-dark;
+  &:hover {
+      background-color: $color-magenta-dark;
+      border-color: $color-magenta-dark;
+      color: #FFFFFF;
+  }
+  &:active {
+      background-color: $color-magenta-dark;
+      border-color: $color-magenta-dark;
+  }
+}
+
+.button--primary {
+    color: #FFFFFF;
+    background-color: $color-teal;
+    border-color: $color-teal;
+    box-shadow: 0 2px 2px $color-teal-dark;
+    &:hover {
+        background-color: $color-teal-dark;
+        border-color: $color-teal-dark;
+        color: #FFFFFF;
+    }
+    &:active {
+        background-color: $color-teal-dark;
+        border-color: $color-teal-dark;
+    }
+}
+
+.button--disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.button--danger {
+  color: $color-red;
+  &:hover {
+      background-color: $color-red;
+      color: #fff;
+  }
+}
+
+.button--small {
+  font-size: $font-size-small;
+  padding: .2em .7em;
+}
+
+.button--inline {
+  font-size: .8em;
+  padding: .2em;
+}
+
+.button--link {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  text-decoration: underline;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.button--large  {
+  font-size: $font-size-h3;
+}
+
+.button__icon {
+  margin-left: .5em;
+}
+
+.button__icon--left {
+  margin-right: .5em;
+}

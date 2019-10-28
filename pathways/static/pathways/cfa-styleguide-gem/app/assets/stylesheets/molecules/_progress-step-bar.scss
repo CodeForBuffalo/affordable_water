@@ -1,0 +1,59 @@
+.progress-step-bar {
+  margin: 1.5em auto 3em auto;
+  max-width: 300px;
+}
+
+.progress-step-bar__bar {
+  position: relative;
+  text-align: justify;
+  height: 35px;
+
+  &:before {
+    content: '';
+    display: block;
+    height: 3px;
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    margin-top: -1px;
+    background-color: $color-grey-darkest;
+  }
+  &:after {
+    content: '';
+    width: 100%; /* Ensures there are at least 2 lines of text, so justification works */
+    display: inline-block;
+  }
+}
+
+.progress-step-bar__step {
+  position: relative;
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  background-color: #fff;
+  border: 2px solid $color-grey-darkest;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.progress-step-bar__step--completed {
+  background-color: $color-green;
+  box-shadow: 0 1px 2px 0 rgba($color-grey-darkest, 0.4);
+  @include retina-bg(icon_checkmark_white, 20px auto);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.progress-step-bar__step--current {
+  background-color: $color-yellow;
+  box-shadow: 0 1px 2px 0 rgba($color-grey-darkest, 0.4);
+  @include retina-bg(icon_star_black, 20px auto);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.progress-step-bar__label {
+  margin-top: $padding-small;
+  text-align: center;
+}
