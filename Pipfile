@@ -14,6 +14,10 @@ gunicorn = "*"
 python-dotenv = "*"
 django-heroku = "*"
 django-libsass = "*"
+selenium = "*"
+coverage = "*"
+django-coverage-plugin = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.7"
