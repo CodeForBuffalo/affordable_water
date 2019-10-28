@@ -118,4 +118,5 @@ GitHub.sublime-settings
 node_modules
 
 # gulpjs
-_vendor
+_vendor/**/*
+!_vendor/.gitkeep
