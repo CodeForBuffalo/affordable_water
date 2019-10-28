@@ -7,8 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "python-setup": "pip install pipenv && pipenv install",
     "setup": "npm run python-setup && npm install",
-    "build": "gulp && pipenv run python manage.py collectstatic --noinput",
-    "start": "pipenv run python manage.py runserver"
+    "gulp": "gulp",
+    "collectstatic": "pipenv run python manage.py collectstatic --noinput",
+    "start": "pipenv run python manage.py runserver",
+    "heroku-prebuild": "npm install",
+    "heroku-postbuild": "npm run gulp"
   },
   "author": "",
   "license": "MIT",
