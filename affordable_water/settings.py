@@ -68,6 +68,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -160,8 +163,11 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, '_vendor'),
 ]
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
