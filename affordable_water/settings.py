@@ -171,7 +171,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, '_vendor'),
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'affordable_water.storage.WhiteNoiseStaticFilesStorage'
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
