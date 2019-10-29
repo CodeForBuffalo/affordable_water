@@ -43,6 +43,10 @@ ALLOWED_HOSTS = [
     'getbuffalowater.herokuapp.com'
 ]
 
+ADMINS = [
+    ('Mike', 'mbrown@codeforamerica.org')
+]
+
 
 # Application definition
 
