@@ -12,7 +12,7 @@
     "compress": "python manage.py compress",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
-    "heroku-postbuild": "npm run gulp && npm run collectstatic && compress"
+    "heroku-postbuild": "npm run gulp && npm run collectstatic && npm run compress"
   },
   "author": "",
   "license": "MIT",
