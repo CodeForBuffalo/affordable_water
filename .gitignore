@@ -5,7 +5,7 @@
 __pycache__
 db.sqlite3
 media
-staticfiles
+staticfiles/**
 
 # Backup files # 
 *.bak 
@@ -118,4 +118,8 @@ GitHub.sublime-settings
 node_modules
 
 # gulpjs
-_vendor
+_vendor/**/*
+!_vendor/.gitkeep
+
+# django staticfiles
+!staticfiles/.gitkeep

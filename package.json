@@ -1,5 +1,5 @@
 {
-  "name": "stylesheets",
+  "name": "getbuffalowater",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,12 @@
     "test": "npm run coverage:erase && npm run coverage:run && npm run coverage:report",
     "python-setup": "pip install pipenv && pipenv install",
     "setup": "npm run python-setup && npm install",
-    "build": "gulp && pipenv run python manage.py collectstatic --noinput",
-    "start": "pipenv run python manage.py runserver"
+    "gulp": "gulp",
+    "collectstatic": "python manage.py collectstatic --noinput",
+    "compress": "python manage.py compress",
+    "start": "pipenv run python manage.py runserver",
+    "heroku-prebuild": "npm install",
+    "heroku-postbuild": "npm run gulp && npm run collectstatic && npm run compress"
   },
   "author": "",
   "license": "MIT",
@@ -19,9 +23,8 @@
     "bourbon": "^6.0.0",
     "getbuffalowater-bourbon-neat": "^1.8.0",
     "gulp-sass": "^4.0.2",
-    "node-sass": "^4.12.0",
-    "normalize.css": "^8.0.1",
-    "npm": "^6.12.0"
+    "node-sass": "^4.13.0",
+    "normalize.css": "^8.0.1"
   },
   "devDependencies": {
     "gulp": "^4.0.2"

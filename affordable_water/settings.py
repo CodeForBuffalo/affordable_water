@@ -24,12 +24,28 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'zu_8+if0(p@3mf+dxn29_*^*-mo(o^)7nr)*s!hyw_i*rzp7k#'
+# Production
+if (os.getenv('PRODUCTION_VALUE') == 'True'):
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    
+# Development
+else:
+    SECRET_KEY = 'zu_8+if0(p@3mf+dxn29_*^*-mo(o^)7nr)*s!hyw_i*rzp7k#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# This expression evaluates to false if DEBUG_VALUE is not set as environment variable
+DEBUG = (os.getenv('DEBUG_VALUE') == 'True')
+DEBUG_PROPAGRATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'getbuffalowater.herokuapp.com'
+]
+
+ADMINS = [
+    ('Mike', 'mbrown@codeforamerica.org')
+]
 
 
 # Application definition
@@ -49,6 +65,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -148,19 +167,76 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'pathways/static'),
     os.path.join(BASE_DIR, '_vendor'),
 ]
+
+STATICFILES_STORAGE = 'affordable_water.storage.WhiteNoiseStaticFilesStorage'
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+COMPRESS_ENABLED = (os.environ.get('COMPRESS_ENABLED') == 'True')
+COMPRESS_OFFLINE = True
+COMPRESS_OFFLINE_MANIFEST = 'manifest.json'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+# AWS
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+SECURE_SSL_REDIRECT = (os.getenv('PRODUCTION_VALUE') == 'True')
+CSRF_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
+SESSION_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
+
+django_heroku.settings(locals())
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+                       'pathname=%(pathname)s lineno=%(lineno)s ' +
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'testlogger': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
