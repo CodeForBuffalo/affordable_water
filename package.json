@@ -9,9 +9,10 @@
     "setup": "npm run python-setup && npm install",
     "gulp": "gulp",
     "collectstatic": "python manage.py collectstatic --noinput",
+    "compress": "python manage.py compress",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
-    "heroku-postbuild": "npm run gulp && npm run collectstatic"
+    "heroku-postbuild": "npm run gulp && npm run collectstatic && compress"
   },
   "author": "",
   "license": "MIT",
