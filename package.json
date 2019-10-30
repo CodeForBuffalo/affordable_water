@@ -8,10 +8,10 @@
     "python-setup": "pip install pipenv && pipenv install",
     "setup": "npm run python-setup && npm install",
     "gulp": "gulp",
-    "collectstatic": "pipenv run python manage.py collectstatic --noinput",
+    "collectstatic": "python manage.py collectstatic --noinput",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
-    "heroku-postbuild": "npm run gulp"
+    "heroku-postbuild": "npm run gulp && npm run collectstatic"
   },
   "author": "",
   "license": "MIT",
