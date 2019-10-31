@@ -1,4 +1,6 @@
 # GetBuffaloWater
+![GitHub](https://img.shields.io/github/license/CodeForBuffalo/affordable_water)
+
 This site allows Buffalo residents to apply for the [Residential Affordable Water Program](https://buffalowater.org/wp-content/uploads/2019/03/ResidentialAffordabilityProgram.pdf).
 
 This project is being developed as part of the [2019 Code for America Community Fellowship](https://www.codeforamerica.org/programs/fellowship/meet-the-fellows).
