@@ -17,4 +17,7 @@ install:
   - npm install
 
 script:
+  - gulp
+  - python manage.py collectstatic --noinput
+  - python manage.py compress
   - coverage run manage.py test
