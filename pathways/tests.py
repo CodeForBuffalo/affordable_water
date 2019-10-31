@@ -1,27 +1,38 @@
-from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase, TestCase, Client
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+from .models import Application
 
-# Create your tests here.
-
-class TestExample(StaticLiveServerTestCase):
+# model tests
+class TestModels(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.app_1 = Application.objects.create(
+            household_size=1,
+            hasHouseholdBenefits=False,
+            annual_income=10000,
+            first_name='John',
+            last_name='Doe',
+            middle_initial='M',
+            rent_or_own='rent',
+            street_address = '123 Main St',
+            zip_code = '14202',
+            apartment_unit = 'A',
+            phone_number = '7163334444',
+            email_address = 'testing@email.com',
+            account_holder = 'me',
+            account_first = 'John',
+            account_middle = 'M',
+            account_last = 'Doe',
+            legal_agreement = True,
+            signature = 'John M Doe'
+            )
 
     def setUp(self):
-        self.browser = webdriver.Chrome('functional_tests/chromedriver.exe')
+        self.app_1.refresh_from_db()
 
     def tearDown(self):
-        self.browser.close()
+        pass
 
-    def test_foo(self):
-        self.assertEquals(0,0)
-
-    def test_python_page(self):
-        self.browser.get('http://www.python.org')
-        assert "Python" in self.browser.title
-        elem = self.browser.find_element_by_name("q")
-        elem.clear()
-        elem.send_keys("pycon")
-        elem.send_keys(Keys.RETURN)
-        assert "No results founds" not in self.browser.page_source
-
+    def test_application_self_string(self):
+        expected = '1 (7163334444)'
+        self.assertEqual(self.app_1.__str__(), expected, msg=f'app_1 self string expected {expected} but got {self.app_1.__str__()}')
