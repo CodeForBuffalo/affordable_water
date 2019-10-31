@@ -1,4 +1,6 @@
 # GetBuffaloWater
+
+[![Build Status](https://travis-ci.com/CodeForBuffalo/affordable_water.svg?branch=master)](https://travis-ci.com/CodeForBuffalo/affordable_water)
 ![GitHub](https://img.shields.io/github/license/CodeForBuffalo/affordable_water)
 
 This site allows Buffalo residents to apply for the [Residential Affordable Water Program](https://buffalowater.org/wp-content/uploads/2019/03/ResidentialAffordabilityProgram.pdf).
