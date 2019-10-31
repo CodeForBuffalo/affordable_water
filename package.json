@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "coverage:erase": "coverage erase",
+    "coverage:run": "coverage run manage.py test",
+    "coverage:report": "coverage report",
+    "coverage:html": "coverage html",
+    "test": "npm run coverage:erase && npm run coverage:run && npm run coverage:report && npm run coverage:html",
     "python-setup": "pip install pipenv && pipenv install",
     "setup": "npm run python-setup && npm install",
     "gulp": "gulp",

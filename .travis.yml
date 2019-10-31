@@ -1,0 +1,28 @@
+sudo: false
+
+language: python
+
+python:
+  - "3.7"
+
+node_js:
+  - "12"
+
+before_install:
+  - pip install -U pip
+
+install:
+  - pip install pipenv
+  - pipenv install
+  - npm install
+
+cache: pip
+
+before_script:
+  - npm install -g gulp-cli
+
+script:
+  - gulp
+  - python manage.py collectstatic --noinput
+  - python manage.py compress
+  - coverage run manage.py test

@@ -17,10 +17,6 @@ def home(request):
 def about(request):
     return render(request, 'pathways/about.html', {'title':'About'})
 
-def debugsessionview(request):
-    context = {}
-    return render(request, 'pathways/debug-session.html', context)
-
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 

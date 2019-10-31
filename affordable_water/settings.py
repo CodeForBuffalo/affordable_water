@@ -94,6 +94,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': (os.getenv('TEMPLATE_DEBUG') == 'True')
         },
     },
 ]
@@ -167,7 +168,6 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'pathways/static'),
     os.path.join(BASE_DIR, '_vendor'),
 ]
 
@@ -206,7 +206,8 @@ SECURE_SSL_REDIRECT = (os.getenv('PRODUCTION_VALUE') == 'True')
 CSRF_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 SESSION_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 
-django_heroku.settings(locals())
+if os.getenv('HOME') and '/app' in os.getenv('HOME'):
+    django_heroku.settings(locals())
 
 LOGGING = {
     'version': 1,

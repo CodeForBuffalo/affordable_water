@@ -59,7 +59,7 @@ class Application(models.Model):
     account_middle = models.CharField(max_length=5, blank=True)
 
     # AccountNumberForm
-    account_number = models.CharField(max_length=30, validators=[ # validators should be a list
+    account_number = models.CharField(max_length=30, blank=True, validators=[ # validators should be a list
         RegexValidator(regex=r'^\d+$', message=_("Please enter only digits"))])
 
     # LegalForm
