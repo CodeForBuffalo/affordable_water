@@ -15,7 +15,9 @@ install:
   - pip install pipenv
   - pipenv install
   - npm install
-  
+
+cache: pip
+
 before_script:
   - npm install -g gulp-cli
 
