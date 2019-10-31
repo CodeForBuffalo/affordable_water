@@ -205,7 +205,8 @@ SECURE_SSL_REDIRECT = (os.getenv('PRODUCTION_VALUE') == 'True')
 CSRF_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 SESSION_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 
-django_heroku.settings(locals())
+if os.getenv('HOME') and '/app' in os.getenv('HOME'):
+    django_heroku.settings(locals())
 
 LOGGING = {
     'version': 1,
