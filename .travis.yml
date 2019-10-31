@@ -13,17 +13,13 @@ before_install:
 
 install:
   - pip install pipenv
-  - pipenv install
+  - pipenv sync --dev
   - npm install
 
 cache:
   directories:
-    - $PIP_CACHE_DIR
-    - $PIPENV_CACHE_DIR
-env:
-  global:
-    - PIP_CACHE_DIR=$HOME/.cache/pip
-    - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
+    - $HOME/.cache/pip
+    - $HOME/.cache/pipenv
 
 before_script:
   - npm install -g gulp-cli
