@@ -20,6 +20,8 @@ cache:
   directories:
     - $HOME/.cache/pip
     - $HOME/.cache/pipenv
+    - node_modules
+    - $HOME/.npm
 
 before_script:
   - npm install -g gulp-cli
