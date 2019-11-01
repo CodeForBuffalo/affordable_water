@@ -34,4 +34,7 @@ script:
   - python manage.py collectstatic --noinput
   - python manage.py compress
   - coverage run manage.py test -v 2
+
+after_script:
   - coverage xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
