@@ -33,5 +33,5 @@ script:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
-  - coverage run affordable_water/manage.py test -v 2
+  - coverage run manage.py test -v 2
   - coverage xml
