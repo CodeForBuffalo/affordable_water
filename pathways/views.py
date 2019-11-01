@@ -34,7 +34,7 @@ class HouseholdView(FormView):
     success_url = '/apply/household-benefits/'
 
     def form_valid(self, form):
-        self.request.session['household'] = form.cleaned_data['household']
+        self.request.session['household_size'] = form.cleaned_data['household_size']
         self.request.session['active_app'] = True
         return super().form_valid(form)
 
@@ -177,12 +177,12 @@ class EligibilityView(TemplateView):
         if self.request.session['hasHouseholdBenefits'] == 'True':
             context['isEligible'] = True
         else:
-            context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household'])]
+            context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household_size'])]
             locale.setlocale( locale.LC_ALL, '' )
             context['income_formatted'] = locale.currency(
                 self.request.session['annual_income'], grouping=True)
             context['income_limit'] = locale.currency(
-                incomeLimits[int(self.request.session['household'])], grouping=True)
+                incomeLimits[int(self.request.session['household_size'])], grouping=True)
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -401,7 +401,7 @@ class SignatureView(FormView):
         app.account_number = self.request.session['account_number']
 
         # Eligibility Info
-        app.household_size = self.request.session['household']
+        app.household_size = self.request.session['household_size']
         app.hasHouseholdBenefits = self.request.session['hasHouseholdBenefits']
         if self.request.session['hasHouseholdBenefits'] == 'False':
             app.annual_income = self.request.session['annual_income']
