@@ -40,7 +40,14 @@ class FormTests(TestCase):
             form = HouseholdForm(data=form_data)
             self.assertTrue(form.is_valid(), msg=f"Form is invalid for household_size {i}.")
         form = HouseholdForm(data={})
-        self.assertFalse(form.is_valid(), msg=f"Form contains errors {form.errors.as_data()}")
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+        self.assertIn(_("Select your household size."), form.errors['household_size'])
+
+    def test_ExactIncomeForm(self):
+        form = ExactIncomeForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+        self.assertIn(_("Select a pay period"), form.errors['pay_period'])
+        self.assertIn(_("Be sure to provide your job income before taxes"), form.errors['income'])
 
 
 # model tests
