@@ -46,9 +46,6 @@ class ExactIncomeForm(forms.Form):
         self.fields['income'].error_messages = {'required': _("Be sure to provide your job income before taxes")}
         self.fields['pay_period'].error_messages = {'required': _("Select a pay period")}
 
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-
 
 class HourlyIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
@@ -60,9 +57,6 @@ class HourlyIncomeForm(forms.Form):
         self.fields['income'].error_messages = {'required': _("Be sure to provide an hourly wage.")}
         self.fields['pay_period'].error_messages = {'required': _("Be sure to provide hours a week.")}
 
-        
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
@@ -73,11 +67,6 @@ class EstimateIncomeForm(forms.Form):
         ('semimonthly',_('Twice a month')),
         ('monthly',_('Every month')),
         ], label=_("How often?"), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(EstimateIncomeForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
 # End Income Forms
 
