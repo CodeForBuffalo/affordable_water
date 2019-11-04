@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import ugettext_lazy as _
 from .models import Application
+from .forms import *
 
 # view tests
 class TestViews(TestCase):
@@ -27,6 +28,19 @@ class TestViews(TestCase):
         self.assertContains(response, text=_("Here's how Affordable Water works."), status_code=200)
         # Checks if session keys are deleted
         self.assertEqual(len(session.keys()), 0, f"Expected 0 but got {len(session.items())}. Keys include {list(session.keys())}.")
+
+# form tests
+class FormTests(TestCase):
+    def setUp(self):
+        activate('en')
+
+    def test_HouseholdForm(self):
+        for i in range(1,9):
+            form_data = {'household_size':i}
+            form = HouseholdForm(data=form_data)
+            self.assertTrue(form.is_valid(), msg=f"Form is invalid for household_size {i}.")
+        form = HouseholdForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form contains errors {form.errors.as_data()}")
 
 
 # model tests
