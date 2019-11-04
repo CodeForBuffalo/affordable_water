@@ -49,6 +49,12 @@ class FormTests(TestCase):
         self.assertIn(_("Select a pay period"), form.errors['pay_period'])
         self.assertIn(_("Be sure to provide your job income before taxes"), form.errors['income'])
 
+    def test_HourlyIncomeForm(self):
+        form = HourlyIncomeForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+        self.assertIn(_("Be sure to provide hours a week."), form.errors['pay_period'])
+        self.assertIn(_("Be sure to provide an hourly wage."), form.errors['income'])
+
 
 # model tests
 class TestModels(TestCase):
