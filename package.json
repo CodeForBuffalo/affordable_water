@@ -6,7 +6,7 @@
   "scripts": {
     "coverage:erase": "coverage erase && npm run coverage:erasehtmlcov",
     "coverage:erasehtmlcov": "rm -rf htmlcov",
-    "coverage:run": "coverage run manage.py test && npm run coverage:erasehtmlcov",
+    "coverage:run": "coverage run manage.py test",
     "coverage:html": "coverage html",
     "test": "npm run coverage:erase && npm run coverage:run && npm run coverage:html",
     "python-setup": "pip install pipenv && pipenv install",
