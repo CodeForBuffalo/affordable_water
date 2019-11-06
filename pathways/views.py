@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
@@ -31,7 +32,7 @@ class ApplyView(TemplateView):
 class HouseholdView(FormView):
     template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdForm
-    success_url = '/apply/household-benefits/'
+    success_url = reverse_lazy('pathways-apply-household-benefits')
 
     def form_valid(self, form):
         self.request.session['household_size'] = form.cleaned_data['household_size']
@@ -42,13 +43,13 @@ class HouseholdView(FormView):
 class HouseholdBenefitsView(FormView):
     template_name = 'pathways/apply/household-benefits.html'
     form_class = forms.HouseholdBenefitsForm
-    success_url = '/apply/income-methods/'
+    success_url = reverse_lazy('pathways-apply-income-methods')
 
     def form_valid(self, form):
         hasHouseholdBenefits = form.cleaned_data['hasHouseholdBenefits']
         self.request.session['hasHouseholdBenefits'] = form.cleaned_data['hasHouseholdBenefits']
         if hasHouseholdBenefits == 'True':
-            self.success_url = '/apply/eligibility/'
+            self.success_url = reverse_lazy('pathways-apply-eligibility')
         return super().form_valid(form)
     
     def dispatch(self, request, *args, **kwargs):
@@ -72,7 +73,7 @@ class IncomeMethodsView(TemplateView):
 class ExactIncomeView(FormView):
     template_name = 'pathways/apply/exact-income.html'
     form_class = forms.ExactIncomeForm
-    success_url = '/apply/review-eligibility/'
+    success_url = reverse_lazy('pathways-apply-review-eligibility')
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
@@ -89,7 +90,7 @@ class ExactIncomeView(FormView):
 class HourlyIncomeView(FormView):
     template_name = 'pathways/apply/hourly-income.html'
     form_class = forms.HourlyIncomeForm
-    success_url = '/apply/review-eligibility/'
+    success_url = reverse_lazy('pathways-apply-review-eligibility')
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
@@ -106,7 +107,7 @@ class HourlyIncomeView(FormView):
 class EstimateIncomeView(FormView):
     template_name = 'pathways/apply/estimate-income.html'
     form_class = forms.EstimateIncomeForm
-    success_url = '/apply/review-eligibility/'
+    success_url = reverse_lazy('pathways-apply-review-eligibility')
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self,form)
@@ -216,7 +217,7 @@ class AdditionalQuestionsView(TemplateView):
 class ResidentInfoView(FormView):
     template_name = 'pathways/apply/resident-info.html'
     form_class = forms.ResidentInfoForm
-    success_url = '/apply/address/'
+    success_url = reverse_lazy('pathways-apply-address')
 
     def form_valid(self, form):
         self.request.session['first_name'] = form.cleaned_data['first_name']
@@ -226,7 +227,7 @@ class ResidentInfoView(FormView):
         self.request.session['account_holder'] = form.cleaned_data['account_holder']
         #  Redirects to fill in account holder info
         if self.request.session['account_holder'] in ['landlord', 'other']:
-            self.success_url = '/apply/account-holder/'
+            self.success_url = reverse_lazy('pathways-apply-account-holder')
         else:
             self.request.session['account_first'] = form.cleaned_data['first_name']
             self.request.session['account_last'] = form.cleaned_data['last_name']
@@ -243,7 +244,7 @@ class ResidentInfoView(FormView):
 class AccountHolderView(FormView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountHolderForm
-    success_url = '/apply/address/'
+    success_url = reverse_lazy('pathways-apply-address')
 
     def form_valid(self, form):
         self.request.session['account_first'] = form.cleaned_data['account_first']
@@ -265,7 +266,7 @@ class AccountHolderView(FormView):
 class AddressView(FormView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.AddressForm
-    success_url = '/apply/contact-info/'
+    success_url = reverse_lazy('pathways-apply-contact-info')
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -287,7 +288,7 @@ class AddressView(FormView):
 class ContactInfoView(FormView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.ContactInfoForm
-    success_url = '/apply/account-number/'
+    success_url = reverse_lazy('pathways-apply-account-number')
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -308,7 +309,7 @@ class ContactInfoView(FormView):
 class AccountNumberView(FormView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.AccountNumberForm
-    success_url = '/apply/review-application/'
+    success_url = reverse_lazy('pathways-apply-review-application')
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -352,7 +353,7 @@ class ReviewApplicationView(TemplateView):
 class LegalView(FormView):
     template_name = 'pathways/apply/legal.html'
     form_class = forms.LegalForm
-    success_url = '/apply/signature/'
+    success_url = reverse_lazy('pathways-apply-signature')
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -367,7 +368,7 @@ class LegalView(FormView):
 class SignatureView(FormView):
     template_name = 'pathways/apply/signature.html'
     form_class = forms.SignatureForm
-    success_url = '/apply/documents-overview/'
+    success_url = reverse_lazy('pathways-apply-documents-overview')
 
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
@@ -431,7 +432,7 @@ class DocumentOverviewView(TemplateView):
 class DocumentIncomeView(FormView):
     template_name = 'pathways/docs/upload-form.html'
     form_class = forms.DocumentIncomeForm
-    success_url = '/apply/documents-residence/'
+    success_url = reverse_lazy('pathways-apply-documents-residence')
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.session['hasHouseholdBenefits'] == 'True':
@@ -454,12 +455,12 @@ class DocumentIncomeView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['next_url'] = '/apply/documents-residence/'
+        context['next_url'] = reverse_lazy('pathways-apply-documents-residence')
         return context
 
 class DocumentResidenceView(FormView):
     template_name = 'pathways/docs/upload-form.html'
-    success_url = '/apply/confirmation/'
+    success_url = reverse_lazy('pathways-apply-confirmation')
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.session['rent_or_own'] == 'rent':
@@ -479,7 +480,7 @@ class DocumentResidenceView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['next_url'] = '/apply/confirmation/'
+        context['next_url'] = reverse_lazy('pathways-apply-confirmation')
         return context
         
 
