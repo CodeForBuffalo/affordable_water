@@ -98,7 +98,10 @@ class FormTests(TestCase):
             form = ContactInfoForm(data={'phone_number':phone_number})
             msg = f"ContactInfoForm phone_number {phone_number} expected to be {inputs[phone_number]}, form errors {form.errors}"
             self.assertTrue(form.is_valid(), msg=msg) if inputs[phone_number] else self.assertFalse(form.is_valid(), msg=msg)
-        
+    
+    def test_AccountNumberForm(self):
+        form = AccountHolderForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
 
 
 # model tests
