@@ -10,13 +10,21 @@ import locale
 import datetime
 
 # Create your views here.
-def home(request):
-    context = {}
-    context['isHomepage'] = True
-    return render(request, 'pathways/home.html', context)
+class HomeView(TemplateView):
+    template_name = 'pathways/home.html'
 
-def about(request):
-    return render(request, 'pathways/about.html', {'title':'About'})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['isHomepage'] = True
+        return context
+
+class AboutView(TemplateView):
+    template_name = 'pathways/about.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'About'
+        return context
 
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
