@@ -12,7 +12,7 @@ class TestViews(TestCase):
         activate('en')
 
     def test_homepage(self):
-        response = self.client.get(reverse('pathways-home'))
+        response = self.client.get(reverse('pathways-home'), follow=True)
         self.assertEqual(reverse('pathways-home'), '/en/', msg=_(f"Expected '/en/' but got {reverse('pathways-home')}."))
         self.assertContains(response, text="class=\"template--homepage\"")
 
@@ -25,7 +25,7 @@ class TestViews(TestCase):
         # checks that the dummykey was saved correctly
         self.assertIn('dummykey', list(session.keys()))
         session = self.client.session
-        response = self.client.get(reverse('pathways-apply'))
+        response = self.client.get(reverse('pathways-apply'), follow=True)
         self.assertContains(response, text=_("Here's how Affordable Water works."))
         # Checks if session keys are deleted
         self.assertEqual(len(session.keys()), 0, f"Expected 0 but got {len(session.items())}. Keys include {list(session.keys())}.")
@@ -54,7 +54,7 @@ class FormTests(TestCase):
         for income in inputs:
             form = ExactIncomeForm(data={'pay_period':'weekly','income':income})
             msg = f"ExactIncomeForm income {income} expected to be {inputs[income]}, form errors {form.errors}"
-            self.assertTrue(form.is_valid(), msg=msg) if inputs[income] else self.assertFalse(form.is_valid(), msg=msg)
+            self.assertEqual(form.is_valid(), inputs[income], msg=msg)
 
 
     def test_HourlyIncomeForm(self):
@@ -67,7 +67,7 @@ class FormTests(TestCase):
         for income in inputs:
             form = HourlyIncomeForm(data={'pay_period':40,'income':income})
             msg = f"HourlyIncomeForm income {income} expected to be {inputs[income]}, form errors {form.errors}"
-            self.assertTrue(form.is_valid(), msg=msg) if inputs[income] else self.assertFalse(form.is_valid(), msg=msg)
+            self.assertEqual(form.is_valid(), inputs[income], msg=msg)
 
     def test_ResidentInfoForm(self):
         # empty invalid
@@ -82,13 +82,13 @@ class FormTests(TestCase):
         for address in inputs:
             form = AddressForm(data={'street_address':address,'zip_code':14000})
             msg = f"AddressForm street_address {address} expected to be {inputs[address]}, form errors {form.errors}"
-            self.assertTrue(form.is_valid(), msg=msg) if inputs[address] else self.assertFalse(form.is_valid(), msg=msg)
+            self.assertEqual(form.is_valid(), inputs[address], msg=msg)
 
         inputs = {123456:False, 4321:False}
-        for zip in inputs:
-            form = AddressForm(data={'street_address':'123 Main St','zip_code':zip})
-            msg = f"AddressForm zip_code {zip} expected to be {inputs[zip]}, form errors {form.errors}"
-            self.assertTrue(form.is_valid(), msg=msg) if inputs[zip] else self.assertFalse(form.is_valid(), msg=msg)
+        for zip_code in inputs:
+            form = AddressForm(data={'street_address':'123 Main St','zip_code':zip_code})
+            msg = f"AddressForm zip_code {zip_code} expected to be {inputs[zip_code]}, form errors {form.errors}"
+            self.assertEqual(form.is_valid(), inputs[zip_code], msg=msg)
 
     def test_ContactInfoForm(self):
         form = ContactInfoForm(data={'email_address':'example@example.com'})
@@ -98,7 +98,7 @@ class FormTests(TestCase):
         for phone_number in inputs:
             form = ContactInfoForm(data={'phone_number':phone_number})
             msg = f"ContactInfoForm phone_number {phone_number} expected to be {inputs[phone_number]}, form errors {form.errors}"
-            self.assertTrue(form.is_valid(), msg=msg) if inputs[phone_number] else self.assertFalse(form.is_valid(), msg=msg)
+            self.assertEqual(form.is_valid(), inputs[phone_number], msg=msg)
     
     def test_AccountNumberForm(self):
         form = AccountHolderForm(data={})
