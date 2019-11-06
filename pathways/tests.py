@@ -13,7 +13,7 @@ class TestViews(TestCase):
 
     def test_homepage(self):
         response = self.client.get(reverse('pathways-home'))
-        self.assertContains(response, text="class=\"template--homepage\"", status_code=200)
+        self.assertContains(response, text="class=\"template--homepage\"")
 
     def test_apply(self):
         session = self.client.session
@@ -25,7 +25,7 @@ class TestViews(TestCase):
         self.assertIn('dummykey', list(session.keys()))
         session = self.client.session
         response = self.client.get(reverse('pathways-apply'))
-        self.assertContains(response, text=_("Here's how Affordable Water works."), status_code=200)
+        self.assertContains(response, text=_("Here's how Affordable Water works."))
         # Checks if session keys are deleted
         self.assertEqual(len(session.keys()), 0, f"Expected 0 but got {len(session.items())}. Keys include {list(session.keys())}.")
 
