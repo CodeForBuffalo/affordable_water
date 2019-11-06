@@ -89,6 +89,16 @@ class FormTests(TestCase):
             msg = f"AddressForm zip_code {zip} expected to be {inputs[zip]}, form errors {form.errors}"
             self.assertTrue(form.is_valid(), msg=msg) if inputs[zip] else self.assertFalse(form.is_valid(), msg=msg)
 
+    def test_ContactInfoForm(self):
+        form = ContactInfoForm(data={'email_address':'example@example.com'})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+
+        inputs = {7163334444:True, 4321:False, '716-333-4444':True, '(716)3334444': True, '(716) 333 4444': True, '(716)-333-4444': True}
+        for phone_number in inputs:
+            form = ContactInfoForm(data={'phone_number':phone_number})
+            msg = f"ContactInfoForm phone_number {phone_number} expected to be {inputs[phone_number]}, form errors {form.errors}"
+            self.assertTrue(form.is_valid(), msg=msg) if inputs[phone_number] else self.assertFalse(form.is_valid(), msg=msg)
+        
 
 
 # model tests
