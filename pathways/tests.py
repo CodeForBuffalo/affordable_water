@@ -13,6 +13,7 @@ class TestViews(TestCase):
 
     def test_homepage(self):
         response = self.client.get(reverse('pathways-home'))
+        self.assertEqual(reverse('pathways-home'), '/en/', msg=_(f"Expected '/en/' but got {reverse('pathways-home')}."))
         self.assertContains(response, text="class=\"template--homepage\"")
 
     def test_apply(self):
