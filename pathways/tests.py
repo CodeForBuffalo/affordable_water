@@ -49,11 +49,46 @@ class FormTests(TestCase):
         self.assertIn(_("Select a pay period"), form.errors['pay_period'])
         self.assertIn(_("Be sure to provide your job income before taxes"), form.errors['income'])
 
+        inputs = {15.0:True, 3000:True, -15:False, 0.01:True}
+        for income in inputs:
+            form = ExactIncomeForm(data={'pay_period':'weekly','income':income})
+            msg = f"ExactIncomeForm income {income} expected to be {inputs[income]}, form errors {form.errors}"
+            self.assertTrue(form.is_valid(), msg=msg) if inputs[income] else self.assertFalse(form.is_valid(), msg=msg)
+
+
     def test_HourlyIncomeForm(self):
         form = HourlyIncomeForm(data={})
         self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
         self.assertIn(_("Be sure to provide hours a week."), form.errors['pay_period'])
         self.assertIn(_("Be sure to provide an hourly wage."), form.errors['income'])
+
+        inputs = {15.0:True, 3000:True, -15:False, 0.01:True}
+        for income in inputs:
+            form = HourlyIncomeForm(data={'pay_period':40,'income':income})
+            msg = f"HourlyIncomeForm income {income} expected to be {inputs[income]}, form errors {form.errors}"
+            self.assertTrue(form.is_valid(), msg=msg) if inputs[income] else self.assertFalse(form.is_valid(), msg=msg)
+
+    def test_ResidentInfoForm(self):
+        # empty invalid
+        form = ResidentInfoForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+
+    def test_AddressForm(self):
+        form = AddressForm(data={})
+        self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
+        
+        inputs = {'123 Main St':True, '456 Delaware':True, 'Ferry St':False, '789':False}
+        for address in inputs:
+            form = AddressForm(data={'street_address':address,'zip_code':14000})
+            msg = f"AddressForm street_address {address} expected to be {inputs[address]}, form errors {form.errors}"
+            self.assertTrue(form.is_valid(), msg=msg) if inputs[address] else self.assertFalse(form.is_valid(), msg=msg)
+
+        inputs = {123456:False, 4321:False}
+        for zip in inputs:
+            form = AddressForm(data={'street_address':'123 Main St','zip_code':zip})
+            msg = f"AddressForm zip_code {zip} expected to be {inputs[zip]}, form errors {form.errors}"
+            self.assertTrue(form.is_valid(), msg=msg) if inputs[zip] else self.assertFalse(form.is_valid(), msg=msg)
+
 
 
 # model tests
