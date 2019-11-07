@@ -228,11 +228,13 @@ class SignatureView(FormView, DispatchView):
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
-            if field.name == 'annual_income':
-                if not self.request.session['hasHouseholdBenefits']:
-                    app.annual_income = self.request.session['annual_income']
-            else:
+            if field.name not in ['id','annual_income','income_photo','benefits_photo','residence_photo']:
                 app[field.name] = self.request.session[field.name]
+                
+        # Assign annual_income if hasHouseholdBenefits is False
+        if not self.request.session['hasHouseholdBenefits']:
+            app.annual_income = self.request.session['annual_income']
+
         app.save()
         self.request.session['app_id'] = app.id
         return super().form_valid(form)
