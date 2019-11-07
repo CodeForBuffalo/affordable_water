@@ -79,43 +79,36 @@ class HouseholdBenefitsView(DispatchView, FormToSessionView):
         return super().form_valid(form)
 
 
-# TODO: Refactor IncomeViews into single view with conditional for which method was selected, using ContextMixins
 # Step 3
-class IncomeMethodsView(DispatchView):
+class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
+    form_class = forms.IncomeMethodsForm
+    success_url = '/apply/income/'
 
-# Step 4 (exact)
-class ExactIncomeView(FormView, DispatchView):
-    template_name = 'pathways/apply/exact-income.html'
-    form_class = forms.ExactIncomeForm
+class IncomeView(FormToSessionView, DispatchView):
     success_url = '/apply/review-eligibility/'
 
-    def form_valid(self, form):
-        self.request.session = processIncomeHelper(self,form)
-        self.request.session['income_method'] = 'exact'
-        return super().form_valid(form)
+    def get_form_class(self):
+        if self.request.session['income_method'] == 'exact':
+            self.form_class = forms.ExactIncomeForm
+        elif self.request.session['income_method'] == 'hourly':
+            self.form_class = forms.HourlyIncomeForm
+        else:
+            self.form_class = forms.EstimateIncomeForm
+        return self.form_class
 
-# Step 4 (hourly)
-class HourlyIncomeView(FormView, DispatchView):
-    template_name = 'pathways/apply/hourly-income.html'
-    form_class = forms.HourlyIncomeForm
-    success_url = '/apply/review-eligibility/'
+    def get_template_names(self):
+        if self.request.session['income_method'] == 'exact':
+            self.template_name = 'pathways/apply/exact-income.html'
+        elif self.request.session['income_method'] == 'hourly':
+            self.template_name = 'pathways/apply/hourly-income.html'
+        else:
+            self.template_name = 'pathways/apply/estimate-income.html'
+        return super().get_template_names()
 
     def form_valid(self, form):
         self.request.session = processIncomeHelper(self.request.session,form)
-        self.request.session['income_method'] = 'hourly'
-        return super().form_valid(form)
-
-# Step 4 (estimate)
-class EstimateIncomeView(FormView, DispatchView):
-    template_name = 'pathways/apply/estimate-income.html'
-    form_class = forms.EstimateIncomeForm
-    success_url = '/apply/review-eligibility/'
-
-    def form_valid(self, form):
-        self.request.session = processIncomeHelper(self,form)
-        self.request.session['income_method'] = 'estimate'
-        return super().form_valid(form)
+        return super().form_valid(form) 
 
 # Income Helpers
 def processIncomeHelper(session, form):
@@ -148,7 +141,7 @@ class EligibilityView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         incomeLimits = {1: 41850, 2: 47800, 3: 53800, 4: 59750, 5: 64550, 6: 69350, 7: 74100, 8: 78900,}
-        if self.request.session['hasHouseholdBenefits']:
+        if self.request.session['hasHouseholdBenefits'] == True:
             context['isEligible'] = True
         else:
             context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household_size'])]
@@ -230,7 +223,7 @@ class SignatureView(FormView, DispatchView):
         for field in Application._meta.get_fields():
             if field.name not in ['id','annual_income','income_photo','benefits_photo','residence_photo']:
                 app[field.name] = self.request.session[field.name]
-                
+
         # Assign annual_income if hasHouseholdBenefits is False
         if not self.request.session['hasHouseholdBenefits']:
             app.annual_income = self.request.session['annual_income']

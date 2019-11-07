@@ -31,6 +31,14 @@ class HouseholdBenefitsForm(forms.Form):
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
 # Income Forms
+class IncomeMethodsForm(forms.Form):
+    income_method = forms.ChoiceField(choices=[
+        ('exact', _("I can provide the exact amount")),
+        ('hourly', _("I can provide my hourly wage")),
+        ('estimate', _("I can only provide an estimate")),
+    ], label=_("What’s the best way to provide your household's pre-tax earnings from the last 30 days?"))
+
+
 class ExactIncomeForm(forms.Form):
     pay_period = forms.ChoiceField(choices=[
         ('weekly',_("Every week")),

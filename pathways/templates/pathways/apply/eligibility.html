@@ -19,7 +19,7 @@
     {% else %}
     <div class="emoji emoji--big emoji--frowning-face"></div>
     {% endif %}
-    {% if request.session.hasHouseholdBenefits %}
+    {% if request.session.hasHouseholdBenefits == True %}
     <p>
       {% blocktrans %}
       Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP, your
@@ -28,9 +28,9 @@
     </p>
     {% else %}
     <p>
-      {% blocktrans with household=request.session.household %}
+      {% blocktrans with household=request.session.household_size %}
       The pre-tax annual income limit for a household size of <strong>
-        {{ household }}</strong> is <strong>{{ income_limit }}</strong>.
+        {{ household_size }}</strong> is <strong>{{ income_limit }}</strong>.
       {% endblocktrans %}
     </p>
     <p>
