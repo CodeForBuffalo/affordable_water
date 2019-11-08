@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='pathways-home'),
-    path('about/', views.about,name='pathways-about'),
+    path('', views.HomeView.as_view(), name='pathways-home'),
+    path('about/', views.AboutView.as_view(),name='pathways-about'),
     path('apply/', views.ApplyView.as_view(),
         name='pathways-apply'),
     path('apply/household-size/', views.HouseholdView.as_view(),
@@ -13,12 +13,8 @@ urlpatterns = [
         name='pathways-apply-household-benefits'),
     path('apply/income-methods/', views.IncomeMethodsView.as_view(),
         name='pathways-apply-income-methods'),
-    path('apply/exact-income/', views.ExactIncomeView.as_view(),
-        name='pathways-apply-exact-income'),
-    path('apply/hourly-income/', views.HourlyIncomeView.as_view(),
-        name='pathways-apply-hourly-income'),
-    path('apply/estimate-income/', views.EstimateIncomeView.as_view(),
-        name='pathways-apply-estimate-income'),
+    path('apply/income/', views.IncomeView.as_view(),
+        name='pathways-apply-income'),
     path('apply/review-eligibility/', views.ReviewEligibilityView.as_view(),
         name='pathways-apply-review-eligibility'),
     path('apply/eligibility/', views.EligibilityView.as_view(),

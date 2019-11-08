@@ -4,23 +4,25 @@
 
 {% block question %}
 <div class="form-card form-card--transition">
-    <div class="form-card__header">
-        <h1 class="form-card__title">
-            {% trans "What’s the best way to provide your household's pre-tax earnings from the last 30 days?" %}</h1>
-    </div>
 
-    <p>
-        <a class="button button--primary"
-            href="{% url 'pathways-apply-exact-income' %}">{% trans "I can provide the exact amount" %}</a>
-    </p>
-    <p>
-        <a class="button button--primary"
-            href="{% url 'pathways-apply-hourly-income' %}">{% trans "I can provide my hourly wage" %}</a>
-    </p>
-    <p>
-        <a class="button button--link"
-            href="{% url 'pathways-apply-estimate-income' %}">{% trans "I can only provide an estimate" %}</a>
-    </p>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-card__content">
+            <div class="form-card__header">
+                <h1 class="form-card__title" id="income-method-buttons">{{ form.income_method.label }}</h1>
+            </div>
+
+            {% for value, text in form.income_method.field.choices %}
+            <p>
+                <button class="button button--{% if value == 'estimate' %}link{% else %}primary{% endif %}"
+                    type="submit" name="income_method" value="{{ value }}" aria-describedby="income-method-buttons">
+                    {{ text }}
+                </button>
+            </p>
+            {% endfor %}
+        </div>
+    </form>
+
 
 </div>
 {% endblock question %}

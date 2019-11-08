@@ -10,8 +10,8 @@
         <div class="form-card__content">
             <div class="form-card__header">
                 <div class="with-padding-med emoji emoji--big emoji--house"></div>
-                <h1 class="form-card__title">{{ form.household.label }}</h1>
-                <p class="form-card__body-text">{{ form.household.help_text }}</p>
+                <h1 class="form-card__title">{{ form.household_size.label }}</h1>
+                <p class="form-card__body-text">{{ form.household_size.help_text }}</p>
             </div>
 
             <div class="reveal text--small">
@@ -32,18 +32,18 @@
                 </div>
             </div>
 
-            <div class="form-group {% if form.household.errors %}form-group--error{% endif %}">
-                <label class="sr-only" for="id_household">{{ form.household.label }}</label>
-                <p class="sr-only text--help">{{ form.household.help_text }}</p>
+            <div class="form-group {% if form.household_size.errors %}form-group--error{% endif %}">
+                <label class="sr-only" for="id_household_size">{{ form.household_size.label }}</label>
+                <p class="sr-only text--help">{{ form.household_size.help_text }}</p>
                 <radiogroup class="input-group--inline">
-                    {% for value, text in form.household.field.choices %}
-                    <label for="id_household_{{ value }}" class="radio-button">
-                        <input type="radio" name="household" id="id_household_{{ value }}" value="{{ value }}">{{ value }}
+                    {% for value, text in form.household_size.field.choices %}
+                    <label for="id_household_size_{{ value }}" class="radio-button">
+                        <input type="radio" name="household_size" id="id_household_size_{{ value }}" value="{{ value }}">{{ value }}
                     </label>
                     {% endfor %}
                 </radiogroup>
-                {% if form.household.errors %}
-                    {% for error in form.household.errors %}
+                {% if form.household_size.errors %}
+                    {% for error in form.household_size.errors %}
                         <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
                     {% endfor %}
                 {% endif %}

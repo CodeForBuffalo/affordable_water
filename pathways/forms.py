@@ -1,12 +1,12 @@
 from django import forms
 from django.forms import ModelForm, widgets
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, ValidationError
 from .models import Application
 from django.utils.translation import ugettext_lazy as _
 
 
 class HouseholdForm(forms.Form):
-    household = forms.ChoiceField(label=_("What is your household size?"),
+    household_size = forms.ChoiceField(label=_("What is your household size?"),
         help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
         choices=(
             (1,_('1')),
@@ -21,7 +21,7 @@ class HouseholdForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(HouseholdForm, self).__init__(*args, **kwargs)
-        self.fields['household'].error_messages = {'required': _("Select your household size.")}
+        self.fields['household_size'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
@@ -31,6 +31,14 @@ class HouseholdBenefitsForm(forms.Form):
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
 # Income Forms
+class IncomeMethodsForm(forms.Form):
+    income_method = forms.ChoiceField(choices=[
+        ('exact', _("I can provide the exact amount")),
+        ('hourly', _("I can provide my hourly wage")),
+        ('estimate', _("I can only provide an estimate")),
+    ], label=_("What’s the best way to provide your household's pre-tax earnings from the last 30 days?"))
+
+
 class ExactIncomeForm(forms.Form):
     pay_period = forms.ChoiceField(choices=[
         ('weekly',_("Every week")),
@@ -46,9 +54,6 @@ class ExactIncomeForm(forms.Form):
         self.fields['income'].error_messages = {'required': _("Be sure to provide your job income before taxes")}
         self.fields['pay_period'].error_messages = {'required': _("Select a pay period")}
 
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-
 
 class HourlyIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
@@ -60,9 +65,6 @@ class HourlyIncomeForm(forms.Form):
         self.fields['income'].error_messages = {'required': _("Be sure to provide an hourly wage.")}
         self.fields['pay_period'].error_messages = {'required': _("Be sure to provide hours a week.")}
 
-        
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
@@ -73,11 +75,6 @@ class EstimateIncomeForm(forms.Form):
         ('semimonthly',_('Twice a month')),
         ('monthly',_('Every month')),
         ], label=_("How often?"), required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(EstimateIncomeForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
 
 # End Income Forms
 
@@ -124,9 +121,7 @@ class AddressForm(forms.Form):
         self.fields['zip_code'].error_messages = {'required': _("Make sure to provide a 5 digit ZIP code.")}
 
 class ContactInfoForm(forms.Form):
-    phone_number = forms.CharField(label=_("What is your phone number?"), validators=[ # validators should be a list
-        RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
-            message=_("Please use a valid phone number format such as 716-555-5555."))],
+    phone_number = forms.CharField(label=_("What is your phone number?"),
         max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
     email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
 
@@ -138,6 +133,8 @@ class ContactInfoForm(forms.Form):
         phone = phone.replace('(','')
         phone = phone.replace(')','')
         phone = phone.replace(' ','')
+        if len(phone) != 10:
+            raise ValidationError(_("Please use a valid 10 digit phone number such as 716-555-5555."), code='invalid')
         phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
         return phone
 
