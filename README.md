@@ -56,6 +56,13 @@ This script runs `pipenv run manage.py runserver`
 #### Visit local server
 Open server in browser at [http://localhost:8000/](http://localhost:8000/)
 
+#### Run tests
+If you make changes to the code, you'll want to run the test suite to make sure existing functionality didn't break. You should also write tests for any new or modified code.
+```
+npm test
+```
+This script runs the testing suite along with a code coverage analysis using [Coverage.py](https://coverage.readthedocs.io/en/stable/). If the current tests pass, a new folder called `htmlcov` will be generated. If you open `htmlcov/index.html` in a browser, you can interactively see how much of the source code is covered by tests.
+
 ## License
 
 The project is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
