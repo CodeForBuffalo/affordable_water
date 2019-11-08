@@ -154,16 +154,14 @@ class AdditionalQuestionsView(DispatchView):
     template_name = 'pathways/apply/additional-questions.html'
 
 # Step 8
-class ResidentInfoView(FormView, DispatchView):
+class ResidentInfoView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/resident-info.html'
     form_class = forms.ResidentInfoForm
     success_url = '/apply/address/'
 
     def form_valid(self, form):
-        for field in form:
-            self.request.session[field.name] = form.cleaned_data[field.name]
         #  Redirects to fill in account holder info
-        if self.request.session['account_holder'] in ['landlord', 'other']:
+        if form.cleaned_data['account_holder'] in ['landlord', 'other']:
             self.success_url = '/apply/account-holder/'
         else:
             self.request.session['account_first'] = form.cleaned_data['first_name']
