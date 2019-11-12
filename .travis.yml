@@ -8,6 +8,9 @@ python:
 node_js:
   - "12"
 
+addons:
+  chrome: stable
+
 before_install:
   - pip install -U pip
 
@@ -15,6 +18,13 @@ install:
   - pip install pipenv
   - pipenv sync --dev
   - npm install
+  - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/share/chromedriver
+  - export CHROME_BIN=chromium-browser
 
 cache:
   directories:
@@ -25,9 +35,6 @@ cache:
 
 before_script:
   - npm install -g gulp-cli
-  - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python3.7.1/bin/
-  - export CHROME_BIN=chromium-browser
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
@@ -36,6 +43,8 @@ script:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
+  - whereis google-chrome-stable
+  - whereis chromedriver
   - coverage run manage.py test -v 2
 
 after_script:
