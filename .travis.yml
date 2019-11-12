@@ -23,7 +23,6 @@ install:
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
-  - sudo ln -s /usr/local/share/chromedriver /usr/local/share/chromedriver
   - export CHROME_BIN=chromium-browser
 
 cache:
@@ -45,6 +44,7 @@ script:
   - python manage.py compress
   - whereis google-chrome-stable
   - whereis chromedriver
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - coverage run manage.py test -v 2
 
 after_script:
