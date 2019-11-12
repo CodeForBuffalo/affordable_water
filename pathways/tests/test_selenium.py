@@ -5,12 +5,13 @@ from django.utils.translation import activate
 from django.utils.translation import ugettext_lazy as _
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import os
 
 # Selenium
 class PathwaysTestCase(LiveServerTestCase):
 
     def setUp(self):
-        self.selenium = webdriver.Chrome('node_modules/chromedriver/lib/chromedriver/chromedriver.exe')
+        self.selenium = webdriver.Chrome(os.getenv(key='TRAVIS_CHROME_PATH', default='node_modules/chromedriver/lib/chromedriver/chromedriver.exe'))
         activate('en')
         super(PathwaysTestCase, self).setUp()
     
