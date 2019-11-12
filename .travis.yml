@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 language: python
 
@@ -26,7 +26,7 @@ cache:
 before_script:
   - npm install -g gulp-cli
   - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python3.7.1/
+  - unzip chromedriver_linux64.zip -d /home/travis/virtualenv/python3.7.1/bin/
   - export CHROME_BIN=chromium-browser
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
