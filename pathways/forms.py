@@ -56,8 +56,8 @@ class ExactIncomeForm(forms.Form):
 
 
 class HourlyIncomeForm(forms.Form):
-    income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
-    pay_period = forms.IntegerField(min_value=0, label=_("How many hours a week do you work?"), required=True, 
+    income = forms.FloatField(min_value=0.01, label=_("What is your hourly wage?"), label_suffix="")
+    pay_period = forms.IntegerField(min_value=1, max_value=168, label=_("How many hours a week do you work?"), required=True, 
         help_text=_("If this changes, give an average for the last 30 days."))
 
     def __init__(self, *args, **kwargs):
@@ -146,7 +146,6 @@ class ContactInfoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ContactInfoForm, self).__init__(*args, **kwargs)
         self.fields['phone_number'].error_messages = {'required': _("Make sure to provide a valid phone number.")}
-        self.fields['email_address'].error_messages = {'required': _("Make sure to provide an email address.")}
 
 class AccountHolderForm(forms.Form):
     account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"), widget=forms.TextInput(attrs={'placeholder': _("First name")}))
