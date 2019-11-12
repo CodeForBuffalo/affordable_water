@@ -51,7 +51,7 @@ class ExactIncomeForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(ExactIncomeForm, self).__init__(*args, **kwargs)
-        self.fields['income'].error_messages = {'required': _("Be sure to provide your job income before taxes")}
+        self.fields['income'].error_messages = {'required': _("Be sure to provide your income before taxes")}
         self.fields['pay_period'].error_messages = {'required': _("Select a pay period")}
 
 
@@ -74,7 +74,12 @@ class EstimateIncomeForm(forms.Form):
         ('biweekly',_("Every two weeks")),
         ('semimonthly',_('Twice a month')),
         ('monthly',_('Every month')),
-        ], label=_("How often?"), required=False)
+        ], label=_("How often?"), required=True)
+    
+    def __init__(self, *args, **kwargs):
+        super(EstimateIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['income'].error_messages = {'required': _("Be sure to provide a household income.")}
+        self.fields['pay_period'].error_messages = {'required': _("Select how often your household makes this amount.")}
 
 # End Income Forms
 
