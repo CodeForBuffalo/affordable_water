@@ -5,7 +5,7 @@ from .models import Application
 from django.utils.translation import ugettext_lazy as _
 
 
-class HouseholdForm(forms.Form):
+class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
         help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
         choices=(
@@ -20,7 +20,7 @@ class HouseholdForm(forms.Form):
         ), required=True)
 
     def __init__(self, *args, **kwargs):
-        super(HouseholdForm, self).__init__(*args, **kwargs)
+        super(HouseholdSizeForm, self).__init__(*args, **kwargs)
         self.fields['household_size'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):

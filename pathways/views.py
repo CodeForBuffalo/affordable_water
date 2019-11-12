@@ -58,9 +58,9 @@ class ApplyView(ExtraContextView):
             del request.session[key]
         return super(ApplyView, self).dispatch(request, *args, **kwargs)
 
-class HouseholdView(FormToSessionView):
+class HouseholdSizeView(FormToSessionView):
     template_name = 'pathways/apply/household-size.html'
-    form_class = forms.HouseholdForm
+    form_class = forms.HouseholdSizeForm
     success_url = '/apply/household-benefits'
 
     def form_valid(self, form):

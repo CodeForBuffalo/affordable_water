@@ -15,6 +15,7 @@ class TestViews(TestCase):
         response = self.client.get(reverse('pathways-home'), follow=True)
         self.assertEqual(reverse('pathways-home'), '/en/', msg=_(f"Expected '/en/' but got {reverse('pathways-home')}."))
         self.assertContains(response, text="class=\"template--homepage\"")
+        self.assertTemplateUsed(response, 'pathways/home.html')
 
     def test_apply(self):
         session = self.client.session
@@ -35,12 +36,12 @@ class FormTests(TestCase):
     def setUp(self):
         activate('en')
 
-    def test_HouseholdForm(self):
+    def test_HouseholdSizeForm(self):
         for i in range(1,9):
             form_data = {'household_size':i}
-            form = HouseholdForm(data=form_data)
+            form = HouseholdSizeForm(data=form_data)
             self.assertTrue(form.is_valid(), msg=f"Form is invalid for household_size {i}.")
-        form = HouseholdForm(data={})
+        form = HouseholdSizeForm(data={})
         self.assertFalse(form.is_valid(), msg=f"Form with empty data should be invalid.")
         self.assertIn(_("Select your household size."), form.errors['household_size'])
 

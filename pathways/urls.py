@@ -7,7 +7,7 @@ urlpatterns = [
     path('about/', views.AboutView.as_view(),name='pathways-about'),
     path('apply/', views.ApplyView.as_view(),
         name='pathways-apply'),
-    path('apply/household-size/', views.HouseholdView.as_view(),
+    path('apply/household-size/', views.HouseholdSizeView.as_view(),
         name='pathways-apply-household-size'),
     path('apply/household-benefits/', views.HouseholdBenefitsView.as_view(),
         name='pathways-apply-household-benefits'),
