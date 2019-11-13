@@ -26,22 +26,25 @@ class HouseholdSizeForm(forms.Form):
 class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
-        (True,_('Yes')),
-        (False,_('No')),
+        (True,_('Yes')), (False,_('No')),
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
 class HouseholdContributorsForm(forms.Form):
     household_contributors = forms.ChoiceField(label=_("How many individuals contribute to your household income?"),
     choices=(
-        (1,_('1')),
-        (2,_('2')),
-        (3,_('3')),
-        (4,_('4')),
-        (5,_('5')),
-        (6,_('6')),
-        (7,_('7')),
-        (8,_('8+')),
+        (1,_('1')), (2,_('2')), (3,_('3')), (4,_('4')),
+        (5,_('5')), (6,_('6')), (7,_('7')), (8,_('8+')),
     ), help_text=_("Include anyone who regularly contributes to your household living expenses such as groceries, rent or property taxes, or utilities."))
+
+class JobStatusForm(forms.Form):
+    has_job = forms.ChoiceField(label=_("Do you have a job?"),
+    choices=(
+        (True,_('Yes')), (False,_('No')),
+    ), help_text=_("Make sure to include self-employed work."))
+
+    def __init__(self, *args, **kwargs):
+        super(JobStatusForm, self).__init__(*args, **kwargs)
+        self.fields['has_job'].error_messages = {'required': _("Select your employment status.")}
 
 # Income Forms
 class IncomeMethodsForm(forms.Form):

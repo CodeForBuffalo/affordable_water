@@ -133,3 +133,36 @@ class HouseholdContributorsViewTest(TestCase):
                 self.assertIn('income_method', self.client.session.keys())
                 self.assertEqual(self.client.session['income_method'], 'estimate')
 
+class JobStatusViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 1
+        session['hasHouseholdBenefits'] = False
+        session['household_contributors'] = 1
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-job-status'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-job-status'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/job-status.html')
+    
+    def test_redirect_on_submit(self):
+        for has_job in [True, False]:
+            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)})
+            self.assertEqual(response.status_code, 302)
+            if has_job:
+                self.assertEqual(response.url, '/apply/self-employment/')
+            else:
+                self.assertEqual(response.url, '/apply/unemployment/')
+
+    def test_session_saved_on_submit(self):
+        for has_job in [True, False]:
+            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)})
+            self.assertEqual(response.status_code, 302)
+            self.assertIn('has_job', self.client.session.keys())
+            self.assertEqual(self.client.session['has_job'], str(has_job))
