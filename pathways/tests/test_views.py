@@ -48,7 +48,7 @@ class HouseholdSizeViewTest(TestCase):
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get(reverse('pathways-apply-household-size'), follow=True)
-        self.assertIs(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-apply-household-size'), follow=True)
@@ -72,7 +72,7 @@ class HouseholdBenefitsViewTest(TestCase):
 
     def test_view_url_exists_at_desired_location(self):
         response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True)
-        self.assertIs(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
     
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True)
@@ -88,3 +88,12 @@ class HouseholdBenefitsViewTest(TestCase):
                 self.assertEqual(response.url, '/apply/income-methods/')
             self.assertIn('hasHouseholdBenefits', self.client.session.keys())
             self.assertEqual(self.client.session['hasHouseholdBenefits'], str(hasHouseholdBenefits))
+
+class DispatchViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+    
+    def test_url_without_active_app_session_key(self):
+        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=False)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/en/')
