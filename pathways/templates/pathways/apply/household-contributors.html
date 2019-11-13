@@ -9,25 +9,25 @@
         
         <div class="form-card__content">
             <div class="form-card__header">
-                <div class="with-padding-med emoji emoji--big emoji--house"></div>
-                <h1 class="form-card__title">{{ form.household_size.label }}</h1>
-                <p class="form-card__body-text">{{ form.household_size.help_text }}</p>
+                <div class="with-padding-med emoji emoji--big emoji--money-bag"></div>
+                <h1 class="form-card__title">{{ form.household_contributors.label }}</h1>
+                <p class="form-card__body-text">{{ form.household_contributors.help_text }}</p>
             </div>
 
             {% include "pathways/snippets/household-help-button.html" %}
 
-            <div class="form-group {% if form.household_size.errors %}form-group--error{% endif %}">
-                <label class="sr-only" for="id_household_size">{{ form.household_size.label }}</label>
-                <p class="sr-only text--help">{{ form.household_size.help_text }}</p>
+            <div class="form-group {% if form.household_contributors.errors %}form-group--error{% endif %}">
+                <label class="sr-only" for="id_household_contributors">{{ form.household_contributors.label }}</label>
+                <p class="sr-only text--help">{{ form.household_contributors.help_text }}</p>
                 <radiogroup class="input-group--inline">
-                    {% for value, text in form.household_size.field.choices %}
-                    <label for="id_household_size_{{ value }}" class="radio-button">
-                        <input type="radio" name="household_size" id="id_household_size_{{ value }}" value="{{ value }}">{{ value }}
+                    {% for value, text in form.household_contributors.field.choices %}
+                    <label for="id_household_contributors_{{ value }}" class="radio-button">
+                        <input type="radio" name="household_contributors" id="id_household_contributors_{{ value }}" value="{{ value }}">{{ value }}
                     </label>
                     {% endfor %}
                 </radiogroup>
-                {% if form.household_size.errors %}
-                    {% for error in form.household_size.errors %}
+                {% if form.household_contributors.errors %}
+                    {% for error in form.household_contributors.errors %}
                         <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
                     {% endfor %}
                 {% endif %}

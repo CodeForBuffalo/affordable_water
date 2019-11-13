@@ -71,7 +71,7 @@ class HouseholdSizeView(FormToSessionView):
 class HouseholdBenefitsView(DispatchView, FormToSessionView):
     template_name = 'pathways/apply/household-benefits.html'
     form_class = forms.HouseholdBenefitsForm
-    success_url = '/apply/income-methods/'
+    success_url = '/apply/household-contributors/'
 
     def form_valid(self, form):
         if (form.cleaned_data['hasHouseholdBenefits'] == 'True'):
@@ -79,7 +79,18 @@ class HouseholdBenefitsView(DispatchView, FormToSessionView):
         return super().form_valid(form)
 
 
-# Step 3
+class HouseholdContributorsView(DispatchView, FormToSessionView):
+    template_name = 'pathways/apply/household-contributors.html'
+    form_class = forms.HouseholdContributorsForm
+    success_url = '/apply/income/'
+
+    def form_valid(self, form):
+        if (form.cleaned_data['household_contributors'] == '1'):
+            self.success_url = '/apply/job-status/'
+        else:
+            self.request.session['income_method'] = 'estimate'
+        return super().form_valid(form)
+
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm

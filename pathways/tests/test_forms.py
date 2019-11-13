@@ -12,6 +12,13 @@ class HouseholdSizeFormTest(TestCase):
         form = forms.HouseholdSizeForm(data={})
         self.assertEqual(form['household_size'].help_text, _("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."))
 
+class HouseholdContributorsFormTest(TestCase):
+    def test_valid_form_inputs(self):
+        for contributors in range(1,9):
+            form = forms.HouseholdContributorsForm(data={'household_contributors': contributors})
+            self.assertTrue(form.is_valid(), msg=f"Contributors {contributors} expected to be valid, form errors {form.errors}")
+            self.assertEqual(form.cleaned_data['household_contributors'], str(contributors))
+            
 class ExactIncomeFormTest(TestCase):
     def test_error_messages_correct(self):
         form = forms.ExactIncomeForm(data={})

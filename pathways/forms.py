@@ -30,6 +30,19 @@ class HouseholdBenefitsForm(forms.Form):
         (False,_('No')),
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
+class HouseholdContributorsForm(forms.Form):
+    household_contributors = forms.ChoiceField(label=_("How many individuals contribute to your household income?"),
+    choices=(
+        (1,_('1')),
+        (2,_('2')),
+        (3,_('3')),
+        (4,_('4')),
+        (5,_('5')),
+        (6,_('6')),
+        (7,_('7')),
+        (8,_('8+')),
+    ), help_text=_("Include anyone who regularly contributes to your household living expenses such as groceries, rent or property taxes, or utilities."))
+
 # Income Forms
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[

@@ -11,6 +11,8 @@ urlpatterns = [
         name='pathways-apply-household-size'),
     path('apply/household-benefits/', views.HouseholdBenefitsView.as_view(),
         name='pathways-apply-household-benefits'),
+    path('apply/household-contributors/', views.HouseholdContributorsView.as_view(),
+        name='pathways-apply-household-contributors'),
     path('apply/income-methods/', views.IncomeMethodsView.as_view(),
         name='pathways-apply-income-methods'),
     path('apply/income/', views.IncomeView.as_view(),

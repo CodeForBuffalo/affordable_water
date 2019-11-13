@@ -85,7 +85,7 @@ class HouseholdBenefitsViewTest(TestCase):
             if hasHouseholdBenefits:
                 self.assertEqual(response.url, '/apply/eligibility/')
             else:
-                self.assertEqual(response.url, '/apply/income-methods/')
+                self.assertEqual(response.url, '/apply/household-contributors/')
             self.assertIn('hasHouseholdBenefits', self.client.session.keys())
             self.assertEqual(self.client.session['hasHouseholdBenefits'], str(hasHouseholdBenefits))
 
@@ -97,3 +97,39 @@ class DispatchViewTest(TestCase):
         response = self.client.get(reverse('pathways-apply-household-benefits'), follow=False)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/en/')
+
+class HouseholdContributorsViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 1
+        session['hasHouseholdBenefits'] = False
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/household-contributors.html')
+    
+    def test_redirect_on_submit(self):
+        for household_contributors in [1,2,3,4]:
+            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors})
+            self.assertEqual(response.status_code, 302)
+            if household_contributors == 1:
+                self.assertEqual(response.url, '/apply/job-status/')
+            else:
+                self.assertEqual(response.url, '/apply/income/')
+
+    def test_session_saved_on_submit(self):
+        for household_contributors in [1,2,3,4]:
+            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors})
+            self.assertIn('household_contributors', self.client.session.keys())
+            self.assertEqual(self.client.session['household_contributors'], str(household_contributors))
+            if household_contributors > 1:
+                self.assertIn('income_method', self.client.session.keys())
+                self.assertEqual(self.client.session['income_method'], 'estimate')
+
