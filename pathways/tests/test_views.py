@@ -155,10 +155,7 @@ class JobStatusViewTest(TestCase):
         for has_job in [True, False]:
             response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)})
             self.assertEqual(response.status_code, 302)
-            if has_job:
-                self.assertEqual(response.url, '/apply/self-employment/')
-            else:
-                self.assertEqual(response.url, '/apply/unemployment/')
+            self.assertEqual(response.url, '/apply/self-employment/')
 
     def test_session_saved_on_submit(self):
         for has_job in [True, False]:

@@ -96,11 +96,6 @@ class JobStatusView(DispatchView, FormToSessionView):
     form_class = forms.JobStatusForm
     success_url = '/apply/self-employment/'
 
-    def form_valid(self, form):
-        if (form.cleaned_data['has_job'] == 'False'):
-            self.success_url = '/apply/unemployment/'
-        return super().form_valid(form)
-
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm
