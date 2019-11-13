@@ -61,7 +61,7 @@ class ApplyView(ExtraContextView):
 class HouseholdSizeView(FormToSessionView):
     template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdSizeForm
-    success_url = '/apply/household-benefits'
+    success_url = '/apply/household-benefits/'
 
     def form_valid(self, form):
         self.request.session['active_app'] = True
