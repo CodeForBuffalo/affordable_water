@@ -40,7 +40,7 @@ DEBUG_PROPAGRATE_EXCEPTIONS = True
 ALLOWED_HOSTS = [
     'getbuffalowater.herokuapp.com'
 ]
-if (os.getenv('TESTING_VALUE') == 'True'):
+if ((os.getenv('PRODUCTION_VALUE') != 'True') or (os.getenv('TESTING_VALUE') == 'True')):
     ALLOWED_HOSTS += [
         '127.0.0.1',
         'localhost',
