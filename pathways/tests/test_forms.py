@@ -21,8 +21,8 @@ class HouseholdContributorsFormTest(TestCase):
 
 class JobStatusFormTest(TestCase):
     def test_error_messages_correct(self):
-        form = forms.HouseholdSizeForm(data={})
-        self.assertIn(_("Select your employment status"), form.errors['has_job'])
+        form = forms.JobStatusForm(data={})
+        self.assertIn(_("Select your employment status."), form.errors['has_job'])
 
     def test_help_text_correct(self):
         form = forms.JobStatusForm(data={})
@@ -32,7 +32,18 @@ class JobStatusFormTest(TestCase):
         for has_job in [True, False]:
             form = forms.JobStatusForm(data={'has_job': has_job})
             self.assertTrue(form.is_valid(), msg=f"Has_job {has_job} expected to be valid, form errors {form.errors}")
-            self.assertEqual(form.cleaned_data['has_job'], has_job)
+            self.assertEqual(form.cleaned_data['has_job'], str(has_job))
+
+class SelfEmploymentFormTest(TestCase):
+    def test_error_messages_correct(self):
+        form = forms.SelfEmploymentForm(data={})
+        self.assertIn(_("Select your self-employment status."), form.errors['is_self_employed'])
+
+    def test_valid_form_inputs(self):
+        for is_self_employed in [True, False]:
+            form = forms.SelfEmploymentForm(data={'is_self_employed': is_self_employed})
+            self.assertTrue(form.is_valid(), msg=f"is_self_employed {is_self_employed} expected to be valid, form errors {form.errors}")
+            self.assertEqual(form.cleaned_data['is_self_employed'], str(is_self_employed))
 
 class ExactIncomeFormTest(TestCase):
     def test_error_messages_correct(self):

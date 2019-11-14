@@ -96,6 +96,11 @@ class JobStatusView(DispatchView, FormToSessionView):
     form_class = forms.JobStatusForm
     success_url = '/apply/self-employment/'
 
+class SelfEmploymentView(DispatchView, FormToSessionView):
+    template_name = 'pathways/apply/self-employment.html'
+    form_class = forms.SelfEmploymentForm
+    success_url = '/apply/other-income-sources/'
+
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm

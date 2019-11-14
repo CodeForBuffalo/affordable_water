@@ -46,6 +46,16 @@ class JobStatusForm(forms.Form):
         super(JobStatusForm, self).__init__(*args, **kwargs)
         self.fields['has_job'].error_messages = {'required': _("Select your employment status.")}
 
+class SelfEmploymentForm(forms.Form):
+    is_self_employed = forms.ChoiceField(label=_("Do you have income from freelance, independent contractor, or self-employment work?"),
+    choices=(
+        (True, _('Yes')), (False, _('No')),
+    ))
+
+    def __init__(self, *args, **kwargs):
+        super(SelfEmploymentForm, self).__init__(*args, **kwargs)
+        self.fields['is_self_employed'].error_messages = {'required': _("Select your self-employment status.")}
+
 # Income Forms
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[
