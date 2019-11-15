@@ -107,13 +107,26 @@ class OtherIncomeSourcesView(DispatchView, FormToSessionView):
     success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
-        if (self.request.session['has_job'] == 'True' or self.request.session['is_self_employed'] == 'True'):
+        if (str(self.request.session['has_job']) == 'True' or str(self.request.session['is_self_employed']) == 'True'):
             self.success_url = '/apply/number-of-jobs/'
         elif (str(form.cleaned_data['has_other_income']) == 'True'):
             self.success_url = '/apply/non-jobs/'
         else:
             self.success_url = '/apply/review-eligibility/'
         return super().form_valid(form)
+
+class NumberOfJobsView(FormToSessionView, DispatchView):
+    template_name = 'pathways/apply/number-of-jobs.html'
+    form_class = forms.NumberOfJobsForm
+    success_url = '/apply/income/'
+
+    def form_valid(self, form):
+        if (int(form.cleaned_data['number_of_jobs']) == 1):
+            self.success_url = '/apply/income-methods/'
+        else:
+            self.request.session['income_method'] = 'estimate'
+        return super().form_valid(form)
+    
 
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'

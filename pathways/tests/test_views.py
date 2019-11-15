@@ -217,7 +217,7 @@ class OtherIncomeSourcesViewTest(TestCase):
         for has_other_income in [True, False]:
             response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income})
             self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/apply/number-of-jobs/', msg=f"has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
+            self.assertEqual(response.url, '/apply/number-of-jobs/', msg=f"has_other_income {has_other_income} has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
 
         session = self.client.session
         session['has_job'] = False
@@ -240,3 +240,36 @@ class OtherIncomeSourcesViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertIn('has_other_income', self.client.session.keys())
             self.assertEqual(self.client.session['has_other_income'], str(has_other_income))
+
+class NumberOfJobsViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/number-of-jobs.html')
+    
+    def test_redirect_on_submit(self):
+        for number_of_jobs in range(1,9):
+            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs})
+            self.assertEqual(response.status_code, 302)
+            if number_of_jobs == 1:
+                self.assertEqual(response.url, '/apply/income-methods/')
+            else:
+                self.assertEqual(response.url, '/apply/income/')
+
+    def test_session_saved_on_submit(self):
+        for number_of_jobs in range(1,9):
+            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs})
+            self.assertIn('number_of_jobs', self.client.session.keys())
+            self.assertEqual(self.client.session['number_of_jobs'], str(number_of_jobs))
+            if number_of_jobs > 1:
+                self.assertIn('income_method', self.client.session.keys())
+                self.assertEqual(self.client.session['income_method'], 'estimate')

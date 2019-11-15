@@ -66,6 +66,17 @@ class OtherIncomeSourcesForm(forms.Form):
         super(OtherIncomeSourcesForm, self).__init__(*args, **kwargs)
         self.fields['has_other_income'].error_messages = {'required': _("Indicate whether you get any money from other sources.")}
 
+class NumberOfJobsForm(forms.Form):
+    number_of_jobs = forms.ChoiceField(label=_("In total, how many jobs do you have?"), 
+    choices=(
+            (1,_('1')),(2,_('2')),(3,_('3')),(4,_('4')),(5,_('5')),(6,_('6')),
+            (7,_('7')),(8,_('8')),(9,_('9')),(10,_('10')),(11,_('11')),(12,_('12')),
+        ))
+
+    def __init__(self, *args, **kwargs):
+        super(NumberOfJobsForm, self).__init__(*args, **kwargs)
+        self.fields['number_of_jobs'].error_messages = {'required': _("Select how many jobs you currently have.")}
+
 # Income Forms
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[

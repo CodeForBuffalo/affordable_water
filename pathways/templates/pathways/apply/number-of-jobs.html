@@ -1,0 +1,42 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-card__content">
+            <div class="form-card__header">
+                <h1 class="form-card__title">{{ form.number_of_jobs.label }}</h1>
+                <p class="form-card__body-text">{{ form.number_of_jobs.help_text }}</p>
+            </div>
+
+            <div class="form-group {% if form.number_of_jobs.errors %}form-group--error{% endif %}">
+                <label class="sr-only" for="id_number_of_jobs">{{ form.number_of_jobs.label }}</label>
+                <p class="sr-only text--help">{{ form.number_of_jobs.help_text }}</p>
+                <div class="select">
+                    <select class="select__element" name="number_of_jobs" id="id_number_of_jobs">
+                        {% for value, text in form.number_of_jobs.field.choices %}
+                        <option value="{{ value }}">{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if form.number_of_jobs.errors %}
+                    {% for error in form.number_of_jobs.errors %}
+                        <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-card__footer">
+                <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                    class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                    <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock question %}
