@@ -167,7 +167,6 @@ class JobStatusViewTest(TestCase):
 class SelfEmploymentViewTest(TestCase):
     def setUp(self):
         activate('en')
-        activate('en')
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 1
@@ -196,3 +195,48 @@ class SelfEmploymentViewTest(TestCase):
             self.assertEqual(response.status_code, 302)
             self.assertIn('is_self_employed', self.client.session.keys())
             self.assertEqual(self.client.session['is_self_employed'], str(is_self_employed))
+
+class OtherIncomeSourcesViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['has_job'] = True
+        session['is_self_employed'] = True
+        session.save()
+    
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/other-income-sources.html')
+
+    def test_redirect_on_submit(self):
+        for has_other_income in [True, False]:
+            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income})
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.url, '/apply/number-of-jobs/', msg=f"has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
+
+        session = self.client.session
+        session['has_job'] = False
+        session['is_self_employed'] = False
+        session.save()
+
+        # has other income, does NOT have job, is NOT self-employed
+        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': True})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/apply/non-jobs/')
+
+        # does NOT have other income, does NOT have job, is NOT self-employed
+        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': False})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/apply/review-eligibility/')
+
+    def test_session_saved_on_submit(self):
+        for has_other_income in [True, False]:
+            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income})
+            self.assertEqual(response.status_code, 302)
+            self.assertIn('has_other_income', self.client.session.keys())
+            self.assertEqual(self.client.session['has_other_income'], str(has_other_income))

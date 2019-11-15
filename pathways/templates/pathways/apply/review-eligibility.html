@@ -10,8 +10,11 @@
             <div class="vertical-steps">
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
-                    <div class="vertical-steps__title">{{ income_formatted }}
+                    <div class="vertical-steps__emoji">
+                        <span class="emoji emoji emoji--med emoji--money"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {{ income_formatted }}
                         {% if request.session.pay_period == 'weekly' %}
                         {% trans "per week" %}
                         {% elif request.session.pay_period == 'biweekly' %}
@@ -25,7 +28,9 @@
                         {% endif %}
                     </div>
                     <div class="form-card__body-text">
-                        {% if request.session.income_method == 'estimate' %}
+                        {% if no_income %}
+                        {% trans "You indicated no source of income." %}
+                        {% elif request.session.income_method == 'estimate' %}
                         {% trans "Estimated income before taxes" %}
                         {% elif request.session.income_method == 'hourly' %}
                         {{ request.session.pay_period }} {% trans "hours per week" %}

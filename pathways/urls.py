@@ -17,6 +17,8 @@ urlpatterns = [
         name='pathways-apply-job-status'),
     path('apply/self-employment/', views.SelfEmploymentView.as_view(),
         name='pathways-apply-self-employment'),
+    path('apply/other-income-sources/', views.OtherIncomeSourcesView.as_view(),
+        name='pathways-apply-other-income-sources'),
     path('apply/income-methods/', views.IncomeMethodsView.as_view(),
         name='pathways-apply-income-methods'),
     path('apply/income/', views.IncomeView.as_view(),

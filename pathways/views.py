@@ -101,6 +101,20 @@ class SelfEmploymentView(DispatchView, FormToSessionView):
     form_class = forms.SelfEmploymentForm
     success_url = '/apply/other-income-sources/'
 
+class OtherIncomeSourcesView(DispatchView, FormToSessionView):
+    template_name = 'pathways/apply/other-income-sources.html'
+    form_class = forms.OtherIncomeSourcesForm
+    success_url = '/apply/review-eligibility/'
+
+    def form_valid(self, form):
+        if (self.request.session['has_job'] == 'True' or self.request.session['is_self_employed'] == 'True'):
+            self.success_url = '/apply/number-of-jobs/'
+        elif (str(form.cleaned_data['has_other_income']) == 'True'):
+            self.success_url = '/apply/non-jobs/'
+        else:
+            self.success_url = '/apply/review-eligibility/'
+        return super().form_valid(form)
+
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm
@@ -151,6 +165,10 @@ class ReviewEligibilityView(DispatchView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if(self.request.session['has_job'] == 'False' and self.request.session['is_self_employed'] == 'False' and self.request.session['has_other_income'] == 'False'):
+            context['no_income'] = True
+            self.request.session['annual_income'] = 0
+            self.request.session['income'] = 0
         context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
         context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
         return context

@@ -45,6 +45,17 @@ class SelfEmploymentFormTest(TestCase):
             self.assertTrue(form.is_valid(), msg=f"is_self_employed {is_self_employed} expected to be valid, form errors {form.errors}")
             self.assertEqual(form.cleaned_data['is_self_employed'], str(is_self_employed))
 
+class OtherIncomeSourcesFormTest(TestCase):
+    def test_error_messages_correct(self):
+        form = forms.OtherIncomeSourcesForm(data={})
+        self.assertIn(_("Indicate whether you get any money from other sources."), form.errors['has_other_income'])
+
+    def test_valid_form_inputs(self):
+        for has_other_income in [True, False]:
+            form = forms.OtherIncomeSourcesForm(data={'has_other_income': has_other_income})
+            self.assertTrue(form.is_valid(), msg=f"has_other_income {has_other_income} expected to be valid, form errors {form.errors}")
+            self.assertEqual(form.cleaned_data['has_other_income'], str(has_other_income))
+
 class ExactIncomeFormTest(TestCase):
     def test_error_messages_correct(self):
         form = forms.ExactIncomeForm(data={})
