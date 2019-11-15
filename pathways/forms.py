@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
-        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
+        help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."),
         choices=(
             (1,_('1')),
             (2,_('2')),
