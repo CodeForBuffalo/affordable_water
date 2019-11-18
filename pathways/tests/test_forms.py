@@ -10,7 +10,7 @@ class HouseholdSizeFormTest(TestCase):
 
     def test_help_text_correct(self):
         form = forms.HouseholdSizeForm(data={})
-        self.assertEqual(form['household_size'].help_text, _("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."))
+        self.assertEqual(form['household_size'].help_text, _("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."))
 
 class HouseholdContributorsFormTest(TestCase):
     def test_valid_form_inputs(self):
