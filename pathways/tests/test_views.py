@@ -280,6 +280,7 @@ class NonJobIncomeViewTest(TestCase):
         session['active_app'] = True
         session['has_job'] = False
         session['is_self_employed'] = False
+        session['has_other_income'] = True
         session['annual_income'] = 12000
         session.save()
 

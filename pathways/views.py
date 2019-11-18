@@ -182,14 +182,17 @@ class ReviewEligibilityView(DispatchView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if(self.request.session['has_job'] == 'False' 
-            and self.request.session['is_self_employed'] == 'False' 
-            and self.request.session['has_other_income'] == 'False'):
+        if(str(self.request.session['has_job']) == 'False' 
+            and str(self.request.session['is_self_employed']) == 'False' 
+            and str(self.request.session['has_other_income']) == 'False'):
                 context['no_income'] = True
                 self.request.session['annual_income'] = 0
                 self.request.session['income'] = 0
         if 'non_job_income' in self.request.session.keys():
             context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
+            self.request.session['annual_income'] = self.request.session['annual_income'] + self.request.session['non_job_income']
+            if 'income' not in self.request.session.keys():
+                self.request.session['income'] = 0
         context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
         context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
         return context
