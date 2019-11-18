@@ -1,0 +1,12 @@
+
+django
+django-crispy-forms
+pillow
+django-storages
+boto3
+gunicorn
+whitenoise
+python-dotenv
+django-heroku
+django-libsass
+psycopg2-binary==2.8.3

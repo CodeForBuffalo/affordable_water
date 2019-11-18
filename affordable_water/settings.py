@@ -38,14 +38,10 @@ DEBUG = (os.getenv('DEBUG_VALUE') == 'True')
 DEBUG_PROPAGRATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = [
-    'getbuffalowater.herokuapp.com'
+    'getbuffalowater.herokuapp.com',
+    '127.0.0.1',
+    'localhost',
 ]
-if (os.getenv('TESTING_VALUE') == 'True'):
-    ALLOWED_HOSTS += [
-        '127.0.0.1',
-        'localhost',
-        'testserver'
-    ]
 
 ADMINS = [
     ('Mike', 'mbrown@codeforamerica.org')

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class HouseholdForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
-        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
+        help_text=_("Typically how many people you live with on a regular basis, including yourself. Include children, spouses/partners and parents if you live with them."),
         choices=(
             (1,_('1')),
             (2,_('2')),
@@ -26,8 +26,9 @@ class HouseholdForm(forms.Form):
 class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
-        (True,_('Yes')),
         (False,_('No')),
+        (True,_('Yes')),
+       
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
 # Income Forms

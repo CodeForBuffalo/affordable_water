@@ -1,16 +1,9 @@
-{% extends "pathways/snippets/question.html" %}
-{% load i18n %}
-{% load static %}
-
-{% block question %}
+{% extends "pathways/snippets/question.html" %} {% load i18n %} {% load static %} {% block question %}
 <div class="form-card form-card--transition">
   <div class="form-card__header">
     <h1 class="form-card__title">
-      {% if isEligible %}
-      {% trans "You are eligible for assistance on your water bill!" %}
-      {% else %}
-      {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
-      {% endif %}
+      {% if isEligible %} {% trans "You are eligible for assistance on your water bill!" %} {% else %} {% trans "Unfortunately
+      you don't appear to be eligible for assistance on your water bill" %} {% endif %}
     </h1>
   </div>
   <div class="form-card__content">
@@ -18,46 +11,48 @@
     <div class="emoji emoji--big emoji--thumbs-up"></div>
     {% else %}
     <div class="emoji emoji--big emoji--frowning-face"></div>
-    {% endif %}
-    {% if request.session.hasHouseholdBenefits == True %}
+    {% endif %} {% if request.session.hasHouseholdBenefits == True %}
     <p>
-      {% blocktrans %}
-      Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP, your
-      household is <strong>automatically eligible</strong> to receive a discount on your water bill.
-      {% endblocktrans %}
+      {% blocktrans %} Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP,
+      your household is
+      <strong>automatically eligible</strong> to receive a discount on your water bill. {% endblocktrans %}
     </p>
     {% else %}
     <p>
-      {% blocktrans with household=request.session.household_size %}
-      The pre-tax annual income limit for a household size of <strong>
-        {{ household_size }}</strong> is <strong>{{ income_limit }}</strong>.
-      {% endblocktrans %}
+      {% blocktrans with household=request.session.household_size %} The pre-tax annual income limit for a household size of
+      <strong>
+        {{ household_size }}</strong> is
+      <strong>{{ income_limit }}</strong>. {% endblocktrans %}
     </p>
     <p>
-      {% if isEligible %}
-      {% trans "Based on your answers, you look to be <strong>under</strong> the pre-tax income limit." %}
-      {% else %}
-      {% trans "Based on your answers, you look to be <strong>over</strong> the pre-tax income limit." %}
-      {% endif %}
+      {% if isEligible %} {% trans "Based on your answers, you look to be
+      <strong>under</strong> the pre-tax income limit." %} {% else %} {% trans "Based on your answers, you look to be
+      <strong>over</strong> the pre-tax income limit." %} {% endif %}
     </p>
-      {% if not isEligible %}
-        <p>
-          {% trans "Would you like to learn more about other Pathways to Affordable Water?" %}
-        </p>
-      {% endif %}
-    {% endif %}
+    {% if not isEligible %}
+    <p>
+      {% trans "Would you like to learn more about other Pathways to Affordable Water?" %}
+    </p>
+    {% endif %} {% endif %}
   </div>
   <div class="form-card__footer">
     {% if isEligible %}
-    <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
-      {% trans "Continue" %} <i class="icon icon-arrow_forward"></i></a>
+    <a class="button" href="{% if request.session.hasHouseholdBenefits %}{% url 'pathways-apply-household-benefits' %}
+        {% else %}{% url 'pathways-apply-review-eligibility' %}{% endif %}">
+      {% trans "Go back" %}
+      <i class="icon icon-replay"></i>
+    </a>
+
     {% else %}
     <a class="button" href="{% url 'pathways-home' %}">
-      {% trans "Learn more" %} <i class="icon icon-info"></i></a>
+      {% trans "Learn more" %}
+      <i class="icon icon-info"></i>
+    </a>
     {% endif %}
-    <a class="button" href="{% if request.session.hasHouseholdBenefits %}{% url 'pathways-apply-household-benefits' %}
-    {% else %}{% url 'pathways-apply-review-eligibility' %}{% endif %}">
-      {% trans "Go back" %} <i class="icon icon-replay"></i></a>
+    <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
+      {% trans "Continue" %}
+      <i class="icon icon-arrow_forward"></i>
+    </a>
   </div>
 </div>
 {% endblock question %}
