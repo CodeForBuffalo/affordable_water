@@ -110,7 +110,7 @@ class OtherIncomeSourcesView(DispatchView, FormToSessionView):
         if (str(self.request.session['has_job']) == 'True' or str(self.request.session['is_self_employed']) == 'True'):
             self.success_url = '/apply/number-of-jobs/'
         elif (str(form.cleaned_data['has_other_income']) == 'True'):
-            self.success_url = '/apply/non-jobs/'
+            self.success_url = '/apply/non-job-income/'
         else:
             self.success_url = '/apply/review-eligibility/'
         return super().form_valid(form)
@@ -127,7 +127,6 @@ class NumberOfJobsView(FormToSessionView, DispatchView):
             self.request.session['income_method'] = 'estimate'
         return super().form_valid(form)
     
-
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm
@@ -178,10 +177,11 @@ class ReviewEligibilityView(DispatchView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if(self.request.session['has_job'] == 'False' and self.request.session['is_self_employed'] == 'False' and self.request.session['has_other_income'] == 'False'):
-            context['no_income'] = True
-            self.request.session['annual_income'] = 0
-            self.request.session['income'] = 0
+        for field in ['has_job', 'is_self_employed', 'has_other_income']:
+            if field not in self.request.session.keys() or self.request.session[field] == 'False':
+                context['no_income'] = True
+                self.request.session['annual_income'] = 0
+                self.request.session['income'] = 0
         context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
         context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
         return context
@@ -193,7 +193,7 @@ class EligibilityView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         incomeLimits = {1: 41850, 2: 47800, 3: 53800, 4: 59750, 5: 64550, 6: 69350, 7: 74100, 8: 78900,}
-        if self.request.session['hasHouseholdBenefits'] == True:
+        if self.request.session['hasHouseholdBenefits'] == 'True':
             context['isEligible'] = True
         else:
             context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household_size'])]
