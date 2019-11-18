@@ -54,10 +54,12 @@ class HouseholdSizeViewTest(TestCase):
         response = self.client.get(reverse('pathways-apply-household-size'), follow=True)
         self.assertTemplateUsed(response, 'pathways/apply/household-size.html')
 
-    def test_submit_form_valid(self):
-        response = self.client.post(reverse('pathways-apply-household-size'), data={'household_size': 1})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/apply/household-benefits/')
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-household-size'), data={'household_size': 1}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-household-benefits'))
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-household-size'), data={'household_size': 1}, follow=True, secure=True)
         self.assertIn('active_app', self.client.session.keys())
         self.assertIn('household_size', self.client.session.keys())
         self.assertEqual(self.client.session['household_size'], '1')
@@ -71,21 +73,24 @@ class HouseholdBenefitsViewTest(TestCase):
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True)
+        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True, secure=True)
         self.assertEqual(response.status_code, 200)
     
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True)
+        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/household-benefits.html')
 
-    def test_submit_form_valid(self):
+    def test_redirect_on_submit(self):
         for hasHouseholdBenefits in [True, False]:
-            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'hasHouseholdBenefits': hasHouseholdBenefits})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'hasHouseholdBenefits': hasHouseholdBenefits}, follow=True, secure=True)
             if hasHouseholdBenefits:
-                self.assertEqual(response.url, '/apply/eligibility/')
+                self.assertRedirects(response, reverse('pathways-apply-eligibility'))
             else:
-                self.assertEqual(response.url, '/apply/household-contributors/')
+                self.assertRedirects(response, reverse('pathways-apply-household-contributors'))
+
+    def test_session_saved_on_submit(self):
+        for hasHouseholdBenefits in [True, False]:
+            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'hasHouseholdBenefits': hasHouseholdBenefits}, follow=True, secure=True)
             self.assertIn('hasHouseholdBenefits', self.client.session.keys())
             self.assertEqual(self.client.session['hasHouseholdBenefits'], str(hasHouseholdBenefits))
 
@@ -94,9 +99,8 @@ class DispatchViewTest(TestCase):
         activate('en')
     
     def test_url_without_active_app_session_key(self):
-        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=False)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/en/')
+        response = self.client.get(reverse('pathways-apply-household-benefits'), follow=False, secure=True)
+        self.assertRedirects(response, reverse('pathways-home'))
 
 class HouseholdContributorsViewTest(TestCase):
     def setUp(self):
@@ -108,25 +112,24 @@ class HouseholdContributorsViewTest(TestCase):
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True)
+        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True, secure=True)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True)
+        response = self.client.get(reverse('pathways-apply-household-contributors'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/household-contributors.html')
     
     def test_redirect_on_submit(self):
         for household_contributors in [1,2,3,4]:
-            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors}, follow=True, secure=True)
             if household_contributors == 1:
-                self.assertEqual(response.url, '/apply/job-status/')
+                self.assertRedirects(response, reverse('pathways-apply-job-status'))
             else:
-                self.assertEqual(response.url, '/apply/income/')
+                self.assertRedirects(response, reverse('pathways-apply-income'))
 
     def test_session_saved_on_submit(self):
         for household_contributors in [1,2,3,4]:
-            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors})
+            response = self.client.post(reverse('pathways-apply-household-contributors'), data={'household_contributors': household_contributors}, follow=True, secure=True)
             self.assertIn('household_contributors', self.client.session.keys())
             self.assertEqual(self.client.session['household_contributors'], str(household_contributors))
             if household_contributors > 1:
@@ -144,23 +147,22 @@ class JobStatusViewTest(TestCase):
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('pathways-apply-job-status'), follow=True)
+        response = self.client.get(reverse('pathways-apply-job-status'), follow=True, secure=True)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('pathways-apply-job-status'), follow=True)
+        response = self.client.get(reverse('pathways-apply-job-status'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/job-status.html')
     
     def test_redirect_on_submit(self):
         for has_job in [True, False]:
-            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)})
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/apply/self-employment/')
+            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)}, follow=True, secure=True)
+            self.assertRedirects(response, reverse('pathways-apply-self-employment'))
 
     def test_session_saved_on_submit(self):
         for has_job in [True, False]:
-            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-job-status'), data={'has_job': str(has_job)}, follow=True, secure=True)
+            self.assertEqual(response.status_code, 200)
             self.assertIn('has_job', self.client.session.keys())
             self.assertEqual(self.client.session['has_job'], str(has_job))
 
@@ -185,14 +187,13 @@ class SelfEmploymentViewTest(TestCase):
 
     def test_redirect_on_submit(self):
         for is_self_employed in [True, False]:
-            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': str(is_self_employed)})
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/apply/other-income-sources/')
+            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': str(is_self_employed)}, follow=True, secure=True)
+            self.assertRedirects(response, reverse('pathways-apply-other-income-sources'))
 
     def test_session_saved_on_submit(self):
         for is_self_employed in [True, False]:
-            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': str(is_self_employed)})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': str(is_self_employed)}, follow=True, secure=True)
+            self.assertEqual(response.status_code, 200)
             self.assertIn('is_self_employed', self.client.session.keys())
             self.assertEqual(self.client.session['is_self_employed'], str(is_self_employed))
 
@@ -206,18 +207,17 @@ class OtherIncomeSourcesViewTest(TestCase):
         session.save()
     
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True)
+        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True, secure=True)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True)
+        response = self.client.get(reverse('pathways-apply-other-income-sources'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/other-income-sources.html')
 
     def test_redirect_on_submit(self):
         for has_other_income in [True, False]:
-            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income})
-            self.assertEqual(response.status_code, 302)
-            self.assertEqual(response.url, '/apply/number-of-jobs/', msg=f"has_other_income {has_other_income} has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
+            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income}, follow=True, secure=True)
+            self.assertRedirects(response, reverse('pathways-apply-number-of-jobs'), msg_prefix=f"has_other_income {has_other_income} has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
 
         session = self.client.session
         session['has_job'] = False
@@ -225,19 +225,17 @@ class OtherIncomeSourcesViewTest(TestCase):
         session.save()
 
         # has other income, does NOT have job, is NOT self-employed
-        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': True})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/apply/non-jobs/')
+        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': True}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-non-job-income'))
 
         # does NOT have other income, does NOT have job, is NOT self-employed
-        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': False})
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/apply/review-eligibility/')
+        response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': False}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'))
 
     def test_session_saved_on_submit(self):
         for has_other_income in [True, False]:
-            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income}, follow=True, secure=True)
+            self.assertEqual(response.status_code, 200)
             self.assertIn('has_other_income', self.client.session.keys())
             self.assertEqual(self.client.session['has_other_income'], str(has_other_income))
 
@@ -249,25 +247,24 @@ class NumberOfJobsViewTest(TestCase):
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
-        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True)
+        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True, secure=True)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True)
+        response = self.client.get(reverse('pathways-apply-number-of-jobs'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/number-of-jobs.html')
     
     def test_redirect_on_submit(self):
         for number_of_jobs in range(1,9):
-            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs})
-            self.assertEqual(response.status_code, 302)
+            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs}, follow=True, secure=True)
             if number_of_jobs == 1:
-                self.assertEqual(response.url, '/apply/income-methods/')
+                self.assertRedirects(response, reverse('pathways-apply-income-methods'))
             else:
-                self.assertEqual(response.url, '/apply/income/')
+                self.assertRedirects(response, reverse('pathways-apply-income'))
 
     def test_session_saved_on_submit(self):
         for number_of_jobs in range(1,9):
-            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs})
+            response = self.client.post(reverse('pathways-apply-number-of-jobs'), data={'number_of_jobs': number_of_jobs}, follow=True, secure=True)
             self.assertIn('number_of_jobs', self.client.session.keys())
             self.assertEqual(self.client.session['number_of_jobs'], str(number_of_jobs))
             if number_of_jobs > 1:
