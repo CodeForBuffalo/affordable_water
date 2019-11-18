@@ -33,7 +33,7 @@ class FormToAppView(FormView):
     def form_valid(self, form):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         for field in form:
-            app[field.name] = form.cleaned_data[field.name]
+            setattr(app, field.name, form.cleaned_data[field.name])
         app.save()
         return super().form_valid(form)      
     
@@ -272,7 +272,7 @@ class SignatureView(FormView, DispatchView):
         app = Application()
         for field in Application._meta.get_fields():
             if field.name not in ['id','annual_income','income_photo','benefits_photo','residence_photo']:
-                app[field.name] = self.request.session[field.name]
+                setattr(app, field.name, self.request.session[field.name])
 
         # Assign annual_income if hasHouseholdBenefits is False
         if not self.request.session['hasHouseholdBenefits']:
@@ -298,20 +298,26 @@ class DocumentIncomeView(FormToAppView, DispatchView):
     success_url = '/apply/documents-residence/'
     extra_context = {'next_url': success_url}
 
-    def __init__(self, *args, **kwargs):
-        super(DocumentIncomeView, self).__init__(*args, **kwargs)
+    def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        self.form_class = forms.DocumentBenefitsForm if app.hasHouseholdBenefits else forms.DocumentIncomeForm
+        if str(app.hasHouseholdBenefits) == 'True':
+            self.form_class = forms.DocumentBenefitsForm
+        else:
+            self.form_class = forms.DocumentIncomeForm
+        return self.form_class
 
 class DocumentResidenceView(FormToAppView, DispatchView):
     template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
     extra_context = {'next_url': success_url}
 
-    def __init__(self, *args, **kwargs):
-        super(DocumentResidenceView, self).__init__(*args, **kwargs)
+    def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        self.form_class = forms.DocumentTenantForm if app.rent_or_own == 'rent' else forms.DocumentHomeownerForm  
+        if str(app.rent_or_own) == 'rent':
+            self.form_class = forms.DocumentTenantForm
+        else:
+            self.form_class = forms.DocumentHomeownerForm
+        return self.form_class
 
 class ConfirmationView(DispatchView):
     template_name = 'pathways/apply/confirmation.html'
