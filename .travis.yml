@@ -42,9 +42,6 @@ script:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
-  - whereis google-chrome-stable
-  - whereis chromedriver
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - coverage run manage.py test -v 2
 
 after_script:
