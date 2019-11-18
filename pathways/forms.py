@@ -77,6 +77,13 @@ class NumberOfJobsForm(forms.Form):
         super(NumberOfJobsForm, self).__init__(*args, **kwargs)
         self.fields['number_of_jobs'].error_messages = {'required': _("Select how many jobs you currently have.")}
 
+class NonJobIncomeForm(forms.Form):
+    non_job_income = forms.FloatField(min_value=0, label=_("How much money from other sources do you get every month?"))
+
+    def __init__(self, *args, **kwargs):
+        super(NonJobIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['non_job_income'].error_messages = {'required': _("Be sure to provide your income from other sources.")}
+
 # Income Forms
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[

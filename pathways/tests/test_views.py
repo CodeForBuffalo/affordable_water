@@ -272,3 +272,30 @@ class NumberOfJobsViewTest(TestCase):
             if number_of_jobs > 1:
                 self.assertIn('income_method', self.client.session.keys())
                 self.assertEqual(self.client.session['income_method'], 'estimate')
+
+class NonJobIncomeViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['has_job'] = False
+        session['is_self_employed'] = False
+        session['annual_income'] = 12000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-non-job-income'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-non-job-income'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/non-job-income.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-non-job-income'), data={'non_job_income': 15}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-non-job-income'), data={'non_job_income': 15}, follow=True, secure=True)
+        self.assertIn('non_job_income', self.client.session.keys())
+        self.assertEqual(self.client.session['non_job_income'], 15)

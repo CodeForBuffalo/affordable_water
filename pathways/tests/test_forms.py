@@ -67,6 +67,21 @@ class NumberOfJobsFormTest(TestCase):
             self.assertTrue(form.is_valid(), msg=f"number_of_jobs {number_of_jobs} expected to be valid, form errors {form.errors}")
             self.assertEqual(form.cleaned_data['number_of_jobs'], str(number_of_jobs))
 
+class NonJobIncomeFormTest(TestCase):
+    def test_error_messages_correct(self):
+        form = forms.NonJobIncomeForm(data={})
+        self.assertIn(_("Be sure to provide your income from other sources."), form.errors['non_job_income'])
+
+    def test_valid_form_inputs(self):
+        for non_job_income in [15.0, 3000, 0.01]:
+            form = forms.NonJobIncomeForm(data={'non_job_income': non_job_income})
+            self.assertTrue(form.is_valid(), msg=f"non_job_income {non_job_income} expected to be valid, form errors {form.errors}")
+
+    def test_invalid_form_inputs(self):
+        for non_job_income in [-15]:
+            form = forms.NonJobIncomeForm(data={'non_job_income': non_job_income})
+            self.assertFalse(form.is_valid(), msg=f"non_job_income {non_job_income} expected to be valid, form errors {form.errors}")
+
 class ExactIncomeFormTest(TestCase):
     def test_error_messages_correct(self):
         form = forms.ExactIncomeForm(data={})

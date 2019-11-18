@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-card__body-text">
                         {% if no_income %}
-                        {% trans "You indicated no source of income." %}
+                        {% trans "You indicated no job source of income." %}
                         {% elif request.session.income_method == 'estimate' %}
                         {% trans "Estimated income before taxes" %}
                         {% elif request.session.income_method == 'hourly' %}
@@ -39,6 +39,21 @@
                         {% endif %}
                     </div>
                 </div>
+
+                {% if request.session.has_other_income == 'True' %}
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji">
+                        <span class="emoji emoji emoji--med emoji--money"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {{ non_job_income_formatted }}
+                        {% trans "per month" %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% trans "Money from other sources" %}
+                    </div>
+                </div>
+                {% endif %}
 
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--big emoji--house"></span></div>

@@ -126,7 +126,12 @@ class NumberOfJobsView(FormToSessionView, DispatchView):
         else:
             self.request.session['income_method'] = 'estimate'
         return super().form_valid(form)
-    
+
+class NonJobIncomeView(FormToSessionView, DispatchView):
+    template_name = 'pathways/apply/non-job-income.html'
+    form_class = forms.NonJobIncomeForm
+    success_url = '/apply/review-eligibility'
+
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm
@@ -177,11 +182,14 @@ class ReviewEligibilityView(DispatchView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        for field in ['has_job', 'is_self_employed', 'has_other_income']:
-            if field not in self.request.session.keys() or self.request.session[field] == 'False':
+        if(self.request.session['has_job'] == 'False' 
+            and self.request.session['is_self_employed'] == 'False' 
+            and self.request.session['has_other_income'] == 'False'):
                 context['no_income'] = True
                 self.request.session['annual_income'] = 0
                 self.request.session['income'] = 0
+        if 'non_job_income' in self.request.session.keys():
+            context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
         context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
         context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
         return context
