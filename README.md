@@ -41,7 +41,7 @@ This script automatically:
 
 #### Build assets
 ```
-npm run build
+npm run assets
 ```
 This script automatically:
 - Uses [gulp.js](https://gulpjs.com/) to copy assets from `node_modules` to `_vendor` folder.
