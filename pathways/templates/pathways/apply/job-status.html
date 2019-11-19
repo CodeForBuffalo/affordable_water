@@ -1,0 +1,28 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <div class="form-card__emoji--header"></div>
+        <div class="with-padding-med emoji emoji--big emoji--briefcase"></div>
+        <h1 id="job-status-yes-no-buttons" class="form-card__title">
+            {{ form.has_job.label }}
+        </h1>
+        <p class="form-card__body-text">{{ form.has_job.help_text }}</p>
+    </div>
+
+    <form method="POST" style="display: inline-block;">
+        {% csrf_token %}
+        <label class="sr-only" for="id_has_job">{{ form.has_job.label }}</label>
+        <p class="sr-only text--help">{{ form.has_job.help_text }}</p>
+        <button type="submit" name="has_job" class="button" value="True"
+            aria-describedby="job-status-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span></i>{% trans "Yes" %}</button>
+        <button type="submit" name="has_job" class="button" value="False"
+            aria-describedby="job-status-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>{% trans "No" %}</button>
+    </form>
+</div>
+{% endblock question %}

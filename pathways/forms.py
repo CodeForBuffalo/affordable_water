@@ -5,9 +5,9 @@ from .models import Application
 from django.utils.translation import ugettext_lazy as _
 
 
-class HouseholdForm(forms.Form):
+class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
-        help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself. If you live with them, include children under 22, spouses/partners, and parents."),
+        help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."),
         choices=(
             (1,_('1')),
             (2,_('2')),
@@ -20,17 +20,78 @@ class HouseholdForm(forms.Form):
         ), required=True)
 
     def __init__(self, *args, **kwargs):
-        super(HouseholdForm, self).__init__(*args, **kwargs)
+        super(HouseholdSizeForm, self).__init__(*args, **kwargs)
         self.fields['household_size'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):
     hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
-        (True,_('Yes')),
-        (False,_('No')),
+        (True,_('Yes')), (False,_('No')),
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
 
+class HouseholdContributorsForm(forms.Form):
+    household_contributors = forms.ChoiceField(label=_("How many individuals contribute to your household income?"),
+    choices=(
+        (1,_('1')), (2,_('2')), (3,_('3')), (4,_('4')),
+        (5,_('5')), (6,_('6')), (7,_('7')), (8,_('8+')),
+    ), help_text=_("Include anyone who regularly contributes to your household living expenses such as groceries, rent or property taxes, or utilities."))
+
+class JobStatusForm(forms.Form):
+    has_job = forms.ChoiceField(label=_("Do you have a job?"),
+    choices=(
+        (True,_('Yes')), (False,_('No')),
+    ), help_text=_("Make sure to include self-employed work."))
+
+    def __init__(self, *args, **kwargs):
+        super(JobStatusForm, self).__init__(*args, **kwargs)
+        self.fields['has_job'].error_messages = {'required': _("Select your employment status.")}
+
+class SelfEmploymentForm(forms.Form):
+    is_self_employed = forms.ChoiceField(label=_("Do you have income from freelance, independent contractor, or self-employment work?"),
+    choices=(
+        (True, _('Yes')), (False, _('No')),
+    ))
+
+    def __init__(self, *args, **kwargs):
+        super(SelfEmploymentForm, self).__init__(*args, **kwargs)
+        self.fields['is_self_employed'].error_messages = {'required': _("Select your self-employment status.")}
+
+class OtherIncomeSourcesForm(forms.Form):
+    has_other_income = forms.ChoiceField(label=_("Do you get any money from other sources?"), 
+    choices=(
+        (True, _('Yes')),(False, _('No')),
+    ))
+
+    def __init__(self, *args, **kwargs):
+        super(OtherIncomeSourcesForm, self).__init__(*args, **kwargs)
+        self.fields['has_other_income'].error_messages = {'required': _("Indicate whether you get any money from other sources.")}
+
+class NumberOfJobsForm(forms.Form):
+    number_of_jobs = forms.ChoiceField(label=_("In total, how many jobs do you have?"), 
+    choices=(
+            (1,_('1')),(2,_('2')),(3,_('3')),(4,_('4')),(5,_('5')),(6,_('6')),
+            (7,_('7')),(8,_('8')),(9,_('9')),(10,_('10')),(11,_('11')),(12,_('12')),
+        ))
+
+    def __init__(self, *args, **kwargs):
+        super(NumberOfJobsForm, self).__init__(*args, **kwargs)
+        self.fields['number_of_jobs'].error_messages = {'required': _("Select how many jobs you currently have.")}
+
+class NonJobIncomeForm(forms.Form):
+    non_job_income = forms.FloatField(min_value=0, label=_("How much money from other sources do you get every month?"))
+
+    def __init__(self, *args, **kwargs):
+        super(NonJobIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['non_job_income'].error_messages = {'required': _("Be sure to provide your income from other sources.")}
+
 # Income Forms
+pay_period_choices = [
+    ('weekly',_("Every week")),
+    ('biweekly',_("Every two weeks")),
+    ('semimonthly',_('Twice a month')),
+    ('monthly',_('Every month')),
+    ]
+
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[
         ('exact', _("I can provide the exact amount")),
@@ -40,24 +101,19 @@ class IncomeMethodsForm(forms.Form):
 
 
 class ExactIncomeForm(forms.Form):
-    pay_period = forms.ChoiceField(choices=[
-        ('weekly',_("Every week")),
-        ('biweekly',_("Every two weeks")),
-        ('semimonthly',_('Twice a month')),
-        ('monthly',_('Every month')),
-        ], label=_("How often do you get paid?"), required=True)
+    pay_period = forms.ChoiceField(choices=pay_period_choices, label=_("How often do you get paid?"), required=True)
     income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"),
         help_text=_("If this changes with each pay period, average the pay amounts for the last 30 days."))
 
     def __init__(self, *args, **kwargs):
         super(ExactIncomeForm, self).__init__(*args, **kwargs)
-        self.fields['income'].error_messages = {'required': _("Be sure to provide your job income before taxes")}
+        self.fields['income'].error_messages = {'required': _("Be sure to provide your income before taxes")}
         self.fields['pay_period'].error_messages = {'required': _("Select a pay period")}
 
 
 class HourlyIncomeForm(forms.Form):
-    income = forms.FloatField(min_value=0, label=_("What is your hourly wage?"), label_suffix="")
-    pay_period = forms.IntegerField(min_value=0, label=_("How many hours a week do you work?"), required=True, 
+    income = forms.FloatField(min_value=0.01, label=_("What is your hourly wage?"), label_suffix="")
+    pay_period = forms.IntegerField(min_value=1, max_value=168, label=_("How many hours a week do you work?"), required=True, 
         help_text=_("If this changes, give an average for the last 30 days."))
 
     def __init__(self, *args, **kwargs):
@@ -69,12 +125,12 @@ class HourlyIncomeForm(forms.Form):
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
         label_suffix="", help_text=_("If you live with them, include income from spouse and any children over 22. Only include roommates if you purchase more than half of your meals together."))
-    pay_period = forms.ChoiceField(choices=[
-        ('weekly',_("Every week")),
-        ('biweekly',_("Every two weeks")),
-        ('semimonthly',_('Twice a month')),
-        ('monthly',_('Every month')),
-        ], label=_("How often?"), required=False)
+    pay_period = forms.ChoiceField(choices=pay_period_choices, label=_("How often?"), required=True)
+    
+    def __init__(self, *args, **kwargs):
+        super(EstimateIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['income'].error_messages = {'required': _("Be sure to provide a household income.")}
+        self.fields['pay_period'].error_messages = {'required': _("Select how often your household makes this amount.")}
 
 # End Income Forms
 
@@ -141,7 +197,6 @@ class ContactInfoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ContactInfoForm, self).__init__(*args, **kwargs)
         self.fields['phone_number'].error_messages = {'required': _("Make sure to provide a valid phone number.")}
-        self.fields['email_address'].error_messages = {'required': _("Make sure to provide an email address.")}
 
 class AccountHolderForm(forms.Form):
     account_first = forms.CharField(max_length=100, required=True, label=_("What is the account holder's first name?"), widget=forms.TextInput(attrs={'placeholder': _("First name")}))

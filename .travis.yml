@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 
 language: python
 
@@ -8,6 +8,9 @@ python:
 node_js:
   - "12"
 
+addons:
+  chrome: stable
+
 before_install:
   - pip install -U pip
 
@@ -15,6 +18,12 @@ install:
   - pip install pipenv
   - pipenv sync --dev
   - npm install
+  - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - export CHROME_BIN=chromium-browser
 
 cache:
   directories:

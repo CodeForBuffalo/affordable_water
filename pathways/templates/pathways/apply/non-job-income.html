@@ -1,0 +1,63 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-card__header">
+            <div class="form-card__emoji--header"></div>
+            <div class="with-padding-med emoji emoji--big emoji--money"></div>
+            <h1 class="form-card__title" id="non_job_income_labelledby" >
+                {{ form.non_job_income.label }}
+            </h1>
+        </div>
+
+        <div class="form-card__body-text">
+            {% trans "For example:" %}
+        </div>
+        <div class="form-card__body-text">
+            <div class="text--centered">
+                <ul class="with-padding-med">
+                    <li class="example">{% trans "Social Security" %}</li>
+                    <li class="example">{% trans "State Disability" %}</li>
+                    <li class="example">{% trans "Military BAH" %}</li>
+                    <li class="example">{% trans "Child support" %}</li>
+                    <li class="example">{% trans "Worker’s comp" %}</li>
+                    <li class="example">{% trans "Alimony" %}</li>
+                    <li class="example">{% trans "Unemployment" %}</li>
+                    <li class="example">{% trans "VA Benefits" %}</li>
+                    <li class="example">{% trans "Pensions" %}</li>
+                    <li class="example">{% trans "Monetary gifts" %}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="form-group {% if form.non_job_income.errors %}form-group--error{% endif %}">
+            <div class="text-input-group-container">
+                <div class="text-input-group form-width--short">
+                    <div class="text-input-group__prefix">$</div>
+                    <input autocomplete="off" autocorrect="off"
+                        autocapitalize="off" spellcheck="false" type="number" class="text-input" step=".01"
+                        aria-labelledby="non_job_income_labelledby"
+                        aria-describedby="non_job_income_describedby" name="non_job_income" id="id_non_job_income"/>
+                </div>
+            </div>
+            {% if form.non_job_income.errors %}
+                {% for error in form.non_job_income.errors %}
+                    <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock question %}
