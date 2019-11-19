@@ -85,6 +85,13 @@ class NonJobIncomeForm(forms.Form):
         self.fields['non_job_income'].error_messages = {'required': _("Be sure to provide your income from other sources.")}
 
 # Income Forms
+pay_period_choices = [
+    ('weekly',_("Every week")),
+    ('biweekly',_("Every two weeks")),
+    ('semimonthly',_('Twice a month')),
+    ('monthly',_('Every month')),
+    ]
+
 class IncomeMethodsForm(forms.Form):
     income_method = forms.ChoiceField(choices=[
         ('exact', _("I can provide the exact amount")),
@@ -94,12 +101,7 @@ class IncomeMethodsForm(forms.Form):
 
 
 class ExactIncomeForm(forms.Form):
-    pay_period = forms.ChoiceField(choices=[
-        ('weekly',_("Every week")),
-        ('biweekly',_("Every two weeks")),
-        ('semimonthly',_('Twice a month')),
-        ('monthly',_('Every month')),
-        ], label=_("How often do you get paid?"), required=True)
+    pay_period = forms.ChoiceField(choices=pay_period_choices, label=_("How often do you get paid?"), required=True)
     income = forms.FloatField(min_value=0, label=_("How much money do you get each pay period before taxes?"),
         help_text=_("If this changes with each pay period, average the pay amounts for the last 30 days."))
 
@@ -123,12 +125,7 @@ class HourlyIncomeForm(forms.Form):
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
         label_suffix="", help_text=_("If you live with them, include income from spouse and any children over 22. Only include roommates if you purchase more than half of your meals together."))
-    pay_period = forms.ChoiceField(choices=[
-        ('weekly',_("Every week")),
-        ('biweekly',_("Every two weeks")),
-        ('semimonthly',_('Twice a month')),
-        ('monthly',_('Every month')),
-        ], label=_("How often?"), required=True)
+    pay_period = forms.ChoiceField(choices=pay_period_choices, label=_("How often?"), required=True)
     
     def __init__(self, *args, **kwargs):
         super(EstimateIncomeForm, self).__init__(*args, **kwargs)
