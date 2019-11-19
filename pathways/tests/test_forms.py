@@ -201,3 +201,9 @@ class ContactInfoFormTest(TestCase):
             
         form = forms.ContactInfoForm(data={'email_address':'example@example.com'})
         self.assertFalse(form.is_valid(), msg=f"ContactInfoForm with empty data for phone_number should be invalid.")
+
+class AccountHolderFormTest(TestCase):
+    def test_error_messages_correct(self):
+        form = forms.AccountHolderForm(data={})
+        self.assertIn(_("Make sure to provide a first name."), form.errors['account_first'])
+        self.assertIn(_("Make sure to provide a last name."), form.errors['account_last'])
