@@ -300,3 +300,54 @@ class NonJobIncomeViewTest(TestCase):
         response = self.client.post(reverse('pathways-apply-non-job-income'), data={'non_job_income': 15}, follow=True, secure=True)
         self.assertIn('non_job_income', self.client.session.keys())
         self.assertEqual(self.client.session['non_job_income'], 15)
+
+class IncomeViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['has_job'] = False
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        for method in ['exact', 'hourly', 'estimate']:
+            session = self.client.session
+            session['income_method'] = method
+            session.save()
+            response = self.client.get(reverse('pathways-apply-income'), follow=True, secure=True)
+            self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        for method in ['exact', 'hourly', 'estimate']:
+            session = self.client.session
+            session['income_method'] = method
+            session.save()
+            response = self.client.get(reverse('pathways-apply-income'), follow=True, secure=True)
+            self.assertTemplateUsed(response, f'pathways/apply/{method}-income.html')
+    
+    def test_redirect_on_submit(self):
+        for method in ['exact', 'hourly', 'estimate']:
+            session = self.client.session
+            session['income_method'] = method
+            session.save()
+            pay_period = 40 if method == 'hourly' else 'weekly'
+            response = self.client.post(reverse('pathways-apply-income'), data={'income': 150, 'pay_period': pay_period}, follow=True, secure=True)
+            self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        for method in ['exact', 'hourly', 'estimate']:
+            session = self.client.session
+            session['income_method'] = method
+            session.save()
+            pay_period = 40 if method == 'hourly' else 'weekly'
+            response = self.client.post(reverse('pathways-apply-income'), data={'income': 150, 'pay_period': pay_period}, follow=True, secure=True)
+            self.assertIn('income', self.client.session.keys())
+            self.assertEqual(self.client.session['income'], 150)
+            self.assertIn('pay_period', self.client.session.keys())
+            self.assertEqual(self.client.session['pay_period'], pay_period)
+            self.assertIn('annual_income', self.client.session.keys())
+            pay_multipliers = {'weekly':52, 'biweekly':25, 'semimonthly':24,'monthly':12} 
+            expected_annual_income = 150*pay_multipliers[pay_period] if pay_period in pay_multipliers else 150*pay_period*52
+            self.assertEqual(self.client.session['annual_income'], expected_annual_income)
