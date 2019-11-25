@@ -18,6 +18,7 @@ coverage = "*"
 django-coverage-plugin = "*"
 pytest-cov = "*"
 whitenoise = "*"
+selenium = "*"
 
 [requires]
 python_version = "3.7"
