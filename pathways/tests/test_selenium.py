@@ -18,6 +18,7 @@ class PathwaysTestCase(LiveServerTestCase):
         self.driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=chrome_driver)
         activate('en')
         self.driver.implicitly_wait(10)
+        self.driver.set_page_load_timeout(10)
         super(PathwaysTestCase, self).setUp()
 
     def tearDown(self):
