@@ -11,7 +11,7 @@ chrome_options.headless = True
 if (os.getenv('TRAVIS_CHROME_PATH') == None):
     chrome_driver = "node_modules/chromedriver/lib/chromedriver/chromedriver.exe"
 else:
-    chrome_driver = "/usr/local/share/chromedriver"
+    chrome_driver = "/home/travis/chromedriver/chromedriver"
 
 class PathwaysTestCase(LiveServerTestCase):
     def setUp(self):

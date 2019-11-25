@@ -20,8 +20,7 @@ install:
   - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/chromedriver
   - rm ~/chromedriver_linux64.zip
-  - sudo mv -f ~/chromedriver /usr/local/share/
-  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo chmod +x /home/travis/chromedriver/chromedriver
   - export CHROME_BIN=chromium-browser
 
 cache:
