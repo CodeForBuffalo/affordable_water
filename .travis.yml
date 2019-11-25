@@ -10,6 +10,9 @@ python:
 node_js:
   - "12"
 
+addons:
+  chrome: stable
+
 before_install:
   - pip install -U pip
 
