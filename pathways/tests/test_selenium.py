@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import os
 
 chrome_options = Options()
-chrome_options.add_argument("--headless")
+chrome_options.headless = True
 if (os.getenv('TRAVIS_CHROME_PATH') == None):
     chrome_driver = "node_modules/chromedriver/lib/chromedriver/chromedriver.exe"
 else:
