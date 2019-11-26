@@ -361,7 +361,7 @@ class ReviewEligibilityViewTest(TestCase):
         session['household_size'] = 1
         session['income'] = 400
         session['pay_period'] = 'weekly'
-        session['has_job'] = False
+        session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
         session.save()
@@ -373,3 +373,19 @@ class ReviewEligibilityViewTest(TestCase):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/review-eligibility.html')
+    
+    def test_context_data(self):
+        response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
+        self.assertEqual(response.context['annual_income_formatted'], '$20,800')
+        self.assertEqual(response.context['income_formatted'], '$400')
+
+        session = self.client.session
+        session['has_job'] = False
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['non_job_income'] = True
+        del session['income']
+        session.save()
+
+        response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
+        self.assertEqual(self.client.session['income'], 0)
