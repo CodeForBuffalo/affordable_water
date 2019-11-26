@@ -4,6 +4,7 @@ from django.utils.translation import activate
 from django.utils.translation import ugettext_lazy as _
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 import os
 
 chrome_options = Options()
@@ -25,7 +26,18 @@ class PathwaysTestCase(LiveServerTestCase):
         self.driver.quit()
         super(PathwaysTestCase, self).tearDown()
 
-    def test_home(self):
+    def test_home_title(self):
         self.driver.get(f"{self.live_server_url}")
         self.assertIn('GetBuffaloWater', self.driver.title)
+
+    def test_apply_now(self):
+        self.driver.get(self.live_server_url)
+        self.driver.find_element_by_link_text('Apply now').click()
+        h1 = self.driver.find_element_by_class_name('form-card__title')
+        self.assertEqual('Here\'s how Affordable Water works.', h1.text)
+
+        self.driver.get(self.live_server_url)
+        self.driver.find_element_by_link_text('Apply now').send_keys(Keys.ENTER)
+        h1 = self.driver.find_element_by_class_name('form-card__title')
+        self.assertEqual('Here\'s how Affordable Water works.', h1.text)
         
