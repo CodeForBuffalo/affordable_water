@@ -34,10 +34,10 @@ class PathwaysTestCase(LiveServerTestCase):
         self.driver.get(self.live_server_url)
         self.driver.find_element_by_link_text('Apply now').click()
         h1 = self.driver.find_element_by_class_name('form-card__title')
-        self.assertEqual('Here\'s how Affordable Water works.', h1.text)
+        self.assertEqual('Here\'s how Affordable Water works.', h1.get_attribute("innerText"))
 
         self.driver.get(self.live_server_url)
         self.driver.find_element_by_link_text('Apply now').send_keys(Keys.ENTER)
         h1 = self.driver.find_element_by_class_name('form-card__title')
-        self.assertEqual('Here\'s how Affordable Water works.', h1.text)
+        self.assertEqual('Here\'s how Affordable Water works.', h1.get_attribute("innerText"))
         
