@@ -123,7 +123,3 @@ _vendor/**/*
 
 # django staticfiles
 !staticfiles/.gitkeep
-
-# cfa-styleguide-gem
-pathways/static/pathways/cfa-styleguide-gem/app/**/*
-!pathways/static/pathways/cfa-styleguide-gem/app/assets/**/*
