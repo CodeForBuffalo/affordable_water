@@ -34,8 +34,8 @@ npm run setup
 This script automatically:
 1. Installs [pipenv](https://github.com/pypa/pipenv) to manage Python virtual environment and dependencies. [Learn more about pipenv.](https://realpython.com/pipenv-guide/)
     - `pip install pipenv`
-2. Creates a Python virtual environment using pipenv and installs dependencies in Pipfile
-    - `pipenv install` 
+2. Creates a Python virtual environment using pipenv and installs dependencies based on the Pipfile.lock
+    - `pipenv sync` 
 3. Installs node modules using npm
     - `npm install`
 
