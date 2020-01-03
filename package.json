@@ -25,6 +25,7 @@
     "bourbon": "^6.0.0",
     "chromedriver": "^78.0.1",
     "getbuffalowater-bourbon-neat": "^1.8.0",
+    "gulp": "^4.0.2",
     "gulp-sass": "^4.0.2",
     "node-sass": "^4.13.0",
     "normalize.css": "^8.0.1"
