@@ -435,3 +435,42 @@ class ReviewEligibilityViewTest(TestCase):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
         self.assertTemplateUsed(response, 'pathways/apply/review-eligibility.html')
+
+class EligibilityViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 2
+        session['hasHouseholdBenefits'] = False
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-eligibility'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-eligibility'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/eligibility.html')
+
+class AdditionalQuestionsViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-additional-questions'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-additional-questions'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/additional-questions.html')
