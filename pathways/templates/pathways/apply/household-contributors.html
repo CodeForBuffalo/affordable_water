@@ -19,13 +19,13 @@
             <div class="form-group {% if form.household_contributors.errors %}form-group--error{% endif %}">
                 <label class="sr-only" for="id_household_contributors">{{ form.household_contributors.label }}</label>
                 <p class="sr-only text--help">{{ form.household_contributors.help_text }}</p>
-                <radiogroup class="input-group--inline">
-                    {% for value, text in form.household_contributors.field.choices %}
-                    <label for="id_household_contributors_{{ value }}" class="radio-button">
-                        <input type="radio" name="household_contributors" id="id_household_contributors_{{ value }}" value="{{ value }}">{{ value }}
-                    </label>
-                    {% endfor %}
-                </radiogroup>
+                <div class="select">
+                    <select class="select__element" name="household_contributors" id="id_household_contributors">
+                        {% for value, text in form.household_contributors.field.choices %}
+                        <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 {% if form.household_contributors.errors %}
                     {% for error in form.household_contributors.errors %}
                         <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
