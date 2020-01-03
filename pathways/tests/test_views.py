@@ -412,3 +412,25 @@ class IncomeViewTest(TestCase):
         self.assertEqual(self.client.session['income'], 2000)
         self.assertEqual(self.client.session['pay_period'], 'semimonthly')
         self.assertEqual(self.client.session['annual_income'], 48000)
+
+class ReviewEligibilityViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-review-eligibility'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/review-eligibility.html')
