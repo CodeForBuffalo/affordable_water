@@ -15,6 +15,7 @@
     "collectstatic": "pipenv run python manage.py collectstatic --noinput",
     "compress": "pipenv run python manage.py compress",
     "assets": "npm run gulp && npm run collectstatic && npm run compress",
+    "migrate": "pipenv run python manage.py migrate",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
     "heroku-postbuild": "npm run gulp && npm run collectstatic && npm run compress"
