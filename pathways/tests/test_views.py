@@ -418,6 +418,7 @@ class ReviewEligibilityViewTest(TestCase):
         activate('en')
         session = self.client.session
         session['active_app'] = True
+        session['household_size'] = 2
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
