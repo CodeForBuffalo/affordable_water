@@ -34,7 +34,8 @@ else:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # This expression evaluates to false if DEBUG_VALUE is not set as environment variable
-DEBUG = (os.getenv('DEBUG_VALUE') == 'True')
+#DEBUG = (os.getenv('DEBUG_VALUE') == 'True')
+DEBUG  = True
 DEBUG_PROPAGRATE_EXCEPTIONS = True
 
 ALLOWED_HOSTS = [

@@ -1,10 +1,12 @@
 from django.urls import path
+from django.conf.urls.i18n import i18n_patterns
 
 from . import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='pathways-home'),
     path('about/', views.AboutView.as_view(),name='pathways-about'),
+    path('nondiscrimination/', views.NonDiscriminationView.as_view(),                                     name='pathways-nondsicrimination'),
     path('apply/', views.ApplyView.as_view(),
         name='pathways-apply'),
     # Household

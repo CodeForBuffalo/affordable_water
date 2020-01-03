@@ -47,6 +47,10 @@ class AboutView(ExtraContextView):
     template_name = 'pathways/about.html'
     extra_context = {'title':'About'}
 
+class NonDiscriminationView(ExtraContextView):
+    template_name = 'pathways/nondiscrimination.html'
+    extra_context = {'title':'About'}
+
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
