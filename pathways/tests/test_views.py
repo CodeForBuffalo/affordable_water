@@ -552,3 +552,69 @@ class AccountHolderViewTest(TestCase):
         self.assertEqual(self.client.session['account_last'], 'Lord')
         self.assertIn('account_middle', self.client.session.keys())
         self.assertEqual(self.client.session['account_middle'], 'O')
+
+class AddressViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-address'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-address'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/info-form.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-address'), 
+        data={
+            'street_address': '123 Main St', 'apartment_unit': 'Upper', 'zip_code': '14202',
+            }, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-contact-info'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-address'), 
+        data={
+            'street_address': '123 Main St', 'apartment_unit': 'Upper', 'zip_code': '14202',
+            }, follow=True, secure=True)
+        self.assertIn('street_address', self.client.session.keys())
+        self.assertEqual(self.client.session['street_address'], '123 Main St')
+        self.assertIn('apartment_unit', self.client.session.keys())
+        self.assertEqual(self.client.session['apartment_unit'], 'Upper')
+        self.assertIn('zip_code', self.client.session.keys())
+        self.assertEqual(self.client.session['zip_code'], '14202')
+
+class ContactInfoViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-contact-info'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-contact-info'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/info-form.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-contact-info'), 
+        data={
+            'phone_number': '716-555-5555', 'email_address': 'example@example.com',
+            }, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-account-number'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-contact-info'), 
+        data={
+            'phone_number': '716-555-5555', 'email_address': 'example@example.com',
+            }, follow=True, secure=True)
+        self.assertIn('phone_number', self.client.session.keys())
+        self.assertEqual(self.client.session['phone_number'], '716-555-5555')
+        self.assertIn('email_address', self.client.session.keys())
+        self.assertEqual(self.client.session['email_address'], 'example@example.com')
