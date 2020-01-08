@@ -500,9 +500,55 @@ class ResidentInfoViewTest(TestCase):
             'first_name': 'Test', 'last_name': 'User', 'middle_initial': 'R', 
             'rent_or_own': 'rent', 'account_holder': 'landlord',
             }, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-resident-info'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-account-holder'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
-        response = self.client.post(reverse('pathways-apply-resident-info'), data={'non_job_income': 15}, follow=True, secure=True)
-        self.assertIn('non_job_income', self.client.session.keys())
-        self.assertEqual(self.client.session['non_job_income'], 15)
+        response = self.client.post(reverse('pathways-apply-resident-info'), 
+        data={
+            'first_name': 'Test', 'last_name': 'User', 'middle_initial': 'R', 
+            'rent_or_own': 'rent', 'account_holder': 'landlord',
+            }, follow=True, secure=True)
+        self.assertIn('first_name', self.client.session.keys())
+        self.assertEqual(self.client.session['first_name'], 'Test')
+        self.assertIn('last_name', self.client.session.keys())
+        self.assertEqual(self.client.session['last_name'], 'User')
+        self.assertIn('middle_initial', self.client.session.keys())
+        self.assertEqual(self.client.session['middle_initial'], 'R')
+        self.assertIn('rent_or_own', self.client.session.keys())
+        self.assertEqual(self.client.session['rent_or_own'], 'rent')
+        self.assertIn('account_holder', self.client.session.keys())
+        self.assertEqual(self.client.session['account_holder'], 'landlord')
+
+class AccountHolderViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-account-holder'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-account-holder'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/info-form.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-account-holder'), 
+        data={
+            'account_first': 'Land', 'account_last': 'Lord', 'account_middle': 'O',
+            }, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-address'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-account-holder'), 
+        data={
+            'account_first': 'Land', 'account_last': 'Lord', 'account_middle': 'O',
+            }, follow=True, secure=True)
+        self.assertIn('account_first', self.client.session.keys())
+        self.assertEqual(self.client.session['account_first'], 'Land')
+        self.assertIn('account_last', self.client.session.keys())
+        self.assertEqual(self.client.session['account_last'], 'Lord')
+        self.assertIn('account_middle', self.client.session.keys())
+        self.assertEqual(self.client.session['account_middle'], 'O')
