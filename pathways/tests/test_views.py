@@ -662,3 +662,62 @@ class AccountNumberViewTest(TestCase):
         data={'hasAccountNumber': False}, follow=True, secure=True)
         self.assertIn('hasAccountNumber', self.client.session.keys())
         self.assertEqual(self.client.session['hasAccountNumber'], False)
+
+class ReviewApplicationViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 2
+        session['hasHouseholdBenefits'] = False
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-review-application'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-review-application'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/review-application.html')
+
+class LegalViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 2
+        session['hasHouseholdBenefits'] = False
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-legal'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-legal'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/legal.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-legal'),
+        data={'legal_agreement': True}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-signature'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-legal'), 
+        data={'legal_agreement': True}, follow=True, secure=True)
+        self.assertIn('legal_agreement', self.client.session.keys())
+        self.assertEqual(self.client.session['legal_agreement'], True)
