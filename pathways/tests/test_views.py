@@ -618,3 +618,47 @@ class ContactInfoViewTest(TestCase):
         self.assertEqual(self.client.session['phone_number'], '716-555-5555')
         self.assertIn('email_address', self.client.session.keys())
         self.assertEqual(self.client.session['email_address'], 'example@example.com')
+
+class AccountNumberViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 2
+        session['hasHouseholdBenefits'] = False
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-account-number'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-account-number'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/info-form.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-account-number'), 
+        data={'account_number': '123456789'}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-review-application'), fetch_redirect_response=False)
+
+        response = self.client.post(reverse('pathways-apply-account-number'), 
+        data={'hasAccountNumber': False}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-review-application'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-account-number'), 
+        data={'account_number': '123456789'}, follow=True, secure=True)
+        self.assertIn('account_number', self.client.session.keys())
+        self.assertEqual(self.client.session['account_number'], '123456789')
+
+        response = self.client.post(reverse('pathways-apply-account-number'), 
+        data={'hasAccountNumber': False}, follow=True, secure=True)
+        self.assertIn('hasAccountNumber', self.client.session.keys())
+        self.assertEqual(self.client.session['hasAccountNumber'], False)
