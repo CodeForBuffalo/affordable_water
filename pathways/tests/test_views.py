@@ -721,3 +721,53 @@ class LegalViewTest(TestCase):
         data={'legal_agreement': True}, follow=True, secure=True)
         self.assertIn('legal_agreement', self.client.session.keys())
         self.assertEqual(self.client.session['legal_agreement'], True)
+
+class SignatureViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+        session = self.client.session
+        session['active_app'] = True
+        session['household_size'] = 2
+        session['hasHouseholdBenefits'] = False
+        session['has_job'] = True
+        session['is_self_employed'] = False
+        session['has_other_income'] = True
+        session['income'] = 500
+        session['income_method'] = 'exact'
+        session['pay_period'] = 'weekly'
+        session['annual_income'] = 26000
+        session['first_name'] = 'Test'
+        session['last_name'] = 'User'
+        session['middle_initial'] = 'R'
+        session['rent_or_own'] = 'rent'
+        session['street_address'] = '123 Main St'
+        session['zip_code'] = '14202'
+        session['phone_number'] = '716-555-5555'
+        session['email_address'] = 'example@example.com'
+        session['account_holder'] = 'me'
+        session['account_first'] = 'Test'
+        session['account_last'] = 'User'
+        session['account_middle'] = 'R'
+        session['hasAccountNumber'] = False
+        session['legal_agreement'] = True
+        session.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-signature'), follow=True, secure=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-signature'), follow=True, secure=True)
+        self.assertTemplateUsed(response, 'pathways/apply/signature.html')
+    
+    def test_redirect_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-signature'),
+        data={'signature': 'Test User'}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-documents-overview'), fetch_redirect_response=False)
+
+    def test_session_saved_on_submit(self):
+        response = self.client.post(reverse('pathways-apply-signature'), 
+        data={'signature': 'Test User'}, follow=True, secure=True)
+        self.assertIn('signature', self.client.session.keys())
+        self.assertEqual(self.client.session['signature'], 'Test User')
+        self.assertIn('app_id', self.client.session.keys())
