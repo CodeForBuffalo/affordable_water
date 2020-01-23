@@ -14,10 +14,8 @@ gunicorn = "*"
 python-dotenv = "*"
 django-heroku = "*"
 django-libsass = "*"
-coverage = "*"
-django-coverage-plugin = "*"
-pytest-cov = "*"
 whitenoise = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"
