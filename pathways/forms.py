@@ -238,3 +238,41 @@ class DocumentHomeownerForm(forms.Form):
 class DocumentTenantForm(forms.Form):
     residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), 
     help_text=_("This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill."))
+
+class LaterDocumentsForm(forms.Form):
+    first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("First name")}), help_text=_("Legally as it appears on your ID."))
+    last_name = forms.CharField(max_length=100, required=True, label=_("What is your last name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("Last name")}), help_text=_("Legally as it appears on your ID."))
+    middle_initial = forms.CharField(max_length=5, required=False, label=_("What is your middle initial?"), 
+        empty_value=(""), help_text=_("Optional"))
+    zip_code = forms.CharField(label=_("What is your 5 digit ZIP code?"), validators=[RegexValidator(
+        regex=r'^\d{5}$', message=_("Your ZIP code must be exactly 5 digits")
+    )])
+    phone_number = forms.CharField(label=_("What is your phone number?"),
+        max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
+    email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional"), required=False)
+    card_title = _("Before submitting your documents, we need to match your information to an existing application.")
+
+class MoreDocumentInfoRequiredForm(forms.Form):
+    rent_or_own = forms.ChoiceField(choices=(
+        ('rent',_("Rent")),
+        ('own',_("Own")),
+    ), required=True, label=_("Do you rent or own your home?"))
+    apartment_unit = forms.CharField(required=False, max_length=10, label=_("If this is an apartment, what is the apartment unit?"), help_text=_("Skip this if you don't live in an apartment"))
+    street_address = forms.CharField(max_length=200, label=_("What is your street address?"), validators=[RegexValidator(
+        regex=r'^\d+ .*', message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
+        ], widget=forms.TextInput(attrs={'placeholder': "123 Main St"}))
+    household_size = forms.ChoiceField(label=_("What is your household size?"),
+        help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."),
+        choices=(
+            (1,_('1')),
+            (2,_('2')),
+            (3,_('3')),
+            (4,_('4')),
+            (5,_('5')),
+            (6,_('6')),
+            (7,_('7')),
+            (8,_('8+')),
+        ), required=True)
+    card_title = _("We need more information to find your existing application.")

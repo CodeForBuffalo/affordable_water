@@ -1,0 +1,28 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <h1 class="form-card__title">
+            {% trans "We couldn't match the info you provided to any existing application." %}
+        </h1>
+    </div>
+    <div class="form-card__content">
+        <div class="emoji emoji--big emoji--frowning-face"></div>
+        <p>
+            {% blocktrans %}
+            Although we couldn't find an existing application with the information you provided, submitting a new
+            application only takes 5 minutes.
+            {% endblocktrans %}
+        </p>
+    </div>
+    <div class="form-card__footer">
+        <a class="button button--primary" href="{% url 'pathways-apply' %}">
+            {% trans "Start new application" %}</a>
+        <a class="button" href="{% url 'pathways-apply-later-documents' %}">
+            {% trans "Change my answers" %} <i class="icon icon-replay"></i></a>
+    </div>
+</div>
+{% endblock question %}

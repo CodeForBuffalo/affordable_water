@@ -63,4 +63,10 @@ urlpatterns = [
         name='pathways-apply-documents-residence'),
     path('apply/confirmation/', views.ConfirmationView.as_view(),
         name='pathways-apply-confirmation'),
+    path('apply/later-documents/', views.LaterDocumentsView.as_view(),
+        name='pathways-apply-later-documents'),
+    path('apply/later-documents/no-match-found/', views.NoDocumentFoundView.as_view(),
+        name='pathways-apply-later-documents-not-found'),
+    path('apply/later-documents/more-info-needed/', views.MoreDocumentInfoRequiredView.as_view(),
+        name='pathways-apply-later-documents-more-info')
 ]

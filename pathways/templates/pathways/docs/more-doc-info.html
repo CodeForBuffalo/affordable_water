@@ -1,0 +1,84 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card">
+
+    <form style="display: inline-block;" method="POST">
+        {% csrf_token %}
+        <header class="form-card__header">
+            <h1 class="form-card__title">{{ card_title }}</h1>
+        </header>
+        <div class="form-card__content">
+            <div class="form-group {% if form.household_size.errors %}form-group--error{% endif %}">
+                <label class="form-question" for="id_household_size">
+                    <p class="form-question">{{ form.household_size.label_tag }}</p>
+                </label>
+                <div class="select">
+                    <select class="select__element" name="household_size" id="id_household_size">
+                        <option selected disabled>{% trans "Select household size" %}</option>
+                        {% for value, text in form.household_size.field.choices %}
+                        <option value="{{ value }}">{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% if form.household_size.errors %}
+                {% for error in form.household_size.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.rent_or_own.errors %}form-group--error{% endif %}">
+                <label class="form-question" for="id_rent_or_own">{{ form.rent_or_own.label }}</label>
+                <p class="text--help">{{ form.rent_or_own.help_text }}</p>
+                <radiogroup class="input-group--inline">
+                    {% for value, text in form.rent_or_own.field.choices %}
+                    <label for="id_rent_or_own_{{ value }}" class="radio-button">
+                        <input type="radio" name="rent_or_own" id="id_rent_or_own_{{ value }}"
+                            value="{{ value }}">{{ text }}
+                    </label>
+                    {% endfor %}
+                </radiogroup>
+                {% if form.rent_or_own.errors %}
+                {% for error in form.rent_or_own.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.street_address.errors %}form-group--error{% endif %}">
+                <label for="street_address" class="form-question">{{ form.street_address.label }}</label>
+                <input type="text" class="text-input form-width--name" id="street_address"
+                    placeholder="123 Main St" name="street_address">
+                {% if form.street_address.errors %}
+                {% for error in form.street_address.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if form.apartment_unit.errors %}form-group--error{% endif %}">
+                <label for="apartment_unit" class="form-question">{{ form.apartment_unit.label }}</label>
+                <input type="text" class="text-input form-width--name" id="apartment_unit"
+                    placeholder="{{ form.apartment_unit.placeholder }}" name="apartment_unit">
+                {% if form.apartment_unit.errors %}
+                {% for error in form.apartment_unit.errors %}
+                <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+            
+        </div>
+
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary" data-disable-with=<i
+                class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'></i> Continue
+                <i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock question %}
