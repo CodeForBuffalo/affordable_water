@@ -35,6 +35,34 @@ class FormToAppView(FormView):
         for field in form:
             setattr(app, field.name, form.cleaned_data[field.name])
         app.save()
+        return super().form_valid(form)
+
+class ClearSessionView(TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        return super(ClearSessionView, self).dispatch(request, *args, **kwargs)
+    
+
+class DispatchView(ExtraContextView):
+    def dispatch(self, request, *args, **kwargs):
+        if 'active_app' in request.session:
+            return super(DispatchView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+class FormToSessionView(FormView):
+    def form_valid(self, form):
+        for field in form:
+            self.request.session[field.name] = form.cleaned_data[field.name]
+        return super().form_valid(form)
+
+class FormToAppView(FormView):
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        for field in form:
+            setattr(app, field.name, form.cleaned_data[field.name])
+        app.save()
         return super().form_valid(form)      
     
 
@@ -286,12 +314,15 @@ class SignatureView(FormView, DispatchView):
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
-            if field.name not in ['id','annual_income','income_photo','benefits_photo','residence_photo']:
-                setattr(app, field.name, self.request.session[field.name])
-
-        # Assign annual_income if hasHouseholdBenefits is False
-        if not self.request.session['hasHouseholdBenefits']:
-            app.annual_income = self.request.session['annual_income']
+            if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
+                continue
+            if field.name == 'annual_income' and self.request.session['hasHouseholdBenefits'] == True:
+                continue
+            if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
+                continue
+            if field.name == 'account_number' and self.request.session['hasAccountNumber'] == False:
+                continue
+            setattr(app, field.name, self.request.session[field.name])
 
         app.save()
         self.request.session['app_id'] = app.id
@@ -337,3 +368,91 @@ class DocumentResidenceView(FormToAppView, DispatchView):
 class ConfirmationView(DispatchView):
     template_name = 'pathways/apply/confirmation.html'
     extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
+
+class LaterDocumentsView(FormView, ClearSessionView):
+    template_name = 'pathways/apply/info-form.html'
+    form_class = forms.LaterDocumentsForm
+    success_url = '/apply/documents-overview/'
+    extra_context = {'card_title': form_class.card_title}
+
+    def form_valid(self, form):
+        self.request.session['is_later_docs'] = True
+
+        # Get list of possible application
+        app_list = Application.objects.filter(
+                first_name = form.cleaned_data['first_name'],
+                last_name = form.cleaned_data['last_name'],
+                zip_code = form.cleaned_data['zip_code'],
+                phone_number = form.cleaned_data['phone_number']
+                )
+                
+        if form.cleaned_data['middle_initial'] != '':
+            app_list = app_list(middle_initial = form.cleaned_data['middle_initial'])
+
+        if form.cleaned_data['email_address'] != '':
+            app_list = app_list(email_address = form.cleaned_data['email_address'])
+
+        if len(app_list) == 0:
+            # No matching application found
+            self.success_url = '/apply/later-documents/no-match-found/'
+
+        elif len(app_list) == 1:
+            # Matching application successfully found
+            app = app_list[0]
+            self.request.session['app_id'] = app.id
+            self.request.session['active_app'] = True
+
+        else:
+            self.request.session['first_name'] = form.cleaned_data['first_name']
+            self.request.session['last_name'] = form.cleaned_data['last_name']
+            self.request.session['middle_initial'] = form.cleaned_data['middle_initial']
+            self.request.session['zip_code'] = form.cleaned_data['zip_code']
+            self.request.session['phone_number'] = form.cleaned_data['phone_number']
+            self.request.session['email_address'] = form.cleaned_data['email_address']
+
+            # More information required to narrow down match
+            self.success_url = '/apply/later-documents/more-info-needed/'
+            pass
+
+        return super().form_valid(form)
+
+class NoDocumentFoundView(ExtraContextView):
+    template_name = 'pathways/docs/no-doc-found.html'
+
+class MoreDocumentInfoRequiredView(FormView):
+    template_name = 'pathways/docs/more-doc-info.html'
+    form_class = forms.MoreDocumentInfoRequiredForm
+    success_url = '/apply/documents-overview/'
+    extra_context = {'card_title': form_class.card_title}
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'is_later_docs' in request.session:
+            return super(MoreDocumentInfoRequiredView, self).dispatch(request, *args, **kwargs)
+        else:
+            return redirect('pathways-home')
+
+    def form_valid(self, form):
+        # Get list of possible application
+        app_list = Application.objects.filter(
+                first_name = self.request.session['first_name'],
+                last_name = self.request.session['last_name'],
+                zip_code = self.request.session['zip_code'],
+                phone_number = self.request.session['phone_number'],
+                rent_or_own = form.cleaned_data['rent_or_own'],
+                street_address = form.cleaned_data['street_address'],
+                household_size = form.cleaned_data['household_size']
+                )
+        
+        if form.cleaned_data['apartment_unit'] != '':
+            app_list = app_list(apartment_unit = form.cleaned_data['apartment_unit'])
+
+        if len(app_list) == 1:
+            # Matching application successfully found
+            app = app_list[0]
+            self.request.session['app_id'] = app.id
+            self.request.session['active_app'] = True
+        else:
+            # No matching application found
+            self.success_url = '/apply/later-documents/no-match-found/'
+
+        return super().form_valid(form)

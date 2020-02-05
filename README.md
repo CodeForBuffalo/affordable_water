@@ -1,7 +1,6 @@
 # GetBuffaloWater
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeForBuffalo/affordable_water)
 [![Build Status](https://travis-ci.com/CodeForBuffalo/affordable_water.svg?branch=master)](https://travis-ci.com/CodeForBuffalo/affordable_water)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/CodeForBuffalo/affordable_water?logo=Code%20Climate)](https://codeclimate.com/github/CodeForBuffalo/affordable_water)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/CodeForBuffalo/affordable_water?label=test%20coverage&logo=Code%20Climate)](https://codeclimate.com/github/CodeForBuffalo/affordable_water)
 ![GitHub](https://img.shields.io/github/license/CodeForBuffalo/affordable_water)
 
