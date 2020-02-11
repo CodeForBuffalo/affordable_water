@@ -44,26 +44,6 @@ class ClearSessionView(TemplateView):
         return super(ClearSessionView, self).dispatch(request, *args, **kwargs)
     
 
-class DispatchView(ExtraContextView):
-    def dispatch(self, request, *args, **kwargs):
-        if 'active_app' in request.session:
-            return super(DispatchView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('pathways-home')
-
-class FormToSessionView(FormView):
-    def form_valid(self, form):
-        for field in form:
-            self.request.session[field.name] = form.cleaned_data[field.name]
-        return super().form_valid(form)
-
-class FormToAppView(FormView):
-    def form_valid(self, form):
-        app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        for field in form:
-            setattr(app, field.name, form.cleaned_data[field.name])
-        app.save()
-        return super().form_valid(form)      
     
 
 # Create your views here.
