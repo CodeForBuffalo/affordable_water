@@ -22,26 +22,52 @@
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
                     <div class="vertical-steps__title">
                         {{ income_formatted }}
-                        {% if pay_period == 'weekly' %}
+
+                        {% if request.session.pay_period == 'weekly' %}
                         {% trans "per week" %}
-                        {% elif pay_period == 'biweekly' %}
+
+                        {% elif request.session.pay_period == 'biweekly' %}
                         {% trans "every 2 weeks" %}
-                        {% elif pay_period == 'semimonthly' %}
+
+                        {% elif request.session.pay_period == 'semimonthly' %}
                         {% trans "twice a month" %}
-                        {% elif pay_period == 'monthly' %}
+                        
+                        {% elif request.session.pay_period == 'monthly' %}
                         {% trans "per month" %}
-                        {% elif income_method == 'hourly' %}
+
+                        {% elif request.session.income_method == 'hourly' %}
                         {% trans "per hour" %}
+
+                        {% else  %}
+                        {% trans "from jobs" %}
                         {% endif %}
                     </div>
                     <div class="form-card__body-text">
-                        {% if income_method == 'estimate' %}
+                        {% if request.session.income_method == 'estimate' %}
                         {% trans "Estimated income before taxes" %}
-                        {% elif income_method == 'hourly' %}
-                        {{ pay_period }} {% trans "hours per week" %}
+
+                        {% elif request.session.income_method == 'hourly' %}
+                        {{ request.session.pay_period }} {% trans "hours per week" %}
+
+                        {% elif request.session.income_method == 'exact' %}
+                        {% trans "Income before taxes" %}
+
                         {% else %}
-                        {% trans "Annual income before taxes" %}
+                        {% trans "You indicated no job source of income." %}
                         {% endif %}
+                    </div>
+                </div>
+                
+                <div class="vertical-steps__step">
+                    <div class="vertical-steps__emoji">
+                        <span class="emoji emoji emoji--med emoji--money"></span>
+                    </div>
+                    <div class="vertical-steps__title">
+                        {{ non_job_income_formatted }}
+                        {% trans "per month" %}
+                    </div>
+                    <div class="form-card__body-text">
+                        {% trans "Money from other sources" %}
                     </div>
                 </div>
                 {% endif %}

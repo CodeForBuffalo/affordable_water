@@ -15,32 +15,42 @@
                     </div>
                     <div class="vertical-steps__title">
                         {{ income_formatted }}
+
                         {% if request.session.pay_period == 'weekly' %}
                         {% trans "per week" %}
+
                         {% elif request.session.pay_period == 'biweekly' %}
                         {% trans "every 2 weeks" %}
+
                         {% elif request.session.pay_period == 'semimonthly' %}
                         {% trans "twice a month" %}
+                        
                         {% elif request.session.pay_period == 'monthly' %}
                         {% trans "per month" %}
+
                         {% elif request.session.income_method == 'hourly' %}
                         {% trans "per hour" %}
+
+                        {% else  %}
+                        {% trans "from jobs" %}
                         {% endif %}
                     </div>
                     <div class="form-card__body-text">
-                        {% if no_income %}
-                        {% trans "You indicated no job source of income." %}
-                        {% elif request.session.income_method == 'estimate' %}
+                        {% if request.session.income_method == 'estimate' %}
                         {% trans "Estimated income before taxes" %}
+
                         {% elif request.session.income_method == 'hourly' %}
                         {{ request.session.pay_period }} {% trans "hours per week" %}
-                        {% else %}
+
+                        {% elif request.session.income_method == 'exact' %}
                         {% trans "Income before taxes" %}
+
+                        {% else %}
+                        {% trans "You indicated no job source of income." %}
                         {% endif %}
                     </div>
                 </div>
 
-                {% if request.session.has_other_income == 'True' %}
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji">
                         <span class="emoji emoji emoji--med emoji--money"></span>
@@ -53,7 +63,6 @@
                         {% trans "Money from other sources" %}
                     </div>
                 </div>
-                {% endif %}
 
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--big emoji--house"></span></div>
@@ -73,7 +82,7 @@
 
             <p><a class="button button--primary" href="{% url 'pathways-apply-eligibility' %}">
                     {% trans "This looks correct" %}</a></p>
-            <p><a class="button" href="{% url 'pathways-apply-income-methods' %}">
+            <p><a class="button" href="{% url 'pathways-apply-household-size' %}">
                     {% trans "Change my answers" %}</a>
             </p>
         </div>
