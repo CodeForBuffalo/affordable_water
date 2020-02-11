@@ -82,7 +82,7 @@ class HouseholdBenefitsView(DispatchView, FormToSessionView):
     success_url = '/apply/household-contributors/'
 
     def form_valid(self, form):
-        if (form.cleaned_data['hasHouseholdBenefits'] == 'True'):
+        if (form.cleaned_data['has_household_benefits'] == 'True'):
             self.success_url = '/apply/eligibility/'
         return super().form_valid(form)
 
@@ -212,7 +212,7 @@ class EligibilityView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         incomeLimits = {1: 41850, 2: 47800, 3: 53800, 4: 59750, 5: 64550, 6: 69350, 7: 74100, 8: 78900,}
-        if self.request.session['hasHouseholdBenefits'] == 'True':
+        if self.request.session['has_household_benefits'] == 'True':
             context['isEligible'] = True
         else:
             context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household_size'])]
@@ -292,7 +292,7 @@ class SignatureView(FormView, DispatchView):
         for field in Application._meta.get_fields():
             if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
                 continue
-            if field.name == 'annual_income' and self.request.session['hasHouseholdBenefits'] == True:
+            if field.name == 'annual_income' and self.request.session['has_household_benefits'] == True:
                 continue
             if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
                 continue
@@ -310,7 +310,7 @@ class DocumentOverviewView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        context['has_household_benefits'] = app.has_household_benefits
         context['rent_or_own'] = app.rent_or_own
         return context
 
@@ -322,7 +322,7 @@ class DocumentIncomeView(FormToAppView, DispatchView):
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        if str(app.hasHouseholdBenefits) == 'True':
+        if str(app.has_household_benefits) == 'True':
             self.form_class = forms.DocumentBenefitsForm
         else:
             self.form_class = forms.DocumentIncomeForm

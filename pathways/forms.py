@@ -24,7 +24,7 @@ class HouseholdSizeForm(forms.Form):
         self.fields['household_size'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):
-    hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
+    has_household_benefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
         (True,_('Yes')), (False,_('No')),
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
