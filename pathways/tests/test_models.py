@@ -11,7 +11,7 @@ class ApplicationModelTest(TestCase):
     def setUpTestData(cls):
         cls.app_1 = Application.objects.create(
             household_size=1,
-            hasHouseholdBenefits=False,
+            has_household_benefits=False,
             annual_income=10000,
             first_name='John',
             last_name='Doe',

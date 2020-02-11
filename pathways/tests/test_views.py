@@ -81,18 +81,18 @@ class HouseholdBenefitsViewTest(TestCase):
         self.assertTemplateUsed(response, 'pathways/apply/household-benefits.html')
 
     def test_redirect_on_submit(self):
-        for hasHouseholdBenefits in [True, False]:
-            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'hasHouseholdBenefits': hasHouseholdBenefits}, follow=True, secure=True)
-            if hasHouseholdBenefits:
+        for has_household_benefits in [True, False]:
+            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'has_household_benefits': has_household_benefits}, follow=True, secure=True)
+            if has_household_benefits:
                 self.assertRedirects(response, reverse('pathways-apply-eligibility'), fetch_redirect_response=False)
             else:
                 self.assertRedirects(response, reverse('pathways-apply-household-contributors'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
-        for hasHouseholdBenefits in [True, False]:
-            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'hasHouseholdBenefits': hasHouseholdBenefits}, follow=True, secure=True)
-            self.assertIn('hasHouseholdBenefits', self.client.session.keys())
-            self.assertEqual(self.client.session['hasHouseholdBenefits'], str(hasHouseholdBenefits))
+        for has_household_benefits in [True, False]:
+            response = self.client.post(reverse('pathways-apply-household-benefits'), data={'has_household_benefits': has_household_benefits}, follow=True, secure=True)
+            self.assertIn('has_household_benefits', self.client.session.keys())
+            self.assertEqual(self.client.session['has_household_benefits'], str(has_household_benefits))
 
 class DispatchViewTest(TestCase):
     def setUp(self):
@@ -108,7 +108,7 @@ class HouseholdContributorsViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 1
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
@@ -142,7 +142,7 @@ class JobStatusViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 1
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['household_contributors'] = 1
         session.save()
 
@@ -172,7 +172,7 @@ class SelfEmploymentViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 1
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['household_contributors'] = 1
         session['has_job'] = True
         session.save()
@@ -442,7 +442,7 @@ class EligibilityViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
@@ -625,7 +625,7 @@ class AccountNumberViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
@@ -669,7 +669,7 @@ class ReviewApplicationViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
@@ -693,7 +693,7 @@ class LegalViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True
@@ -728,7 +728,7 @@ class SignatureViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['hasHouseholdBenefits'] = False
+        session['has_household_benefits'] = False
         session['has_job'] = True
         session['is_self_employed'] = False
         session['has_other_income'] = True

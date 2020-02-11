@@ -17,7 +17,7 @@
                     <div class="form-card__body-text">{% trans "Household size" %}</div>
                 </div>
 
-                {% if not request.session.hasHouseholdBenefits %}
+                {% if not request.session.has_household_benefits %}
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--money"></span></div>
                     <div class="vertical-steps__title">
@@ -50,14 +50,14 @@
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--clipboard"></span>
                     </div>
                     <div class="vertical-steps__title">
-                        {% if request.session.hasHouseholdBenefits %}
+                        {% if request.session.has_household_benefits %}
                         {% trans "Current household benefits" %}
                         {% else %}
                         {% trans "No current household benefits" %}
                         {% endif %}
                     </div>
                     <div class="form-card__body-text">
-                        {% if request.session.hasHouseholdBenefits %}
+                        {% if request.session.has_household_benefits %}
                         {% trans "You indicated <strong>someone</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance" %}
                         {% else %}
                         {% trans "You indicated <strong>no one</strong> in your household is enrolled in existing assistance programs like SNAP, HEAP, SSI, or Public Assistance." %}
@@ -69,7 +69,7 @@
                 <div class="vertical-steps__step">
                     <div class="notice">
                         <div class="form-card__body-text">
-                            {% if request.session.hasHouseholdBenefits %}
+                            {% if request.session.has_household_benefits %}
                             {% blocktrans %}
                             Based on this info, you are <br><strong>automatically eligible.</strong>
                             {% endblocktrans %}
@@ -78,7 +78,7 @@
                             {% endif %}
                         </div>
                         <div class="vertical-steps__title">
-                            {% if not request.session.hasHouseholdBenefits %}
+                            {% if not request.session.has_household_benefits %}
                             {{ annual_income_formatted }} per year
                             {% endif %}
                         </div>
