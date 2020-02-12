@@ -347,7 +347,7 @@ class SignatureView(FormView, DispatchView):
                 continue
             if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
                 continue
-            if field.name == 'account_number' and self.request.session['hasAccountNumber'] == 'False':
+            if field.name == 'account_number' and self.request.session['has_account_number'] == 'False':
                 continue
             setattr(app, field.name, self.request.session[field.name])
 

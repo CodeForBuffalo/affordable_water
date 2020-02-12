@@ -212,7 +212,7 @@ class AccountHolderForm(forms.Form):
 
 class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
-    hasAccountNumber = forms.BooleanField(required=False, widget=forms.HiddenInput())
+    has_account_number = forms.BooleanField(required=False, widget=forms.HiddenInput())
     card_title = _("Almost done! Let's get info on your water account.")
 
 

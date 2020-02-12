@@ -645,7 +645,7 @@ class AccountNumberViewTest(TestCase):
         self.assertRedirects(response, reverse('pathways-apply-review-application'), fetch_redirect_response=False)
 
         response = self.client.post(reverse('pathways-apply-account-number'), 
-        data={'hasAccountNumber': False}, follow=True, secure=True)
+        data={'has_account_number': False}, follow=True, secure=True)
         self.assertRedirects(response, reverse('pathways-apply-review-application'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
@@ -655,9 +655,9 @@ class AccountNumberViewTest(TestCase):
         self.assertEqual(self.client.session['account_number'], '123456789')
 
         response = self.client.post(reverse('pathways-apply-account-number'), 
-        data={'hasAccountNumber': False}, follow=True, secure=True)
-        self.assertIn('hasAccountNumber', self.client.session.keys())
-        self.assertEqual(self.client.session['hasAccountNumber'], False)
+        data={'has_account_number': False}, follow=True, secure=True)
+        self.assertIn('has_account_number', self.client.session.keys())
+        self.assertEqual(self.client.session['has_account_number'], False)
 
 class ReviewApplicationViewTest(TestCase):
     def setUp(self):
@@ -744,7 +744,7 @@ class SignatureViewTest(TestCase):
         session['account_first'] = 'Test'
         session['account_last'] = 'User'
         session['account_middle'] = 'R'
-        session['hasAccountNumber'] = False
+        session['has_account_number'] = False
         session['legal_agreement'] = True
         session.save()
 

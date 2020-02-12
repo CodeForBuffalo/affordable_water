@@ -33,7 +33,7 @@
                 </i>{% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
             </button>
             {% if isAccountNumberView %}
-            <input type="hidden" id="hasAccountNumber" name="hasAccountNumber" value="False" aria-hidden="false">
+            <input type="hidden" id="has_account_number" name="has_account_number" value="False" aria-hidden="false">
             <button name="button" type="submit" class="button">
                 <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
             </i>{% trans "I can't find my account number" %}</button>
@@ -43,9 +43,9 @@
     <script>
         function enteredAccountNumber() {
             if (typeof $('input[name="account_number"]').val() !== 'undefined' && $('input[name="account_number"]').val() != ''){
-                $('input[name="hasAccountNumber"').val('True');
+                $('input[name="has_account_number"').val('True');
             } else {
-                $('input[name="hasAccountNumber"').val('False')
+                $('input[name="has_account_number"').val('False')
             }
         }</script>
 </div>
