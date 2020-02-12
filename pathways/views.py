@@ -181,11 +181,11 @@ class IncomeView(FormToSessionView, DispatchView):
 class OtherIncomeSourcesView(DispatchView, FormToSessionView):
     template_name = 'pathways/apply/other-income-sources.html'
     form_class = forms.OtherIncomeSourcesForm
-    success_url = '/apply/non-job-income/'
+    success_url = '/apply/review-eligibility/'
 
     def form_valid(self, form):
-        if form.cleaned_data['has_other_income'] == 'False':
-            self.success_url = '/apply/review-eligibility/'
+        if form.cleaned_data['has_other_income'] == 'True':
+            self.success_url = '/apply/non-job-income/'
         return super().form_valid(form)
 
 

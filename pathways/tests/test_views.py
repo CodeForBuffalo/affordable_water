@@ -174,7 +174,7 @@ class SelfEmploymentViewTest(TestCase):
         session['household_size'] = 1
         session['has_household_benefits'] = False
         session['household_contributors'] = 1
-        session['has_job'] = True
+        session['has_job'] = 'True'
         session.save()
     
     def test_view_url_exists_at_desired_location(self):
@@ -186,9 +186,16 @@ class SelfEmploymentViewTest(TestCase):
         self.assertTemplateUsed(response, 'pathways/apply/self-employment.html')
 
     def test_redirect_on_submit(self):
-        for is_self_employed in [True, False]:
-            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': str(is_self_employed)}, follow=True, secure=True)
-            self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
+        for has_job in ['True', 'False']:
+            self.client.session['has_job'] = has_job
+            self.client.session.save()
+            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': 'True'}, follow=True, secure=True)
+            self.assertRedirects(response, reverse('pathways-apply-number-of-jobs'), fetch_redirect_response=False)
+
+        self.client.session['has_job'] = 'False'
+        self.client.session.save()
+        response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': 'False'}, follow=True, secure=True)
+        self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
         for is_self_employed in [True, False]:
@@ -215,24 +222,11 @@ class OtherIncomeSourcesViewTest(TestCase):
         self.assertTemplateUsed(response, 'pathways/apply/other-income-sources.html')
 
     def test_redirect_on_submit(self):
-        for has_other_income in [True, False]:
-            response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': has_other_income}, follow=True, secure=True)
-            self.assertRedirects(response, reverse('pathways-apply-number-of-jobs'),
-                fetch_redirect_response=False,
-                msg_prefix=f"has_other_income {has_other_income} has_job {self.client.session['has_job']} and is_self_employed {self.client.session['is_self_employed']}")
-
-        session = self.client.session
-        session['has_job'] = False
-        session['is_self_employed'] = False
-        session.save()
-
-        # has other income, does NOT have job, is NOT self-employed
         response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': True}, follow=True, secure=True)
         self.assertRedirects(response, reverse('pathways-apply-non-job-income'), fetch_redirect_response=False)
 
-        # does NOT have other income, does NOT have job, is NOT self-employed
         response = self.client.post(reverse('pathways-apply-other-income-sources'), data={'has_other_income': False}, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False,)
 
     def test_session_saved_on_submit(self):
         for has_other_income in [True, False]:
@@ -364,19 +358,19 @@ class IncomeViewTest(TestCase):
         session['income_method'] = 'exact'
         session.save()
         response = self.client.post(reverse('pathways-apply-income'), data={'income': 500, 'pay_period': 'weekly'}, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
 
         # hourly
         session['income_method'] = 'hourly'
         session.save()
         response = self.client.post(reverse('pathways-apply-income'), data={'income': 15, 'pay_period': 40}, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
 
         # estimate
         session['income_method'] = 'estimate'
         session.save()
         response = self.client.post(reverse('pathways-apply-income'), data={'income': 2000, 'pay_period': 'semimonthly'}, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-review-eligibility'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
         session = self.client.session
