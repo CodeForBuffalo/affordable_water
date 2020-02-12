@@ -186,15 +186,17 @@ class SelfEmploymentViewTest(TestCase):
         self.assertTemplateUsed(response, 'pathways/apply/self-employment.html')
 
     def test_redirect_on_submit(self):
-        for has_job in ['True', 'False']:
-            self.client.session['has_job'] = has_job
-            self.client.session.save()
-            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': 'True'}, follow=True, secure=True)
+        session = self.client.session
+        for has_job in [True, False]:
+            session['has_job'] = has_job
+            session.save()
+            response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': True}, follow=True, secure=True)
             self.assertRedirects(response, reverse('pathways-apply-number-of-jobs'), fetch_redirect_response=False)
 
-        self.client.session['has_job'] = 'False'
-        self.client.session.save()
-        response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': 'False'}, follow=True, secure=True)
+        session = self.client.session
+        session['has_job'] = False
+        session.save()
+        response = self.client.post(reverse('pathways-apply-self-employment'), data={'is_self_employed': False}, follow=True, secure=True)
         self.assertRedirects(response, reverse('pathways-apply-other-income-sources'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
