@@ -215,22 +215,20 @@ class ReviewEligibilityView(DispatchView):
         locale.setlocale( locale.LC_ALL, '' )
         
         # Income
+        context['income_formatted'] = '$0'
         if 'income' in self.request.session.keys():
             context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
-        else:
-            context['income_formatted'] = '$0'
+            
         
         # Non job income
+        context['non_job_income_formatted'] = '$0'
         if 'non_job_income' in self.request.session.keys():
             context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
-        else:
-            context['non_job_income_formatted'] = '$0'
 
         # Annual income
+        context['annual_income_formatted'] = '$0'
         if 'annual_income' in self.request.session.keys():
-            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        else:
-            context['annual_income_formatted'] = '$0'
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])            
 
         return context
         
@@ -307,22 +305,20 @@ class ReviewApplicationView(DispatchView):
         context = super().get_context_data(**kwargs)
         locale.setlocale( locale.LC_ALL, '' )
         # Income
+        context['income_formatted'] = '$0'
         if 'income' in self.request.session.keys():
             context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
-        else:
-            context['income_formatted'] = '$0'
+            
         
         # Non job income
+        context['non_job_income_formatted'] = '$0'
         if 'non_job_income' in self.request.session.keys():
             context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
-        else:
-            context['non_job_income_formatted'] = '$0'
 
         # Annual income
+        context['annual_income_formatted'] = '$0'
         if 'annual_income' in self.request.session.keys():
-            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        else:
-            context['annual_income_formatted'] = '$0'
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])  
 
         return context
 
