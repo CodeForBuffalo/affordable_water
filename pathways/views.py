@@ -212,6 +212,7 @@ class ReviewEligibilityView(DispatchView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        locale.setlocale( locale.LC_ALL, '' )
         
         # Income
         if 'income' in self.request.session.keys():
@@ -250,6 +251,7 @@ class EligibilityView(DispatchView):
             annual_income = int(self.request.session['annual_income'])
             max_income = income_thresholds[int(self.request.session['household_size'])]
             context['is_eligible'] = annual_income <= max_income
+            locale.setlocale( locale.LC_ALL, '' )
             context['max_income'] = '${:,.0f}'.format(max_income)
         return context
 
@@ -304,8 +306,24 @@ class ReviewApplicationView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         locale.setlocale( locale.LC_ALL, '' )
-        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+        # Income
+        if 'income' in self.request.session.keys():
+            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+        else:
+            context['income_formatted'] = '$0'
+        
+        # Non job income
+        if 'non_job_income' in self.request.session.keys():
+            context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
+        else:
+            context['non_job_income_formatted'] = '$0'
+
+        # Annual income
+        if 'annual_income' in self.request.session.keys():
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
+        else:
+            context['annual_income_formatted'] = '$0'
+
         return context
 
 class LegalView(FormToSessionView, DispatchView):
@@ -325,11 +343,11 @@ class SignatureView(FormView, DispatchView):
         for field in Application._meta.get_fields():
             if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
                 continue
-            if field.name == 'annual_income' and self.request.session['has_household_benefits'] == True:
+            if field.name == 'annual_income' and self.request.session['has_household_benefits'] == 'True':
                 continue
             if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
                 continue
-            if field.name == 'account_number' and self.request.session['hasAccountNumber'] == False:
+            if field.name == 'account_number' and self.request.session['hasAccountNumber'] == 'False':
                 continue
             setattr(app, field.name, self.request.session[field.name])
 
