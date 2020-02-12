@@ -8,7 +8,7 @@
         <div class="form-card__emoji--header"></div>
         <div class="with-padding-med emoji emoji--big emoji-pair--disabled-money"></div>
         <h1 id="household-benefits-yes-no-buttons" class="form-card__title">
-            {{ form.hasHouseholdBenefits.label }}
+            {{ form.has_household_benefits.label }}
         </h1>
         <ul class="list--bulleted text--left">
             <li>{% trans "Supplemental Nutrition Assistance Program (SNAP/Food Stamps)" %}</li>
@@ -20,12 +20,12 @@
 
     <form method="POST" style="display: inline-block;">
         {% csrf_token %}
-        <label class="sr-only" for="id_hasHouseholdBenefits">{{ form.hasHouseholdBenefits.label }}</label>
-        <p class="sr-only text--help">{{ form.hasHouseholdBenefits.help_text }}</p>
-        <button type="submit" name="hasHouseholdBenefits" class="button" value="True"
+        <label class="sr-only" for="id_has_household_benefits">{{ form.has_household_benefits.label }}</label>
+        <p class="sr-only text--help">{{ form.has_household_benefits.help_text }}</p>
+        <button type="submit" name="has_household_benefits" class="button" value="True"
             aria-describedby="household-benefits-yes-no-buttons">
             <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span></i>{% trans "Yes" %}</button>
-        <button type="submit" name="hasHouseholdBenefits" class="button" value="False"
+        <button type="submit" name="has_household_benefits" class="button" value="False"
             aria-describedby="household-benefits-yes-no-buttons">
             <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>{% trans "No" %}</button>
     </form>

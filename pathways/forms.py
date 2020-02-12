@@ -24,7 +24,7 @@ class HouseholdSizeForm(forms.Form):
         self.fields['household_size'].error_messages = {'required': _("Select your household size.")}
 
 class HouseholdBenefitsForm(forms.Form):
-    hasHouseholdBenefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
+    has_household_benefits = forms.ChoiceField(label=_("Does anyone in your household receive these benefits?"),
     choices=(
         (True,_('Yes')), (False,_('No')),
     ), help_text=_("Supplemental Nutrition Assistance Program (SNAP/Food Stamps), Home Energy Assistance Program (HEAP), Supplemental Security Income (SSI), Public Assistance"))
@@ -212,7 +212,7 @@ class AccountHolderForm(forms.Form):
 
 class AccountNumberForm(forms.Form):
     account_number = forms.CharField(label=_("What is your water account number?"), help_text=_("Your Buffalo Water account number can be found on your bill"), required=False)
-    hasAccountNumber = forms.BooleanField(required=False, widget=forms.HiddenInput())
+    has_account_number = forms.BooleanField(required=False, widget=forms.HiddenInput())
     card_title = _("Almost done! Let's get info on your water account.")
 
 

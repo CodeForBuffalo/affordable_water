@@ -16,10 +16,10 @@ class Application(models.Model):
             (8,_('8 people')),
         ), help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself."))
     # AutoEligibleForm
-    hasHouseholdBenefits = models.BooleanField()
+    has_household_benefits = models.BooleanField()
 
     # Data from Income forms will be in a seperate model because 
-    # if hasHouseholdBenefits is True, user won't have to enter income data
+    # if has_household_benefits is True, user won't have to enter income data
     annual_income = models.DecimalField(max_digits=11, decimal_places=2, blank=True, default=0, help_text=_("Must specify annual income if applicant does not have other household benefits (HEAP, SNAP, etc.)"))
 
     # ResidentInfoForm

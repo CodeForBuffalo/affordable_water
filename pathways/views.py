@@ -44,26 +44,6 @@ class ClearSessionView(TemplateView):
         return super(ClearSessionView, self).dispatch(request, *args, **kwargs)
     
 
-class DispatchView(ExtraContextView):
-    def dispatch(self, request, *args, **kwargs):
-        if 'active_app' in request.session:
-            return super(DispatchView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('pathways-home')
-
-class FormToSessionView(FormView):
-    def form_valid(self, form):
-        for field in form:
-            self.request.session[field.name] = form.cleaned_data[field.name]
-        return super().form_valid(form)
-
-class FormToAppView(FormView):
-    def form_valid(self, form):
-        app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        for field in form:
-            setattr(app, field.name, form.cleaned_data[field.name])
-        app.save()
-        return super().form_valid(form)      
     
 
 # Create your views here.
@@ -86,6 +66,7 @@ class ApplyView(ExtraContextView):
             del request.session[key]
         return super(ApplyView, self).dispatch(request, *args, **kwargs)
 
+
 class HouseholdSizeView(FormToSessionView):
     template_name = 'pathways/apply/household-size.html'
     form_class = forms.HouseholdSizeForm
@@ -95,14 +76,14 @@ class HouseholdSizeView(FormToSessionView):
         self.request.session['active_app'] = True
         return super().form_valid(form)
 
-# Step 2
+
 class HouseholdBenefitsView(DispatchView, FormToSessionView):
     template_name = 'pathways/apply/household-benefits.html'
     form_class = forms.HouseholdBenefitsForm
     success_url = '/apply/household-contributors/'
 
     def form_valid(self, form):
-        if (form.cleaned_data['hasHouseholdBenefits'] == 'True'):
+        if (form.cleaned_data['has_household_benefits'] == 'True'):
             self.success_url = '/apply/eligibility/'
         return super().form_valid(form)
 
@@ -113,7 +94,7 @@ class HouseholdContributorsView(DispatchView, FormToSessionView):
     success_url = '/apply/income/'
 
     def form_valid(self, form):
-        if (form.cleaned_data['household_contributors'] == '1'):
+        if (int(form.cleaned_data['household_contributors']) == 1):
             self.success_url = '/apply/job-status/'
         else:
             self.request.session['income_method'] = 'estimate'
@@ -129,18 +110,9 @@ class SelfEmploymentView(DispatchView, FormToSessionView):
     form_class = forms.SelfEmploymentForm
     success_url = '/apply/other-income-sources/'
 
-class OtherIncomeSourcesView(DispatchView, FormToSessionView):
-    template_name = 'pathways/apply/other-income-sources.html'
-    form_class = forms.OtherIncomeSourcesForm
-    success_url = '/apply/review-eligibility/'
-
     def form_valid(self, form):
-        if (str(self.request.session['has_job']) == 'True' or str(self.request.session['is_self_employed']) == 'True'):
+        if self.request.session['has_job'] == 'True' or form.cleaned_data['is_self_employed'] == 'True':
             self.success_url = '/apply/number-of-jobs/'
-        elif (str(form.cleaned_data['has_other_income']) == 'True'):
-            self.success_url = '/apply/non-job-income/'
-        else:
-            self.success_url = '/apply/review-eligibility/'
         return super().form_valid(form)
 
 class NumberOfJobsView(FormToSessionView, DispatchView):
@@ -155,74 +127,109 @@ class NumberOfJobsView(FormToSessionView, DispatchView):
             self.request.session['income_method'] = 'estimate'
         return super().form_valid(form)
 
-class NonJobIncomeView(FormToSessionView, DispatchView):
-    template_name = 'pathways/apply/non-job-income.html'
-    form_class = forms.NonJobIncomeForm
-    success_url = '/apply/review-eligibility'
-
 class IncomeMethodsView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/income-methods.html'
     form_class = forms.IncomeMethodsForm
     success_url = '/apply/income/'
 
 class IncomeView(FormToSessionView, DispatchView):
-    success_url = '/apply/review-eligibility/'
+    success_url = '/apply/other-income-sources/'
 
     def get_form_class(self):
-        if self.request.session['income_method'] == 'exact':
-            self.form_class = forms.ExactIncomeForm
-        elif self.request.session['income_method'] == 'hourly':
-            self.form_class = forms.HourlyIncomeForm
-        else:
-            self.form_class = forms.EstimateIncomeForm
-        return self.form_class
+        """Returns form_class based on income method"""
+        income_forms = {
+            'exact': forms.ExactIncomeForm,
+            'hourly': forms.HourlyIncomeForm,
+            'estimate': forms.EstimateIncomeForm
+        }
+        return income_forms[self.request.session['income_method']]
 
     def get_template_names(self):
-        if self.request.session['income_method'] == 'exact':
-            self.template_name = 'pathways/apply/exact-income.html'
-        elif self.request.session['income_method'] == 'hourly':
-            self.template_name = 'pathways/apply/hourly-income.html'
-        else:
-            self.template_name = 'pathways/apply/estimate-income.html'
+        """Returns template_name based income method"""
+        income_method = self.request.session['income_method']
+        self.template_name = f'pathways/apply/{income_method}-income.html'
+        
         return super().get_template_names()
 
     def form_valid(self, form):
-        self.request.session = processIncomeHelper(self.request.session,form)
+        """Calculates annual income based on income and pay_period"""
+        income = form.cleaned_data['income']
+        pay_period = form.cleaned_data['pay_period']
+
+        annual_pay_multipliers = {
+            'weekly': 52, 
+            'biweekly': 25, 
+            'semimonthly': 24,
+            'monthly': 12
+        }
+
+        if pay_period in annual_pay_multipliers:
+            # Not hourly
+            annual_income = income * annual_pay_multipliers[pay_period]
+        else:
+            # Hourly, therefore pay_period is int
+            # hourly wage * hours per week * 52 weeks
+            annual_income = income * pay_period * 52
+        
+        self.request.session['income'] = income
+        self.request.session['pay_period'] = pay_period
+        self.request.session['annual_income'] = annual_income
+        
         return super().form_valid(form) 
 
-# Income Helpers
-def processIncomeHelper(session, form):
-    """Returns modified session after calculating annual income from form"""
-    session['income'] = form.cleaned_data['income']
-    session['pay_period'] = form.cleaned_data['pay_period']
-    session['annual_income'] = calculateIncomeHelper(session['income'], session['pay_period'])
-    return session
 
-def calculateIncomeHelper(income, pay_period):
-    """Returns annual income based on income each pay_period"""
-    pay_multipliers = {'weekly':52, 'biweekly':25, 'semimonthly':24,'monthly':12}
-    return income*pay_multipliers[pay_period] if pay_period in pay_multipliers else income*pay_period*52 #Hourly
-# End Income Helpers
+class OtherIncomeSourcesView(DispatchView, FormToSessionView):
+    template_name = 'pathways/apply/other-income-sources.html'
+    form_class = forms.OtherIncomeSourcesForm
+    success_url = '/apply/review-eligibility/'
 
-# Step 5
+    def form_valid(self, form):
+        if form.cleaned_data['has_other_income'] == 'True':
+            self.success_url = '/apply/non-job-income/'
+        return super().form_valid(form)
+
+
+class NonJobIncomeView(FormToSessionView, DispatchView):
+    template_name = 'pathways/apply/non-job-income.html'
+    form_class = forms.NonJobIncomeForm
+    success_url = '/apply/review-eligibility/'
+
+    def form_valid(self, form):
+        if 'annual_income' in self.request.session.keys():
+            # Applicant has already entered job-based income
+            # Their (monthly) non_job_income will be added to their existing annual income
+            annual_income = self.request.session['annual_income']
+            non_job_income = form.cleaned_data['non_job_income']
+            self.request.session['annual_income'] = annual_income + (12 * non_job_income)
+        else:
+            # Applicant does NOT have job-based income, therefore only income is non-job-based
+            self.request.session['annual_income'] = form.cleaned_data['non_job_income']
+        return super().form_valid(form)
+
+
 class ReviewEligibilityView(DispatchView):
     template_name = 'pathways/apply/review-eligibility.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if(str(self.request.session['has_job']) == 'False' 
-            and str(self.request.session['is_self_employed']) == 'False' 
-            and str(self.request.session['has_other_income']) == 'False'):
-                context['no_income'] = True
-                self.request.session['annual_income'] = 0
-                self.request.session['income'] = 0
+        locale.setlocale( locale.LC_ALL, '' )
+        
+        # Income
+        context['income_formatted'] = '$0'
+        if 'income' in self.request.session.keys():
+            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+            
+        
+        # Non job income
+        context['non_job_income_formatted'] = '$0'
         if 'non_job_income' in self.request.session.keys():
             context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
-            self.request.session['annual_income'] = self.request.session['annual_income'] + self.request.session['non_job_income']
-            if 'income' not in self.request.session.keys():
-                self.request.session['income'] = 0
-        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+
+        # Annual income
+        context['annual_income_formatted'] = '$0'
+        if 'annual_income' in self.request.session.keys():
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])            
+
         return context
         
 # Step 6
@@ -231,13 +238,19 @@ class EligibilityView(DispatchView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        incomeLimits = {1: 41850, 2: 47800, 3: 53800, 4: 59750, 5: 64550, 6: 69350, 7: 74100, 8: 78900,}
-        if self.request.session['hasHouseholdBenefits'] == 'True':
-            context['isEligible'] = True
+        income_thresholds = {
+            1: 41850, 2: 47800, 3: 53800, 4: 59750, 
+            5: 64550, 6: 69350, 7: 74100, 8: 78900,
+        }
+
+        if self.request.session['has_household_benefits'] == 'True':
+            context['is_eligible'] = True
         else:
-            context['isEligible'] = int(self.request.session['annual_income']) <= incomeLimits[int(self.request.session['household_size'])]
-            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
-            context['income_limit'] = '${:,.0f}'.format(incomeLimits[int(self.request.session['household_size'])])
+            annual_income = int(self.request.session['annual_income'])
+            max_income = income_thresholds[int(self.request.session['household_size'])]
+            context['is_eligible'] = annual_income <= max_income
+            locale.setlocale( locale.LC_ALL, '' )
+            context['max_income'] = '${:,.0f}'.format(max_income)
         return context
 
 # Step 7
@@ -291,8 +304,22 @@ class ReviewApplicationView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         locale.setlocale( locale.LC_ALL, '' )
-        context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])
-        context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+        # Income
+        context['income_formatted'] = '$0'
+        if 'income' in self.request.session.keys():
+            context['income_formatted'] = '${:,.0f}'.format(self.request.session['income'])
+            
+        
+        # Non job income
+        context['non_job_income_formatted'] = '$0'
+        if 'non_job_income' in self.request.session.keys():
+            context['non_job_income_formatted'] = '${:,.0f}'.format(self.request.session['non_job_income'])
+
+        # Annual income
+        context['annual_income_formatted'] = '$0'
+        if 'annual_income' in self.request.session.keys():
+            context['annual_income_formatted'] = '${:,.0f}'.format(self.request.session['annual_income'])  
+
         return context
 
 class LegalView(FormToSessionView, DispatchView):
@@ -312,11 +339,11 @@ class SignatureView(FormView, DispatchView):
         for field in Application._meta.get_fields():
             if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
                 continue
-            if field.name == 'annual_income' and self.request.session['hasHouseholdBenefits'] == True:
+            if field.name == 'annual_income' and self.request.session['has_household_benefits'] == 'True':
                 continue
             if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
                 continue
-            if field.name == 'account_number' and self.request.session['hasAccountNumber'] == False:
+            if field.name == 'account_number' and self.request.session['has_account_number'] == 'False':
                 continue
             setattr(app, field.name, self.request.session[field.name])
 
@@ -330,7 +357,7 @@ class DocumentOverviewView(DispatchView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        context['hasHouseholdBenefits'] = app.hasHouseholdBenefits
+        context['has_household_benefits'] = app.has_household_benefits
         context['rent_or_own'] = app.rent_or_own
         return context
 
@@ -342,7 +369,7 @@ class DocumentIncomeView(FormToAppView, DispatchView):
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        if str(app.hasHouseholdBenefits) == 'True':
+        if str(app.has_household_benefits) == 'True':
             self.form_class = forms.DocumentBenefitsForm
         else:
             self.form_class = forms.DocumentIncomeForm

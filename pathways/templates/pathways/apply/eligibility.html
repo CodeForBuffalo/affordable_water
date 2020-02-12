@@ -6,7 +6,7 @@
 <div class="form-card form-card--transition">
   <div class="form-card__header">
     <h1 class="form-card__title">
-      {% if isEligible %}
+      {% if is_eligible %}
       {% trans "You are eligible for assistance on your water bill!" %}
       {% else %}
       {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
@@ -14,12 +14,12 @@
     </h1>
   </div>
   <div class="form-card__content">
-    {% if isEligible %}
+    {% if is_eligible %}
     <div class="emoji emoji--big emoji--thumbs-up"></div>
     {% else %}
     <div class="emoji emoji--big emoji--frowning-face"></div>
     {% endif %}
-    {% if request.session.hasHouseholdBenefits == True %}
+    {% if request.session.has_household_benefits == 'True' %}
     <p>
       {% blocktrans %}
       Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP, your
@@ -28,19 +28,19 @@
     </p>
     {% else %}
     <p>
-      {% blocktrans with household=request.session.household_size %}
+      {% blocktrans with household_size=request.session.household_size %}
       The pre-tax annual income limit for a household size of <strong>
-        {{ household_size }}</strong> is <strong>{{ income_limit }}</strong>.
+        {{ household_size }}</strong> is <strong>{{ max_income }}</strong>.
       {% endblocktrans %}
     </p>
     <p>
-      {% if isEligible %}
+      {% if is_eligible %}
       {% trans "Based on your answers, you look to be <strong>under</strong> the pre-tax income limit." %}
       {% else %}
       {% trans "Based on your answers, you look to be <strong>over</strong> the pre-tax income limit." %}
       {% endif %}
     </p>
-      {% if not isEligible %}
+      {% if not is_eligible %}
         <p>
           {% trans "Would you like to learn more about other Pathways to Affordable Water?" %}
         </p>
@@ -48,14 +48,14 @@
     {% endif %}
   </div>
   <div class="form-card__footer">
-    {% if isEligible %}
+    {% if is_eligible %}
     <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
       {% trans "Continue" %} <i class="icon icon-arrow_forward"></i></a>
     {% else %}
     <a class="button" href="{% url 'pathways-home' %}">
       {% trans "Learn more" %} <i class="icon icon-info"></i></a>
     {% endif %}
-    <a class="button" href="{% if request.session.hasHouseholdBenefits %}{% url 'pathways-apply-household-benefits' %}
+    <a class="button" href="{% if request.session.has_household_benefits %}{% url 'pathways-apply-household-benefits' %}
     {% else %}{% url 'pathways-apply-review-eligibility' %}{% endif %}">
       {% trans "Go back" %} <i class="icon icon-replay"></i></a>
   </div>
