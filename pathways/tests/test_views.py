@@ -724,10 +724,10 @@ class SignatureViewTest(TestCase):
         session = self.client.session
         session['active_app'] = True
         session['household_size'] = 2
-        session['has_household_benefits'] = False
-        session['has_job'] = True
-        session['is_self_employed'] = False
-        session['has_other_income'] = True
+        session['has_household_benefits'] = 'False'
+        session['has_job'] = 'True'
+        session['is_self_employed'] = 'False'
+        session['has_other_income'] = 'True'
         session['income'] = 500
         session['income_method'] = 'exact'
         session['pay_period'] = 'weekly'
@@ -744,8 +744,8 @@ class SignatureViewTest(TestCase):
         session['account_first'] = 'Test'
         session['account_last'] = 'User'
         session['account_middle'] = 'R'
-        session['has_account_number'] = False
-        session['legal_agreement'] = True
+        session['has_account_number'] = 'False'
+        session['legal_agreement'] = 'True'
         session.save()
 
     def test_view_url_exists_at_desired_location(self):
