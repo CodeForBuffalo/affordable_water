@@ -17,6 +17,7 @@ django-libsass = "*"
 whitenoise = "*"
 coverage = "*"
 django-coverage-plugin = "*"
+python-magic-bin = "*"
 
 [requires]
 python_version = "3.7"
