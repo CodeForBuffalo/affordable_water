@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application
+from .models import Application, Document
 import locale
 import datetime
 
@@ -29,21 +29,11 @@ class FormToSessionView(FormView):
             self.request.session[field.name] = form.cleaned_data[field.name]
         return super().form_valid(form)
 
-class FormToAppView(FormView):
-    def form_valid(self, form):
-        app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        for field in form:
-            setattr(app, field.name, form.cleaned_data[field.name])
-        app.save()
-        return super().form_valid(form)
-
 class ClearSessionView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         for key in list(request.session.keys()):
             del request.session[key]
         return super(ClearSessionView, self).dispatch(request, *args, **kwargs)
-    
-
     
 
 # Create your views here.
@@ -345,6 +335,8 @@ class SignatureView(FormView, DispatchView):
                 continue
             if field.name == 'account_number' and self.request.session['has_account_number'] == 'False':
                 continue
+            if field.name == 'document':
+                continue
             setattr(app, field.name, self.request.session[field.name])
 
         app.save()
@@ -361,24 +353,38 @@ class DocumentOverviewView(DispatchView):
         context['rent_or_own'] = app.rent_or_own
         return context
 
-class DocumentIncomeView(FormToAppView, DispatchView):
+class DocumentIncomeView(FormView, DispatchView):
     template_name = 'pathways/docs/upload-form.html'
-    form_class = forms.DocumentIncomeForm
     success_url = '/apply/documents-residence/'
     extra_context = {'next_url': success_url}
+    doc_type = ''
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         if str(app.has_household_benefits) == 'True':
             self.form_class = forms.DocumentBenefitsForm
+            self.doc_type = 'benefits'
         else:
             self.form_class = forms.DocumentIncomeForm
+            self.doc_type = 'income'
         return self.form_class
 
-class DocumentResidenceView(FormToAppView, DispatchView):
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        doc = Document()
+        doc.application = app
+        doc.doc_type = self.doc_type
+        doc.save()
+        for field in form:
+            setattr(doc, 'doc_file', form.cleaned_data[field.name])
+        doc.save()
+        return super().form_valid(form)
+
+class DocumentResidenceView(FormView, DispatchView):
     template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
     extra_context = {'next_url': success_url}
+    doc_type = 'residence'
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
@@ -387,6 +393,17 @@ class DocumentResidenceView(FormToAppView, DispatchView):
         else:
             self.form_class = forms.DocumentHomeownerForm
         return self.form_class
+
+    def form_valid(self, form):
+        app = Application.objects.filter(id = self.request.session['app_id'])[0]
+        doc = Document()
+        doc.application = app
+        doc.doc_type = self.doc_type
+        doc.save()
+        for field in form:
+            setattr(doc, 'doc_file', form.cleaned_data[field.name])
+        doc.save()
+        return super().form_valid(form)
 
 class ConfirmationView(DispatchView):
     template_name = 'pathways/apply/confirmation.html'
