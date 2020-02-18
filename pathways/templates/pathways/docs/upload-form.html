@@ -13,11 +13,11 @@
             <br><br>
             {% trans "Accepted file types include <strong>.jpeg</strong>, <strong>.jpg</strong>, <strong>.png</strong>, <strong>.tiff</strong>, and <strong>.pdf</strong>." %}
         </div>
-            {% if field.errors %}
-            {% for error in field.errors %}
-            <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
-            {% endfor %}
-            {% endif %}
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+        {% endfor %}
+        {% endif %}
     </div>
 
     <div class="form-card__content">
@@ -30,14 +30,14 @@
                         </h2>
                     </div>
                     <div class="doc-preview__thumb">
-                        <img id="doc-preview" alt="Preview image of your uploaded document"
-                            src="#" width="100" height="100"/>
+                        <img id="doc-preview" alt="Preview image of your uploaded document" src="#" width="100"
+                            height="100" />
                     </div>
                     <br>
                 </div>
             </div>
 
-            <form class="{{field.name}}" enctype="multipart/form-data" method="post">
+            <form class="{{field.name}}" enctype="multipart/form-data" method="post" id="doc-form">
                 {% csrf_token %}
                 <div class="document-upload with-padding-med">
                     <div class="file-upload">
@@ -53,35 +53,17 @@
                         </label>
                         <input type="file" name="{{field.name}}" id="doc-input" accept="image/*"
                             style="width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;"
-                            onchange="readURL(this)" required>
+                            onchange="readURL(this)">
                     </div>
                 </div>
-
-                <button name="button" type="submit" class="button button--primary">{% trans "Upload" %}</button>
-            </form>
         </div>
-        <script>
-            function readURL(input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('#doc-preview').attr('src', e.target.result);
-                        $('#doc-preview-box').attr('style', "display: block;");
-                        var filename = ($('#doc-input')[0].value).match(/[^\\/]*$/)[0];
-                        $('#preview-subtitle').html(filename);
-                    }
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-        </script>
         {% endfor %}
 
         <div class="form-card__footer">
             <div class="toolbar">
                 <div class="toolbar__left">
-                    <a class="button" href="{{ next_url }}">{% trans "Nothing to submit now" %}</a>
+                    <button name="button" form="doc-form" type="submit" id="doc-submit"
+                        class="button">{% trans "Nothing to submit right now" %}</button>
                 </div>
             </div>
         </div>
@@ -89,3 +71,27 @@
     </div>
 </div>
 {% endblock question %}
+
+{% block pagejavascript %}
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#doc-preview').attr('src', e.target.result);
+                $('#doc-preview-box').attr('style', "display: block;");
+                var filename = ($('#doc-input')[0].value).match(/[^\\/]*$/)[0];
+                $('#preview-subtitle').html(filename);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    $("#doc-input").on("change", function () {
+        $("#doc-submit").attr("class", "button button--primary");
+        $("#doc-submit").text("Upload");
+    });
+</script>
+{% endblock pagejavascript %}

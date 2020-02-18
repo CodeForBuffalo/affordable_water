@@ -353,7 +353,22 @@ class DocumentOverviewView(DispatchView):
         context['rent_or_own'] = app.rent_or_own
         return context
 
-class DocumentIncomeView(FormView, DispatchView):
+class FormToDocumentView(FormView):
+    def form_valid(self, form):
+        """Creates new Document object using form data and attaches to current Application"""
+        for field in form:
+            if form.cleaned_data[field.name]:
+                app = Application.objects.filter(id = self.request.session['app_id'])[0]
+                doc = Document()
+                doc.application = app
+                doc.doc_type = self.doc_type
+                doc.save()
+                setattr(doc, 'doc_file', form.cleaned_data[field.name])
+                doc.save()
+        return super().form_valid(form)
+        
+
+class DocumentIncomeView(FormToDocumentView, DispatchView):
     template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/documents-residence/'
     extra_context = {'next_url': success_url}
@@ -368,19 +383,9 @@ class DocumentIncomeView(FormView, DispatchView):
             self.form_class = forms.DocumentIncomeForm
             self.doc_type = 'income'
         return self.form_class
+    # Document object is created in form_valid() of parent class FormToDocumentView
 
-    def form_valid(self, form):
-        app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        doc = Document()
-        doc.application = app
-        doc.doc_type = self.doc_type
-        doc.save()
-        for field in form:
-            setattr(doc, 'doc_file', form.cleaned_data[field.name])
-        doc.save()
-        return super().form_valid(form)
-
-class DocumentResidenceView(FormView, DispatchView):
+class DocumentResidenceView(FormToDocumentView, DispatchView):
     template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
     extra_context = {'next_url': success_url}
@@ -393,17 +398,7 @@ class DocumentResidenceView(FormView, DispatchView):
         else:
             self.form_class = forms.DocumentHomeownerForm
         return self.form_class
-
-    def form_valid(self, form):
-        app = Application.objects.filter(id = self.request.session['app_id'])[0]
-        doc = Document()
-        doc.application = app
-        doc.doc_type = self.doc_type
-        doc.save()
-        for field in form:
-            setattr(doc, 'doc_file', form.cleaned_data[field.name])
-        doc.save()
-        return super().form_valid(form)
+    # # Document object is created in form_valid() of parent class FormToDocumentView
 
 class ConfirmationView(DispatchView):
     template_name = 'pathways/apply/confirmation.html'
