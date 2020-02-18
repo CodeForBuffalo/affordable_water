@@ -7,46 +7,79 @@
     {% for field in form.visible_fields %}
     <div class="form-card__header form-card__header--with-icon">
         <div class="form-card__icon emoji emoji--med emoji--money"></div>
-        <h1 class="form-card__title margin-bottom--none" id="card_labelledby">{{ field.label }}</h1>
+        <h1 class="form-card__title margin-bottom--none" id="card_labelledby">
+            {% if doc_type == "benefits" %}
+            {% trans "Upload proof of your household's assistance enrollment" %}
+            {% elif doc_type == "income" %}
+            {% trans "Upload a pay stub from the last 30 days" %}
+            {% else %}
+            {% trans "Upload proof of your current residence status" %}
+            {% endif %}
+        </h1>
         <div class="form-card__body-text margin-bottom--none margin-top--medium" id="card_describedby">
-            {{ field.help_text }}</div>
+            {% if doc_type == "benefits" %}
+            {% trans "This can be a photo of any document that proves a member of your household is enrolled in SNAP, HEAP, SSI, or Public Assistance." %}
+            {% elif doc_type == "income" %}
+            {% trans "This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer." %}
+            {% elif doc_type == "rent" %}
+            {% trans "This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill." %}
+            {% elif doc_type == "own" %}
+            {% trans "This could be a deed, tax document, or any official document that indicates you own your home." %}
+            {% endif %}
+            <br><br>
+            {% trans "Accepted file types include <strong>.jpeg</strong>, <strong>.jpg</strong>, <strong>.png</strong>, <strong>.tiff</strong>, and <strong>.pdf</strong>." %}
+        </div>
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
+        {% endfor %}
+        {% endif %}
     </div>
 
     <div class="form-card__content">
         <div class="form-card__content">
-            <div class="doc-preview-container"></div>
+            <div class="doc-preview-container">
+                <div class="doc-preview" id="doc-preview-box" style="display: none;">
+                    <div class="doc-preview__info">
+                        <h2 class="form-card__subtitle with-padding-small">
+                            <p id="preview-subtitle"></p>
+                        </h2>
+                    </div>
+                    <div class="doc-preview__thumb">
+                        <img id="doc-preview" alt="Preview image of your uploaded document" src="#" width="100"
+                            height="100" />
+                    </div>
+                    <br>
+                </div>
+            </div>
 
-            <form class="{{field.name}}" id="{{field.name}}" enctype="multipart/form-data" method="post">
+            <form class="{{field.name}}" enctype="multipart/form-data" method="post" id="doc-form">
                 {% csrf_token %}
                 <div class="document-upload with-padding-med">
                     <div class="file-upload">
-                        <input class="form__documentuploader" type="file" name="{{field.name}}" id="{{field.name}}" accept="image/*">  
-                        <label for="{{field.name}}" class="sr-only">{% trans "Upload a picture" %}</label>
-                        
-                        <!-- <input class="form__documentuploader" data-upload-immediately="true"
-                            data-uploading="Uploading&amp;hellip;" data-reference="c3e5c5f385f772eb5b85481a3fed002d"
-                            include_hidden="false" type="file" name="document[file]" id="document_file"
-                            accept="image/*" />
-                        <label class="button is-tablet-hidden--inline" style="display: none !important;"
-                            for="document_file">
+
+                        <label id="computer-photo-input" class="button is-tablet-hidden--inline" for="doc-input">
                             <i class="button__icon--left icon-file_upload"></i>
-                            {% trans "Pick a file from this computer" %}</label>
-                        <label class="button is-desktop-hidden--inline" style="display: none !important;"
-                            for="document_file">
+                            {% trans "Pick a file from this computer" %}
+                        </label>
+
+                        <label id="tablet-photo-input" class="button is-desktop-hidden--inline" for="doc-input">
                             <i class="button__icon--left icon-add_a_photo"></i>
-                            {% trans "Take a picture" %}</label> -->
+                            {% trans "Take a picture" %}
+                        </label>
+                        <input type="file" name="{{field.name}}" id="doc-input" accept="image/*"
+                            style="width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; position: absolute; z-index: -1;"
+                            onchange="readURL(this)">
                     </div>
                 </div>
-
-                <button name="button" type="submit" class="button button--primary">{% trans "Upload" %}</button>
-            </form>
         </div>
         {% endfor %}
 
         <div class="form-card__footer">
             <div class="toolbar">
                 <div class="toolbar__left">
-                    <a class="button" href="{{ next_url }}">{% trans "Nothing to submit now" %}</a>
+                    <button name="button" form="doc-form" type="submit" id="doc-submit"
+                        class="button">{% trans "Nothing to submit right now" %}</button>
                 </div>
             </div>
         </div>
@@ -54,3 +87,27 @@
     </div>
 </div>
 {% endblock question %}
+
+{% block pagejavascript %}
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#doc-preview').attr('src', e.target.result);
+                $('#doc-preview-box').attr('style', "display: block;");
+                var filename = ($('#doc-input')[0].value).match(/[^\\/]*$/)[0];
+                $('#preview-subtitle').html(filename);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    $("#doc-input").on("change", function () {
+        $("#doc-submit").attr("class", "button button--primary");
+        $("#doc-submit").text("Upload");
+    });
+</script>
+{% endblock pagejavascript %}

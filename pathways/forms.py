@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, widgets
 from django.core.validators import RegexValidator, ValidationError
-from .models import Application
+from . import models
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -90,6 +90,7 @@ pay_period_choices = [
     ('biweekly',_("Every two weeks")),
     ('semimonthly',_('Twice a month')),
     ('monthly',_('Every month')),
+    ('annually',_('Every year')),
     ]
 
 class IncomeMethodsForm(forms.Form):
@@ -223,21 +224,8 @@ class LegalForm(forms.Form):
 class SignatureForm(forms.Form):
     signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"), error_messages={'required':_("You must sign the application to continue.")})
 
-class DocumentIncomeForm(forms.Form):
-    income_photo = forms.ImageField(label=_("Upload a pay stub from the last 30 days"), 
-    help_text=_("This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer."))
-
-class DocumentBenefitsForm(forms.Form):
-    benefits_photo = forms.ImageField(label=_("Upload proof of your household's assistance enrollment"), 
-    help_text=_("This can be a photo of any document that proves a member of your household is enrolled in SNAP, HEAP, SSI, or Public Assistance."))
-
-class DocumentHomeownerForm(forms.Form):
-    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), 
-    help_text=_("This could be a deed, tax document, or any official document that indicates you own your home."))
-
-class DocumentTenantForm(forms.Form):
-    residence_photo = forms.ImageField(label=_("Upload proof of your current residence status"), 
-    help_text=_("This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill."))
+class DocumentForm(forms.Form):
+    doc = forms.FileField(validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
 
 class LaterDocumentsForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"), 

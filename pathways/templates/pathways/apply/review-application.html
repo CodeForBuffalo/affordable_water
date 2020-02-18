@@ -13,7 +13,7 @@
             <div class="vertical-steps">
                 <div class="vertical-steps__step">
                     <div class="vertical-steps__emoji"><span class="emoji emoji emoji--med emoji--house"></span></div>
-                    <div class="vertical-steps__title">{{ request.session.household }}</div>
+                    <div class="vertical-steps__title">{{ request.session.household_size }}</div>
                     <div class="form-card__body-text">{% trans "Household size" %}</div>
                 </div>
 
@@ -37,6 +37,9 @@
 
                         {% elif request.session.income_method == 'hourly' %}
                         {% trans "per hour" %}
+
+                        {% elif request.session.income_method == 'annually' %}
+                        {% trans "per year" %}
 
                         {% else  %}
                         {% trans "from jobs" %}
