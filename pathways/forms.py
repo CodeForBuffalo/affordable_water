@@ -224,25 +224,8 @@ class LegalForm(forms.Form):
 class SignatureForm(forms.Form):
     signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"), error_messages={'required':_("You must sign the application to continue.")})
 
-class DocumentIncomeForm(forms.Form):
-    income_doc = forms.FileField(label=_("Upload a pay stub from the last 30 days"), 
-        help_text=_("This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer."),
-        validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
-
-class DocumentBenefitsForm(forms.Form):
-    benefits_doc = forms.FileField(label=_("Upload proof of your household's assistance enrollment"), 
-        help_text=_("This can be a photo of any document that proves a member of your household is enrolled in SNAP, HEAP, SSI, or Public Assistance."),
-        validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
-
-class DocumentHomeownerForm(forms.Form):
-    residence_doc = forms.FileField(label=_("Upload proof of your current residence status"), 
-        help_text=_("This could be a deed, tax document, or any official document that indicates you own your home."),
-        validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
-
-class DocumentTenantForm(forms.Form):
-    residence_doc = forms.FileField(label=_("Upload proof of your current residence status"), 
-        help_text=_("This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill."),
-        validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
+class DocumentForm(forms.Form):
+    doc = forms.FileField(validators=[models.ACCEPTED_FILE_VALIDATOR], required=False)
 
 class LaterDocumentsForm(forms.Form):
     first_name = forms.CharField(max_length=100, required=True, label=_("What is your first name?"), 

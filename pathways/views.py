@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 from .models import Application, Document
 import locale
 import datetime
+from django.utils.translation import ugettext_lazy as _
 
 class ExtraContextView(TemplateView):
     extra_context = {}
@@ -355,51 +356,49 @@ class DocumentOverviewView(DispatchView):
         return context
 
 class FormToDocumentView(FormView):
+    form_class = forms.DocumentForm
+    template_name = 'pathways/docs/upload-form.html'
+    
     def form_valid(self, form):
         """Creates new Document object using form data and attaches to current Application"""
-        for field in form:
-            if form.cleaned_data[field.name]:
-                app = Application.objects.filter(id = self.request.session['app_id'])[0]
-                doc = Document()
-                doc.application = app
-                doc.doc_type = self.doc_type
-                doc.save()
-                setattr(doc, 'doc_file', form.cleaned_data[field.name])
-                doc.save()
+        if form.cleaned_data['doc']:
+            app = Application.objects.filter(id = self.request.session['app_id'])[0]
+            doc = Document()
+            doc.application = app
+            doc.doc_type = self.doc_type
+            doc.save()
+            setattr(doc, 'doc_file', form.cleaned_data['doc'])
+            doc.save()
         return super().form_valid(form)
         
 
 class DocumentIncomeView(FormToDocumentView, DispatchView):
-    template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/documents-residence/'
-    extra_context = {'next_url': success_url}
-    doc_type = ''
+    extra_context = {'doc_type': 'income'}
+    doc_type = 'income'
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         if str(app.has_household_benefits) == 'True':
-            self.form_class = forms.DocumentBenefitsForm
             self.doc_type = 'benefits'
-        else:
-            self.form_class = forms.DocumentIncomeForm
-            self.doc_type = 'income'
+            self.extra_context['doc_type'] = 'benefits'
         return self.form_class
+
     # Document object is created in form_valid() of parent class FormToDocumentView
 
 class DocumentResidenceView(FormToDocumentView, DispatchView):
-    template_name = 'pathways/docs/upload-form.html'
     success_url = '/apply/confirmation/'
-    extra_context = {'next_url': success_url}
+    extra_context = {'doc_type': 'own'}
     doc_type = 'residence'
 
     def get_form_class(self):
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         if str(app.rent_or_own) == 'rent':
-            self.form_class = forms.DocumentTenantForm
-        else:
-            self.form_class = forms.DocumentHomeownerForm
+            self.doc_type = 'rent'
+            self.extra_context['doc_type'] = 'rent'
         return self.form_class
-    # # Document object is created in form_valid() of parent class FormToDocumentView
+
+    # Document object is created in form_valid() of parent class FormToDocumentView
 
 class ConfirmationView(DispatchView):
     template_name = 'pathways/apply/confirmation.html'
