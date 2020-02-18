@@ -38,6 +38,9 @@
                         {% elif request.session.income_method == 'hourly' %}
                         {% trans "per hour" %}
 
+                        {% elif request.session.income_method == 'annually' %}
+                        {% trans "per year" %}
+
                         {% else  %}
                         {% trans "from jobs" %}
                         {% endif %}

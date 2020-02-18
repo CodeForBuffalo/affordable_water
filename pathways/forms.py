@@ -90,6 +90,7 @@ pay_period_choices = [
     ('biweekly',_("Every two weeks")),
     ('semimonthly',_('Twice a month')),
     ('monthly',_('Every month')),
+    ('annually',_('Every year')),
     ]
 
 class IncomeMethodsForm(forms.Form):

@@ -150,7 +150,8 @@ class IncomeView(FormToSessionView, DispatchView):
             'weekly': 52, 
             'biweekly': 25, 
             'semimonthly': 24,
-            'monthly': 12
+            'monthly': 12,
+            'annually': 1
         }
 
         if pay_period in annual_pay_multipliers:
