@@ -10,9 +10,7 @@
             <div class="vertical-steps">
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji">
-                        <span class="emoji emoji emoji--med emoji--money"></span>
-                    </div>
+                    <div class="vertical-steps__emoji emoji--money"></div>
                     <div class="vertical-steps__title">
                         {{ income_formatted }}
 
@@ -38,7 +36,7 @@
                         {% trans "from job(s)" %}
                         {% endif %}
                     </div>
-                    <div class="form-card__body-text">
+                    <p>
                         {% if request.session.income_method == 'estimate' %}
                         {% trans "Estimated income before taxes" %}
 
@@ -51,39 +49,36 @@
                         {% else %}
                         {% trans "You indicated no job source of income." %}
                         {% endif %}
-                    </div>
+                    </p>
                 </div>
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji">
-                        <span class="emoji emoji emoji--med emoji--money"></span>
-                    </div>
+                    <div class="vertical-steps__emoji emoji--money"></div>
                     <div class="vertical-steps__title">
                         {{ non_job_income_formatted }}
                         {% if request.session.has_other_income == 'True' %}
                         {% trans "per month" %}
                         {% endif %}
                     </div>
-                    <div class="form-card__body-text">
+                    <p>
                         {% if request.session.has_other_income == 'True' %}
                         {% trans "Money from other sources" %}
                         {% else %}
                         {% trans "No income from other sources" %}
                         {% endif %}
-                    </div>
+                    </p>
                 </div>
                 
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji"><span class="emoji emoji emoji--big emoji--house"></span></div>
+                    <div class="vertical-steps__emoji emoji--house"></div>
                     <div class="vertical-steps__title">{{ request.session.household_size }}</div>
-                    <div class="form-card__body-text">{% trans "Household size" %}</div>
+                    <p>{% trans "Household size" %}</p>
                 </div>
 
                 <div class="vertical-steps__step">
                     <div class="notice">
-                        <div class="form-card__body-text">
-                            {% trans "Based on this info, your annual eligible income is" %}</div>
+                        <p>{% trans "Based on this info, your annual eligible income is" %}</p>
                         <div class="vertical-steps__title">{{ annual_income_formatted }} per year</div>
                     </div>
                 </div>

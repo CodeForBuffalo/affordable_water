@@ -8,13 +8,13 @@
         <div class="grid__item width-three-fourths">
             <h2>{% trans "Get help paying your Buffalo Water bill" %}</h2>
             <h1>{% trans "Apply for assistance in 10 minutes" %}</h1>
-            <a class="button button--cta" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
+            <a class="button button--primary" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
                     class="button__icon icon-arrow_forward"></i></a>
         </div>
     </div>
 </section>
 
-<section class="slab slab--half-padded slab--teal">
+<section class="slab slab--half-padded slab--yellow">
     <div class="grid">
         <div class="grid__item width-one-whole">
             <b>
@@ -29,15 +29,15 @@
     <div class="grid">
         <div class="grid__item width-seven-twelfths">
             <a href="https://www.buffalowater.org/"
-                class="illustration illustration--buffalo-water with-padding-small">{% trans "Buffalo Water" %}</a>
-            <p class="form-card__body-text">
+                class="illustration illustration--buffalo-water spacing-below-10">{% trans "Buffalo Water" %}</a>
+            <p>
                 {% trans "Eligible Buffalo residents can receive a discount on their water bill between $60 and $90 a year." %}
             </p>
         </div>
         <div class="grid__item width-one-fourth shift-one-sixth trust-badge">
             <a href=""
-                class="illustration illustration--buffalo-seal with-padding-small">{% trans "Buffalo Water" %}</a>
-            <p class="form-card__body-text">{% trans "An authorized Affordable Water Program assistance tool" %}
+                class="illustration illustration--buffalo-seal spacing-below-10">{% trans "Buffalo Water" %}</a>
+            <p>{% trans "An official Affordable Water Program assistance tool" %}
             </p>
         </div>
     </div>
@@ -47,17 +47,17 @@
 <section class="slab slab--padded">
     <div class="grid">
         <div class="grid__item">
-            <h1 class="with-padding-med">{% trans "Already started your application?" %}</h1>
+            <h1 class="spacing-below-35">{% trans "Already started your application?" %}</h1>
         </div>
     </div>
     <div class="grid">
-        <div class="grid__item width-one-half with-padding-med">
-            <p class="form-card__body-text">{% trans "Upload requested documents" %}</p>
+        <div class="grid__item width-one-half spacing-below-35">
+            <p>{% trans "Upload requested documents" %}</p>
             <p class="with-no-padding"><a href="{% url 'pathways-apply-later-documents'%}" class="button">{% trans "Submit documents" %}</a></p>
 
         </div>
-        <div class="grid__item width-one-half with-padding-med">
-            <p class="form-card__body-text">{% trans "For missed interviews or other issues" %}</p>
+        <div class="grid__item width-one-half spacing-below-35">
+            <p>{% trans "For missed interviews or other issues" %}</p>
             <p class="with-no-padding"><a href="/en/contact" class="button">{% trans "Contact Buffalo Water" %}</a></p>
 
         </div>
@@ -65,25 +65,21 @@
 </section>
 
 <section class="slab slab--padded slab--white slab--steps text--centered">
-    <div class="grid with-padding-large">
+    <div class="grid spacing-below-60">
         <div class="grid__item width-one-third">
             <div class="emoji emoji--big emoji--pencil"></div>
             <p class="text--caption">{% trans "Apply in 10 minutes" %}</p>
-            <p class="form-card__body-text">
-                {% trans "Eligibility is determined by income and household size." %}
-            </p>
+            <p>{% trans "Eligibility is determined by income and household size." %}</p>
         </div>
         <div class="grid__item width-one-third">
             <div class="emoji emoji--big emoji--page-facing-up"></div>
             <p class="text--caption">{% trans "Verify documents" %}</p>
-            <p class="form-card__body-text">
-                {% trans "You'll need documents to verify your income and residency." %}</p>
+            <p>{% trans "You'll need documents to verify your income and residency." %}</p>
         </div>
         <div class="grid__item width-one-third">
             <div class="emoji emoji--big emoji--faucet"></div>
             <p class="text--caption">{% trans "Get discount on water" %}</p>
-            <p class="form-card__body-text">
-                {% trans "If you’re approved, you’ll receive a discount on your next water bill." %}</p>
+            <p>{% trans "If you’re approved, you’ll receive a discount on your next water bill." %}</p>
         </div>
     </div>
     <hr>
@@ -128,12 +124,12 @@
     <div class="grid__item width-two-thirds">
         <div class="main-footer__legal">
             <div class="grid">
-                <div class="grid__item width-one-half with-padding-med">
+                <div class="grid__item width-one-half spacing-below-35">
                     <p><a class="link--subtle" href="/en/login">Assister sign in</a></p>
                     <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('en')">English</a></p>
                     <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('es')">Español</a></p>
                 </div>
-                <div class="grid__item width-one-half with-padding-med">
+                <div class="grid__item width-one-half spacing-below-35">
                     <p><a class="link--subtle" href="/en/about">About this website</a></p>
                     <p><a class="link--subtle" href="/en/privacy">Privacy policy</a></p>
                     <p><a class="link--subtle" href="/en/nondiscrimination">Nondiscrimination statement</a></p>

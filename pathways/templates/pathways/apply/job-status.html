@@ -5,12 +5,11 @@
 {% block question %}
 <div class="form-card form-card--transition">
     <div class="form-card__header">
-        <div class="form-card__emoji--header"></div>
-        <div class="with-padding-med emoji emoji--big emoji--briefcase"></div>
+        <div class="spacing-below-35 emoji emoji--big emoji--briefcase"></div>
         <h1 id="job-status-yes-no-buttons" class="form-card__title">
             {{ form.has_job.label }}
         </h1>
-        <p class="form-card__body-text">{{ form.has_job.help_text }}</p>
+        <p>{{ form.has_job.help_text }}</p>
     </div>
 
     <form method="POST" style="display: inline-block;">

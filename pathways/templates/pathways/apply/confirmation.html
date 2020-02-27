@@ -4,23 +4,21 @@
 
 {% block question %}
 <div class="form-card form-card--transition">
-    <div class="form-card__header form-card__header--confirmation">
+    <div class="form-card__header">
         <div class="emoji emoji--checkmark emoji--med"></div>
         <h1 class="form-card__title">
             {% trans "Your application has been successfully submitted!" %}
         </h1>
-        <p class="form-card__body-text margin-bottom--none">
-            {% blocktrans %}
-            Submitted to Buffalo Water on {{ confirm_timestamp }}
-            {% endblocktrans %}
+        <p class="margin-bottom--none">
+            {% trans "Submitted to Buffalo Water on " %}{{ confirm_timestamp }}
         </p>
     </div>
 
     <div class="form-card__content">
-        <h3 class="with-padding-med">
+        <h3 class="spacing-below-35">
             What to expect next:
         </h3>
-        <div class="media-box with-padding-med">
+        <div class="media-box spacing-below-35">
             <div class="media-box__media">
                 <div class="emoji emoji--med emoji--clipboard"></div>
             </div>
@@ -29,7 +27,7 @@
             </div>
         </div>
 
-        <div class="media-box with-padding-med">
+        <div class="media-box spacing-below-35">
             <div class="media-box__media">
                 <div class="emoji emoji--med emoji--page-facing-up"></div>
             </div>
@@ -41,7 +39,7 @@
             </div>
         </div>
 
-        <div class="media-box with-padding-med">
+        <div class="media-box spacing-below-35">
             <div class="media-box__media">
                 <div class="emoji emoji--med emoji--dollar-sign"></div>
             </div>
