@@ -18,7 +18,7 @@ class Application(models.Model):
             (6,_('6 people')),
             (7,_('7 people')),
             (8,_('8 people')),
-        ), help_text=_("Typically how many people you regularly purchase and prepare food with, including yourself."))
+        ), help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."))
     # AutoEligibleForm
     has_household_benefits = models.BooleanField()
 
