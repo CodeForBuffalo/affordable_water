@@ -125,7 +125,7 @@ class HourlyIncomeForm(forms.Form):
 
 class EstimateIncomeForm(forms.Form):
     income = forms.FloatField(min_value=0, label=_("How much money does your household make before taxes?"),
-        label_suffix="", help_text=_("If you live with them, include income from spouse and any children over 22. Only include roommates if you purchase more than half of your meals together."))
+        label_suffix="", help_text=_("Include anyone who contributes to paying living expenses."))
     pay_period = forms.ChoiceField(choices=pay_period_choices, label=_("How often?"), required=True)
     
     def __init__(self, *args, **kwargs):
