@@ -143,6 +143,10 @@
                         <br>
                         {{ request.session.street_address }}
                         <br>
+                        {% if request.session.apartment_unit != "" %}
+                        {% trans "Apartment" %}{{ request.session.apartment_unit }}
+                        {% endif %}
+                        <br>
                         Buffalo, NY {{ request.session.zip_code }}
                     </p>
                 </div>
