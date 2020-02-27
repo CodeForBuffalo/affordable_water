@@ -5,26 +5,21 @@
 {% block question %}
 <div class="form-card form-card--transition">
     <div class="form-card__header">
-        <div class="form-card__emoji--header"></div>
-        <div class="with-padding-med emoji emoji--big emoji--briefcase"></div>
+        <div class="spacing-below-35 emoji emoji--big emoji--briefcase"></div>
         <h1 id="self-employed-yes-no-buttons" class="form-card__title">
             {{ form.is_self_employed.label }}
         </h1>
     </div>
-    <div class="form-card__body-text">
-        {% trans "For example, does anyone:" %}
-    </div>
-    <div class="form-card__body-text">
-        <div class="text--centered">
-            <div class="with-padding-med">
-                <div class="example example--wider">{% trans "Drive for Uber, Lyft, Doordash, etc" %}</div>
-                <div class="example example--wider">{% trans "Run their own business" %}</div>
-                <div class="example example--wider">{% trans "Have an online store" %}</div>
-                <div class="example example--wider">{% trans "Get a 1099-MISC form at the end of the year" %}</div>
-                <div class="example example--wider">{% trans "Work as a barber, dog walker, or other independent service provider" %}</div>
-            </div>
+    <p>{% trans "For example, does anyone:" %}</p>
+    <p class="text--centered">
+        <div class="spacing-below-35">
+            <div class="example">{% trans "Drive for Uber, Lyft, Doordash, etc" %}</div>
+            <div class="example">{% trans "Run their own business" %}</div>
+            <div class="example">{% trans "Have an online store" %}</div>
+            <div class="example">{% trans "Get a 1099-MISC form at the end of the year" %}</div>
+            <div class="example">{% trans "Work as a barber, dog walker, or other independent service provider" %}</div>
         </div>
-    </div>
+    </p>
 
     <form method="POST" style="display: inline-block;">
         {% csrf_token %}

@@ -16,7 +16,7 @@
             {% trans "Upload proof of your current residence status" %}
             {% endif %}
         </h1>
-        <div class="form-card__body-text margin-bottom--none margin-top--medium" id="card_describedby">
+        <p class="margin-bottom--none margin-top--medium" id="card_describedby">
             {% if doc_type == "benefits" %}
             {% trans "This can be a photo of any document that proves a member of your household is enrolled in SNAP, HEAP, SSI, or Public Assistance." %}
             {% elif doc_type == "income" %}
@@ -28,7 +28,7 @@
             {% endif %}
             <br><br>
             {% trans "Accepted file types include <strong>.jpeg</strong>, <strong>.jpg</strong>, <strong>.png</strong>, <strong>.tiff</strong>, and <strong>.pdf</strong>." %}
-        </div>
+        </p>
         {% if field.errors %}
         {% for error in field.errors %}
         <p class="text--error"><i class="icon-warning"></i>{{ error|escape }}</p>
@@ -41,7 +41,7 @@
             <div class="doc-preview-container">
                 <div class="doc-preview" id="doc-preview-box" style="display: none;">
                     <div class="doc-preview__info">
-                        <h2 class="form-card__subtitle with-padding-small">
+                        <h2 class="form-card__subtitle spacing-below-10">
                             <p id="preview-subtitle"></p>
                         </h2>
                     </div>
@@ -55,7 +55,7 @@
 
             <form class="{{field.name}}" enctype="multipart/form-data" method="post" id="doc-form">
                 {% csrf_token %}
-                <div class="document-upload with-padding-med">
+                <div class="document-upload spacing-below-35">
                     <div class="file-upload">
 
                         <label id="computer-photo-input" class="button is-tablet-hidden--inline" for="doc-input">

@@ -6,10 +6,10 @@
 <div class="form-card form-card--transition">
     <form method="POST">
         {% csrf_token %}
-        <div class="emoji emoji--big emoji--money with-padding-med"></div>
+        <div class="emoji emoji--big emoji--money spacing-below-35"></div>
 
         <h2 class="form-card__title" id="income_labelledby">{{ form.income.label_tag }}</h2>
-        <p class="form-card__body-text" id="income_describedby">{{ form.income.help_text }}</p>
+        <p id="income_describedby">{{ form.income.help_text }}</p>
 
         <div class="form-group {% if form.income.errors %}form-group--error{% endif %}">
             <div class="text-input-group-container">

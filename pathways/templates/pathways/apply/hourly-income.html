@@ -5,7 +5,7 @@
 {% block question %}
 <div class="form-card form-card--transition">
 
-    <div class="emoji emoji--big emoji--money with-padding-med"></div>
+    <div class="emoji emoji--big emoji--money spacing-below-35"></div>
     <h1 class="form-card__title" id=income_labelledby>{{ form.income.label }}</h1>
 
     <form style="display: inline-block;" method="POST">
@@ -29,7 +29,7 @@
         </div>
 
         <h2 class="form-card__title" id=pay_period_labelledby>{{ form.pay_period.label }}</h2>
-        <p class="form-card__body-text" id=pay_period_describedby>{{ form.pay_period.help_text }}</p>
+        <p id=pay_period_describedby>{{ form.pay_period.help_text }}</p>
         <div class="form-group {% if form.pay_period.errors %}form-group--error{% endif %}">
             <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="number"
                 class="text-input form-width--short" aria-labelledby="pay_period_labelledby"

@@ -8,62 +8,64 @@
         <h1 class="form-card__title">{% trans "Here's how Affordable Water works." %}</h1>
     </div>
     <div class="form-card__content">
-        <div class="vertical-steps with-padding-small">
+        <div class="vertical-steps spacing-below-10">
             <div class="vertical-steps__step">
-                <div class="emoji emoji--med nudge--med emoji--clipboard with-padding-small"></div>
+                <div class="emoji emoji--med spacing-above-10 emoji--clipboard spacing-below-10"></div>
                 <p class="with-no-padding"><b>{% trans "Submit an application" %}</b></p>
-                <p class="form-card__body-text">
+                <p>
                     {% trans "We’ll guide you step by step. This should take about 10 minutes." %}</p>
             </div>
             <div class="vertical-steps__step">
-                <div class="emoji emoji--med nudge--med emoji--page-facing-up with-padding-small"></div>
+                <div class="emoji emoji--med spacing-above-10 emoji--page-facing-up spacing-below-10"></div>
                 <p class="with-no-padding"><b>{% trans "Submit proof of your situation." %}</b></p>
-                <p class="form-card__body-text">
+                <p>
                     {% trans "This includes documents like your paystubs. You can do this during your application or come back to this website any time in the next 30 days." %}
                 </p>
 
-                <div class="reveal text--small is-hidden">
+                <div class="reveal is-hidden">
                     <p><a href="#" class="reveal__link">{% trans "What proof to submit" %}</a></p>
                     <div class="reveal__content text--left">
 
-                        <p>{% trans "We’ll let you know what to submit at the end of the application based on the answers you gave us." %}
+                        <p class="text--small">
+                            {% trans "We’ll let you know what to submit at the end of the application based on the answers you gave us." %}
                         </p>
 
-                        <h2 class="reveal__heading">
-                            {% trans "These documents are usually required to get the water discount:" %}</h2>
-                        <ul class="reveal__bullet-list">
+                        <p class="heading-25-small">
+                            {% trans "These documents are usually required to get the water discount:" %}</p>
+                        <ul class="list--bulleted text--small">
                             <li>{% trans "Proof of any income." %}</li>
-                            <li>{% trans "Proof of City of Buffalo homeownership <strong><u>or</u></strong> copy of rental lease." %}</li>
+                            <li>{% trans "Proof of City of Buffalo homeownership <strong><u>or</u></strong> copy of rental lease." %}
+                            </li>
                         </ul>
 
-                        <h2 class="reveal__heading">
-                                {% trans "Any proof of the following will automatically approve your application:" %}
-                            </h2>
-                            <ul class="reveal__bullet-list">
-                                <li>{% trans "Supplemental Nutrition Assistance Program (SNAP)" %}</li>
-                                <li>{% trans "Home Energy Assistance Program (HEAP)" %}</li>
-                                <li>{% trans "Supplemental Security Income (SSI)" %}</li>
-                                <li>{% trans "Public Assistance (PA)" %}</li>
-                            </ul>
+                        <p class="heading-25-small">
+                            {% trans "Any proof of the following will automatically approve your application:" %}</p>
+                        <ul class="list--bulleted text--small">
+                            <li>{% trans "Supplemental Nutrition Assistance Program (SNAP)" %}</li>
+                            <li>{% trans "Home Energy Assistance Program (HEAP)" %}</li>
+                            <li>{% trans "Supplemental Security Income (SSI)" %}</li>
+                            <li>{% trans "Public Assistance (PA)" %}</li>
+                        </ul>
 
-                        <h2 class="reveal__heading">
-                            {% trans "These documents are optional but can increase your benefit amount:" %}
-                        </h2>
-                        <ul class="reveal__bullet-list">
+                        <p class="heading-25-small">
+                            {% trans "These documents are optional but can increase your benefit amount:" %}</p>
+                        <ul class="list--bulleted text--small">
                             <li>{% trans "If you are 65+ or disabled, a copy of enhanced STAR tax exemption." %}</li>
                         </ul>
 
-                        <h2 class="reveal__heading">{% trans "What if I can’t get the proof right now?" %}</h2>
-                        <p>{% trans "You can still apply now and submit documents any time in the next 30 days." %}</p>
-
-
+                        <p class="heading-25-small">
+                            {% trans "What if I can’t get the proof right now?" %}
+                        </p>
+                        <p class="text--small">
+                            {% trans "You can still apply now and submit documents any time in the next 30 days." %}
+                        </p>
                     </div>
                 </div>
             </div>
             <div class="vertical-steps__step">
-                <div class="emoji emoji--med nudge--med emoji--faucet with-padding-small"></div>
+                <div class="emoji emoji--med spacing-above-10 emoji--faucet spacing-below-10"></div>
                 <p class="with-no-padding"><b>{% trans "Get discount on your next water bill" %}</b></p>
-                <p class="form-card__body-text">
+                <p>
                     {% trans "If you’re approved, you’ll receive a discount on your next water bill." %}</p>
 
             </div>
