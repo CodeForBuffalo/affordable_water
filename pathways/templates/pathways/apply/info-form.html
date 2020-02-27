@@ -4,7 +4,6 @@
 
 {% block question %}
 <div class="form-card">
-
     <form style="display: inline-block;" method="POST">
         {% csrf_token %}
         <header class="form-card__header">
@@ -28,25 +27,26 @@
 
 
         <div class="form-card__footer">
+            <input type="hidden" id="has_account_number" name="has_account_number" value="False" aria-hidden="false">
             <button name="button" type="submit" class="button button--primary">
-                <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
-                </i>{% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+                {% trans "Continue" %}<i class="icon-arrow_forward" aria-hidden='true'></i>
             </button>
             {% if isAccountNumberView %}
-            <input type="hidden" id="has_account_number" name="has_account_number" value="False" aria-hidden="false">
-            <button name="button" type="submit" class="button">
-                <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
-            </i>{% trans "I can't find my account number" %}</button>
+            <button name="button" type="submit" class="button" style="margin-left: 0px;">
+                {% trans "I can't find my account number" %}
+            </button>
             {% endif %}
         </div>
     </form>
     <script>
         function enteredAccountNumber() {
-            if (typeof $('input[name="account_number"]').val() !== 'undefined' && $('input[name="account_number"]').val() != ''){
+            if (typeof $('input[name="account_number"]').val() !== 'undefined' && $('input[name="account_number"]')
+                .val() != '') {
                 $('input[name="has_account_number"').val('True');
             } else {
                 $('input[name="has_account_number"').val('False')
             }
-        }</script>
+        }
+    </script>
 </div>
 {% endblock question %}
