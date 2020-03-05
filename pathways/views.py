@@ -40,11 +40,19 @@ class ClearSessionView(TemplateView):
 # Create your views here.
 class HomeView(ExtraContextView):
     template_name = 'pathways/home.html'
-    extra_context = {'isHomepage': True}
+    extra_context = {'homepageHeaderTemplate': True}
 
 class AboutView(ExtraContextView):
     template_name = 'pathways/about.html'
-    extra_context = {'title':'About'}
+    extra_context = {'title':'About', 'aboutHeaderTemplate': True}
+
+class NondiscriminationView(ExtraContextView):
+    template_name = 'pathways/nondiscrimination.html'
+    extra_context = {'title':'Nondiscrimination', 'aboutHeaderTemplate': True}
+
+class PrivacyView(ExtraContextView):
+    template_name = 'pathways/privacy.html'
+    extra_context = {'title':'Privacy', 'aboutHeaderTemplate': True}
 
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/

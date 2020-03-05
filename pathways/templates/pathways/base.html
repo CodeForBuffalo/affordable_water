@@ -26,7 +26,7 @@
 </head>
 
 
-<body {% if isHomepage %} class="template--homepage" {% else %} class="template--question" {% endif %}>
+<body {% if homepageHeaderTemplate %} class="template--homepage" {% elif aboutHeaderTemplate %} class="template--about" {% else %} class="template--question" {% endif %}>
     <div class="page-wrapper">
         <header class="main-header">
             <div class="toolbar toolbar--hide-text-when-small">
@@ -70,8 +70,8 @@
         <div class="grid">
             <div class="grid__item">
                 <p class="text--small">GetBuffaloWater.org was created by <a class="link--subtle"
-                        href="https://www.codeforamerica.org">Code for America</a> and <a class="link--subtle"
-                        href="http://www.codeforbuffalo.org">Code for Buffalo</a> on behalf of the people of
+                        href="https://www.codeforamerica.org">2019 Code for America Community Fellows</a> and <a class="link--subtle"
+                        href="http://www.codeforbuffalo.org">Code for Buffalo volunteers</a> on behalf of the people of
                     Buffalo, New York.</p>
             </div>
         </div>
