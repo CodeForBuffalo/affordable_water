@@ -1,5 +1,166 @@
 {% extends "pathways/base.html" %}
 {% load i18n %}
+{% load static %}
+
 {% block content %}
-    <h1>About Page</h1>
+<section class="slab slab--white">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="with-padding-large">We help people receive financial assistance on their Buffalo Water bill any
+                time, from any device.</h1>
+            <p class="text--centered">
+                <a class="button" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
+                        class="button__icon icon-arrow_forward"></i></a>
+            </p>
+        </div>
+    </div>
+</section>
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <p class="text--caption with-padding-med">
+                We believe every Buffalonian deserves access to affordable water service with ease, efficiency and
+                dignity.
+            </p>
+            <p>
+                Our goal is to make water bills more affordable for residential customers in
+                our City, by providing bill access assistance, water conservation measures, and help navigating
+                provided resources.
+            </p>
+            <p>Eligibility for financial assistance is based on household income relative to federal low-income
+                guidelines.</p>
+            <div class="grid">
+                <div class="grid__item width-five-sixths shift-one-twelfth">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><b>Family Size</b></th>
+                                <th><b>Max Income</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>$41,850</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>$47,800</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>$53,800</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>$59,750</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>$64,550</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>$69,350</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>$74,100</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>$78,900</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br>
+            <p>
+                Households are considered <b>automatically eligible</b> for the Residential Affordable Water Program if
+                the
+                household contains a member who receives Supplemental Security Income (SSI),
+                Public Assistance, Supplemental Nutrition Assistance Program (SNAP sometimes referred
+                to as Food Stamps), or Home Energy Assistance Program (HEAP) benefits.
+            </p>
+        </div>
+    </div>
+</section>
+<section class="slab slab--white">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <p class="text--caption with-padding-med">
+                Buffalo Water proudly works together with community based
+                organizations to help ensure that water, earth’s greatest resource, is accessible to everyone. </p>
+        </div>
+    </div>
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <img class="partner-logo" alt="City of Buffalo"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/buffalo_seal_95.png' %}" />
+            <img class="partner-logo" alt="Buffalo Water"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/buffalo_water_95.png' %}" />
+            <img class="partner-logo" alt="Buffalo Sewer Authority"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/buffalo_sewer_95.png' %}" />
+            <img class="partner-logo" alt="Community Foundation for Greater Buffalo"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/cfgb_95.png' %}" />
+            <img class="partner-logo" alt="PUSH Buffalo"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/push_buffalo_95.png' %}" />
+            <img class="partner-logo" alt="Catholic Charities"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/catholic_charities_95.png' %}" />
+        </div>
+    </div>
+</section>
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <ul class="list--checkmark">
+                <li>
+                    <p class="text--caption">A website that works for everyone</p>
+                    <p class="text--help">With GetWaterWiseBuffalo.org, residents can apply for water assistance from
+                        any
+                        mobile phone
+                        or computer with an internet connection.</p>
+                </li>
+                <li>
+                    <p class="text--caption">A quick application for assistance</p>
+                    <p class="text--help">On GetWaterWiseBuffalo.org, residents can complete an application for water
+                        assistance in
+                        about 10 minutes or less.</p>
+                </li>
+                <li>
+                    <p class="text--caption">A simple way to send verification documents</p>
+                    <p class="text--help">With GetWaterWiseBuffalo.org, residents take photos and submit required
+                        documents
+                        right from their phone. No scanners or snail mail required.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<section class="slab slab--white">
+    <div class="grid">
+        <div class="grid__item width-two-thirds">
+            <p class="text--caption spacing-below-35">GetWaterWiseBuffalo.org was created by Code for Buffalo
+                through the 2019 Code for America Community Fellowship.</p>
+            <p class="text--help spacing-below-35">Code for America is a non-profit technology organization
+                dedicated to making government work in the digital age, for the people that need it most. Learn
+                more at <a href="https://www.codeforamerica.org">www.codeforamerica.org</a>.</p>
+        </div>
+        <div class="grid__item width-one-third">
+            <div class="grid spacing-below-35">
+                <div class="grid__item width-one-whole">
+                    <img alt="Code for Buffalo"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/code_for_buffalo_horizontal_100_blue_sm.png' %}" />
+                </div>
+            </div>
+            <div class="grid">
+                <div class="grid__item width-two-thirds shift-one-sixth">
+                    <img alt="Code for America"
+                src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/cfa_logo_color_81.png' %}" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
