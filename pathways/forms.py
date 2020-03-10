@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
-        help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."),
+        help_text=_("This is how many people you regularly share living expenses with, including yourself. If you live with them, include children, spouses/partners, and parents."),
         choices=(
             (1,_('1')),
             (2,_('2')),
@@ -180,7 +180,7 @@ class AddressForm(forms.Form):
 class ContactInfoForm(forms.Form):
     phone_number = forms.CharField(label=_("What is your phone number?"),
         max_length=17, widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
-    email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Optional to provide for status updates on your application"), required=False)
+    email_address = forms.EmailField(label=_("What is your email address?"), help_text=_("Please provide if you wish to receive status updates on your application."), required=False)
 
     card_title = _("Okay, let's get your contact info.")
 
