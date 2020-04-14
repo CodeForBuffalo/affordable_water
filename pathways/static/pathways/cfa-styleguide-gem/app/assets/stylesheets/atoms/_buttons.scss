@@ -43,18 +43,34 @@
 
 .button--primary {
     color: #FFFFFF;
-    background-color: $color-teal;
-    border-color: $color-teal;
-    box-shadow: 0 2px 0px $color-teal-dark;
+    background-color: $color-blue-dark;
+    border-color: $color-blue-dark;
+    box-shadow: 0 2px 0px $color-blue-dark-shadow;
     &:hover {
-        background-color: $color-teal-dark;
-        border-color: $color-teal-dark;
+        background-color: $color-blue-dark-shadow;
+        border-color: $color-blue-dark-shadow;
         color: #FFFFFF;
     }
     &:active {
-        background-color: $color-teal-dark;
-        border-color: $color-teal-dark;
+        background-color: $color-blue-dark-shadow;
+        border-color: $color-blue-dark-shadow;
     }
+}
+
+.button--secondary {
+  color: #FFFFFF;
+  background-color: $color-blue-light;
+  border-color: $color-blue-light;
+  box-shadow: 0 2px 0px $color-blue-light-shadow;
+  &:hover {
+    background-color: $color-blue-light-shadow;
+    border-color: $color-blue-light-shadow;
+    color: #FFFFFF;
+}
+&:active {
+    background-color: $color-blue-light-shadow;
+    border-color: $color-blue-light-shadow;
+}
 }
 
 .button--disabled {

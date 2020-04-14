@@ -59,6 +59,14 @@ $color-yellow-light: 	#FFF2D1 !default;
 
 $color-background:    	$color-grey-light !default;
 
+$color-blue-lightest:       #cff5fc !default;
+
+$color-blue-light:          #5FCFE3 !default;
+$color-blue-light-shadow:   #5ab8c9 !default;
+
+$color-blue-dark:           #191F6D !default;
+$color-blue-dark-shadow:    #11154d !default;
+
 
 // Breakpoints
 $small-mobile-up:     	320px !default;
@@ -72,8 +80,8 @@ $site-max-width:      	960px !default;
 $footer-height-home:  	340px !default;
 $footer-height:       	120px !default;
 $site-margins:			$s35 !default;
-$border-radius:       	$s5 !default;
-$border-radius-large: 	$s10 !default;
+$border-radius:       	$s35 !default;
+$border-radius-large: 	$s35 !default;
 $tooltip-width:       	$s250 !default;
 
 

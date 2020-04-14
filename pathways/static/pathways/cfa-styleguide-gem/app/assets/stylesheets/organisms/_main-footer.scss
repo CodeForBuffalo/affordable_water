@@ -12,7 +12,7 @@ body {
   left: 0;
   right: 0;
   height: $footer-height*1.5;
-  background-color: $color-grey;
+  background-color: $color-blue-dark;
   padding: 2em $s15;
   font-weight: 600;
 
@@ -24,7 +24,7 @@ body {
 
 .main-footer__legal {
   font-size: $font-size-25-small;
-  color: $color-grey-darkest;
+  color: $color-grey-light;
   p {
     @include clearfix();
     margin-bottom: 0em;

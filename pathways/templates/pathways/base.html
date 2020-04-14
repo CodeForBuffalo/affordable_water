@@ -21,8 +21,9 @@
     {% if title %}
     <title>{{ title }}</title>
     {% else %}
-    <title>{% trans "GetBuffaloWater"%}</title>
+    <title>{% trans "Let's Get Water Wise Buffalo"%}</title>
     {% endif %}
+    <script src="https://kit.fontawesome.com/e8427b15fb.js" crossorigin="anonymous"></script>
 </head>
 
 
@@ -32,7 +33,7 @@
             <div class="toolbar toolbar--hide-text-when-small">
                 <div class="toolbar__left">
                     <div class="main-header__title">
-                        <a class="main-header__logo toolbar__logo-text" href="/en">GetBuffaloWater</a>
+                        <a class="main-header__logo toolbar__logo-text" href="/en">GetWaterWiseBuffalo.org</a>
                     </div>
                 </div>
                 <div class="toolbar__right">
@@ -64,15 +65,19 @@
         
     </div>
 
-    <footer class="main-footer">
+    <footer class="main-footer" style="letter-spacing: .05em;">
         <!-- Extra footer -->
         {% block homefooter %}{% endblock homefooter %}
         <div class="grid">
             <div class="grid__item">
-                <p class="text--small">GetWaterWiseBuffalo.org was created by <a class="link--subtle"
+                <p class="text-25-small text--grey-light">
+                    {% blocktrans %}
+                    GetWaterWiseBuffalo.org was created by <a class="link--subtle"
                     href="http://www.codeforbuffalo.org">Code for Buffalo</a> through the <a class="link--subtle"
                         href="https://www.codeforamerica.org/updates/team-buffalo/equitable-water-in-buffalo">2019 Code for America Community Fellowship</a>, on behalf of the people of
-                    Buffalo, New York.</p>
+                    Buffalo, New York.
+                    {% endblocktrans %}
+                </p>
             </div>
         </div>
 
