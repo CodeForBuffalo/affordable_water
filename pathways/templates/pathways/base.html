@@ -33,12 +33,12 @@
     <div class="page-wrapper">
         <header class="main-header">
             <div class="toolbar toolbar--hide-text-when-small">
-                <div class="toolbar__left">
+                <div class="toolbar__left" style="margin-top: 1.5em;">
                     <div class="main-header__title">
-                        <a class="main-header__logo toolbar__logo-text" href="/en">GetWaterWiseBuffalo.org</a>
+                        <a class="main-header__logo toolbar__logo-text" href="/">GetWaterWiseBuffalo.org</a>
                     </div>
                 </div>
-                <div class="toolbar__right">
+                <!-- <div class="toolbar__right">
                     <form id="languageForm" action="{% url 'set_language' %}" method="post" aria-hidden="true">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="{{ redirect_to }}">
@@ -48,7 +48,7 @@
                         onclick="changeLanguage('en')">English</a>
                     <a class="toolbar__item text--small link--subtle" href="#"
                         onclick="changeLanguage('es')">Español</a>
-                </div>
+                </div> -->
             </div>
         </header>
 
@@ -73,11 +73,8 @@
         <div class="grid">
             <div class="grid__item">
                 <p class="text-25-small text--grey-light">
-                    {% blocktrans %}
-                    GetWaterWiseBuffalo.org was created by <a class="link--subtle"
-                    href="http://www.codeforbuffalo.org">Code for Buffalo</a> through the <a class="link--subtle"
-                        href="https://www.codeforamerica.org/updates/team-buffalo/equitable-water-in-buffalo">2019 Code for America Community Fellowship</a>, on behalf of the people of
-                    Buffalo, New York.
+                    {% blocktrans trimmed with CfBlink="http://www.codeforbuffalo.org" CfAlink="https://www.codeforamerica.org/updates/team-buffalo/equitable-water-in-buffalo"%}
+                    GetWaterWiseBuffalo.org was created by <a class="link--subtle" href="{{ CfBlink }}">Code for Buffalo</a> through the <a class="link--subtle" href="{{ CfAlink }}">2019 Code for America Community Fellowship</a>, on behalf of the people of Buffalo, New York.
                     {% endblocktrans %}
                 </p>
             </div>
@@ -88,12 +85,12 @@
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
         </script>
         <script src="{% static 'pathways/cfa-styleguide-gem/app/assets/javascripts/cfa_styleguide_main.js' %}"></script>
-        <script>
+        <!-- <script>
             function changeLanguage(newLanguage) {
                 $('input[name="language"]').val(newLanguage)
                 $('#languageForm').submit();
             }
-        </script>
+        </script> -->
         {% block pagejavascript %}{% endblock pagejavascript %}
     </footer>
 </body>
