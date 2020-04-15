@@ -8,12 +8,16 @@
         <div class="grid__item width-two-thirds shift-one-sixth">
             <h1 class="form-card__title">
                 {% trans "Remember your application cannot be approved until you submit proof." %}</h1>
+            <div class="notice">
+                <i class="fas fa-camera fa-3x spacing-below-35 text--blue-dark"></i>
+                <p class="text--blue-dark">You can <b>upload photos</b> of these documents from a smartphone or computer.</p>
+            </div>
             <p>{% trans "Based on your answers you will need:" %}</p>
             <div class="vertical-steps">
 
                 {% if has_household_benefits %}
                 <div class="vertical-steps__step">
-                    <div class="emoji emoji--med emoji--clipboard"></div>
+                    <i class="fas fa-clipboard-list fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{% trans "Proof from other benefit programs" %}</div>
                     <p>
                         {% trans "Any documents that prove a member of your household is currently enrolled in one of the following programs:" %}
@@ -27,14 +31,14 @@
                 </div>
                 {% else %}
                 <div class="vertical-steps__step">
-                    <div class="emoji emoji--med emoji--money"></div>
+                    <i class="fas fa-money-check-alt fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{% trans "A paystub from the last 30 days" %}</div>
                     <p>{% trans "This is for any income you get from a job. If you are paid in cash, you can submit a letter from your employer." %}</p>
                 </div>
                 {% endif %}
 
                 <div class="vertical-steps__step">
-                    <div class="emoji emoji--med emoji--house"></div>
+                    <i class="fas fa-home fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if rent_or_own == 'own' %}
                         {% trans "Proof of home ownership" %}
@@ -46,7 +50,7 @@
                         {% if rent_or_own == 'own' %}
                         {% trans "This could be a deed, tax document, or any official document that indicates you own your home." %}
                         {% else %}
-                        {% trans "This can be a copy of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill." %}
+                        {% trans "This can be a photo of your lease, a rent receipt, or a landlord statement indicating who is responsible for paying the water bill." %}
                         {% endif %}
                     </p>
                 </div>
