@@ -6,7 +6,14 @@
 <div class="form-card">
     {% for field in form.visible_fields %}
     <div class="form-card__header form-card__header--with-icon">
-        <div class="form-card__icon emoji emoji--med emoji--money"></div>
+        {% if doc_type == "benefits" %}
+        <i class="fas fa-money-check-alt fa-3x spacing-below-35 text--blue-dark"></i>
+            {% elif doc_type == "income" %}
+            <i class="fas fa-money-check-alt fa-3x spacing-below-35 text--blue-dark"></i>
+            {% else %}
+            <i class="fas fa-home fa-3x spacing-below-35 text--blue-dark"></i>
+            {% endif %}
+        
         <h1 class="form-card__title margin-bottom--none" id="card_labelledby">
             {% if doc_type == "benefits" %}
             {% trans "Upload proof of your household's assistance enrollment" %}

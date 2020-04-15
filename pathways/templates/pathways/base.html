@@ -16,6 +16,7 @@
     {% compress css %}
     <link type="text/x-scss" media="screen" rel="stylesheet"
         href="{% static 'pathways/cfa-styleguide-gem/app/assets/stylesheets/cfa_styleguide_main.scss' %}">
+    <link href="{% static 'pathways/fontawesome-free-5.13.0-web/css/all.css' %}" rel="stylesheet">
     {% endcompress %}
 
     {% if title %}
@@ -23,7 +24,6 @@
     {% else %}
     <title>{% trans "Let's Get Water Wise Buffalo"%}</title>
     {% endif %}
-    <script src="https://kit.fontawesome.com/e8427b15fb.js" crossorigin="anonymous"></script>
 </head>
 
 

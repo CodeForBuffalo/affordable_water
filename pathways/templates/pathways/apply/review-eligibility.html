@@ -10,7 +10,7 @@
             <div class="vertical-steps">
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--money"></div>
+                    <i class="fas fa-money-bill fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {{ income_formatted }}
 
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--money"></div>
+                    <i class="fas fa-money-check-alt fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {{ non_job_income_formatted }}
                         {% if request.session.has_other_income == 'True' %}
@@ -71,7 +71,7 @@
                 
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--house"></div>
+                    <i class="fas fa-house-user fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{{ request.session.household_size }}</div>
                     <p>{% trans "Household size" %}</p>
                 </div>
