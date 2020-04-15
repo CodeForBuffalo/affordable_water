@@ -15,9 +15,9 @@
   </div>
   <div class="form-card__content">
     {% if is_eligible %}
-    <div class="emoji emoji--big emoji--thumbs-up"></div>
+    <i class="fas fa-thumbs-up fa-3x spacing-below-35 text--blue-dark"></i>
     {% else %}
-    <div class="emoji emoji--big emoji--frowning-face"></div>
+    <i class="far fa-frown fa-3x spacing-below-35 text--blue-dark"></i>
     {% endif %}
     {% if request.session.has_household_benefits == 'True' %}
     <p>
@@ -42,7 +42,20 @@
     </p>
       {% if not is_eligible %}
         <p>
-          {% trans "Would you like to learn more about other Pathways to Affordable Water?" %}
+          {% blocktrans %}
+          If you are interested in any of these additional Pathways to Affordable Water, please contact Buffalo Water directly at <a href="https://buffalowater.org/contactus/">buffalowater.org/contactus/</a>
+          {% endblocktrans %}
+          <ul class="text--left list--bulleted text--blue-dark">
+            <li><span class="text--grey-darkest">
+                    Low Income Senior Citizen Discount <br>
+                    <small> (must be 65 years of age)</small>
+                    </span></li>
+            <li><span class="text--grey-darkest">Monthly Payment Plans</span></li>
+            <li><span class="text--grey-darkest">Extended Repayment Periods</span></li>
+            <li><span class="text--grey-darkest">Interest Charge Suspension</span></li>
+            <li><span class="text--grey-darkest">Monthly Billing Option</span></li>
+            <li><span class="text--grey-darkest">Leak Abatement Program</span></li>
+        </ul>
         </p>
       {% endif %}
     {% endif %}
@@ -52,8 +65,8 @@
     <a class="button button--primary" href="{% url 'pathways-apply-additional-questions' %}">
       {% trans "Continue" %} <i class="icon icon-arrow_forward"></i></a>
     {% else %}
-    <a class="button" href="{% url 'pathways-home' %}">
-      {% trans "Learn more" %} <i class="icon icon-info"></i></a>
+    <a class="button" href="https://buffalowater.org/contactus/">
+      {% trans "Contact" %} <i class="icon icon-info"></i></a>
     {% endif %}
     <a class="button" href="{% if request.session.has_household_benefits %}{% url 'pathways-apply-household-benefits' %}
     {% else %}{% url 'pathways-apply-review-eligibility' %}{% endif %}">

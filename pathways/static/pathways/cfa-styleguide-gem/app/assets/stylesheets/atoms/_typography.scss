@@ -78,10 +78,9 @@ h4 {
 }
 
 .text--caps {
-  font-size: .8em;
   text-transform: uppercase;
-  letter-spacing: .1em;
-  font-weight: 500;
+  letter-spacing: .05em;
+  font-weight: $font-weight-bold;
 }
 
 .text--caption {
@@ -103,9 +102,9 @@ h4 {
 
 a {
   @include outline;
-  color: $color-teal;
+  color: #2ea5ba;
   &:hover {
-    color: $color-teal-dark;
+    color: #217d8d;
   }
 }
 
@@ -118,8 +117,19 @@ ol, ul {
   padding-left: 0;
 }
 
+@media only screen and (max-width: 600){
+  ul {
+    margin-left: 60px;
+  }
+}
+
+
 .text--green {
   color: $color-green;
+}
+
+.text--grey-light {
+  color: $color-grey-light;
 }
 
 .text--grey {
@@ -158,6 +168,18 @@ ol, ul {
   color: $color-yellow;
 }
 
+.text--blue-dark {
+  color: $color-blue-dark;
+}
+
+.text--blue-light {
+  color: $color-blue-light;
+}
+
+.text--blue-lightest {
+  color: $color-blue-lightest;
+}
+
 .text--error {
   @extend .text--red;
   @extend .text-25-small;
@@ -185,6 +207,13 @@ ol, ul {
   }
 }
 
+.list--two-columns {
+  @media screen and (min-width: $tablet-up) {
+    columns: 2;
+    column-gap: 30px;
+  }
+}
+
 .list--numbered {
   list-style: decimal;
   padding-left: 2.5em;
@@ -207,7 +236,7 @@ ol, ul {
       top: .5em;
       width: $s25;
       height: $s15;
-      background-image: url($image-url + 'emojis/checkmark.png');
+      background-image: url($image-url + 'emojis/checkmark-blue-dark.png');
       background-repeat: no-repeat;
       background-size: auto $s15;
     }
@@ -234,6 +263,10 @@ hr {
   height: 2px;
   background-color: $color-grey;
   border: 0;
+}
+
+.hr-blue{
+  background-color: $color-blue-light;
 }
 
 .textwell {

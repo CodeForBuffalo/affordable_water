@@ -6,7 +6,7 @@
 <div class="form-card form-card--transition">
     <form method="POST">
         {% csrf_token %}
-        <div class="emoji emoji--big emoji--money spacing-below-35"></div>
+        <i class="fas fa-dollar-sign fa-3x spacing-below-35 text--blue-dark"></i>
         <h1 class="form-card__title">{{ form.pay_period.label_tag }}</h1>
 
         <div class="form-group {% if form.pay_period.errors %}form-group--error{% endif %}">

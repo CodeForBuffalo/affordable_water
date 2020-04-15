@@ -12,14 +12,14 @@
             <h2>{% trans "Eligibility Info" %}</h2>
             <div class="vertical-steps">
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--house"></div>
+                    <i class="fas fa-house-user fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{{ request.session.household_size }}</div>
                     <p>{% trans "Household size" %}</p>
                 </div>
 
                 {% if not request.session.has_household_benefits %}
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--money"></div>
+                    <i class="fas fa-money-bill fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {{ income_formatted }}
 
@@ -62,7 +62,7 @@
                 </div>
                 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--money"></div>
+                    <i class="fas fa-money-check-alt fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {{ non_job_income_formatted }}
                         {% trans "per month" %}
@@ -72,7 +72,7 @@
                 {% endif %}
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--clipboard"></div>
+                    <i class="fas fa-clipboard-list fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if request.session.has_household_benefits %}
                         {% trans "Current household benefits" %}
@@ -118,7 +118,7 @@
             <h2>{% trans "Personal Info" %}</h2>
             <div class="vertical-steps">
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--bust"></div>
+                    <i class="fas fa-user fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{{ request.session.first_name }}
                         {{ request.session.middle_initial }}
                         {{ request.session.last_name }}</div>
@@ -126,7 +126,7 @@
                 </div>
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--house"></div>
+                    <i class="fas fa-home fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if request.session.rent_or_own == 'rent' %}
                         {% trans "Renter" %}
@@ -151,13 +151,13 @@
                     </p>
                 </div>
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--receiver"></div>
+                    <i class="fas fa-phone fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">{{ request.session.phone_number }}</div>
                     <p>{% trans "Your phone number" %}</p>
                 </div>
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--email"></div>
+                    <i class="fas fa-at fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if request.session.email_address %}
                         {{ request.session.email_address }}
@@ -180,7 +180,7 @@
             <h2>{% trans "Water Account Info" %}</h2>
             <div class="vertical-steps">
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--bust"></div>
+                    <i class="fas fa-user-cog fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {{ request.session.account_first }}
                         {{ request.session.account_middle }}
@@ -198,7 +198,7 @@
                 </div>
 
                 <div class="vertical-steps__step">
-                    <div class="vertical-steps__emoji emoji--faucet"></div>
+                    <i class="fas fa-faucet fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if request.session.account_number %}
                         {{ request.session.account_number }}

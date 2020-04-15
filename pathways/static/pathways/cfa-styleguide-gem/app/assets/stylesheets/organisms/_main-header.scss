@@ -33,7 +33,7 @@
     padding-left: $s35;
 
     &:before {
-      @include retina-bg(water_drop_black, 100% auto);
+      @include retina-bg(water_drop_blue, 100% auto);
       background-repeat: no-repeat;
       content: '';
       display: inline-block;

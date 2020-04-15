@@ -11,7 +11,7 @@
   }
 
   .tableFloatingHeaderOriginal {
-    background-color: $color-background;
+    background-color: $color-blue-lightest;
   }
 }
 
@@ -20,7 +20,7 @@
   text-align: left;
   font-size: $font-size-25-small;
   border-collapse: collapse;
-  border-bottom: 2px solid $color-grey;
+  border-bottom: 2px solid $color-blue-dark;
   margin-bottom: 1em;
 
   &.data-table--small {
@@ -68,13 +68,13 @@
   th {
     font-weight: $font-weight-normal;
     @extend .text--help;
-    border-bottom: 2px solid $color-grey;
+    border-bottom: 2px solid $color-blue-dark;
   }
 
   tr {
     &:nth-child(2n) {
       td {
-        background-color: $color-background;
+        background-color: $color-blue-lightest;
       }
     }
     &:nth-child(2n-1) {

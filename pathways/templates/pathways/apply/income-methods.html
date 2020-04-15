@@ -14,7 +14,7 @@
 
             {% for value, text in form.income_method.field.choices %}
             <p>
-                <button class="button button--{% if value == 'estimate' %}link{% else %}primary{% endif %}"
+                <button class="button {% if value == 'estimate' %}button--small{% else %}button--primary{% endif %}"
                     type="submit" name="income_method" value="{{ value }}" aria-describedby="income-method-buttons">
                     {{ text }}
                 </button>

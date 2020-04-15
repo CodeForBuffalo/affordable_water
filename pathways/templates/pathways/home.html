@@ -8,13 +8,13 @@
         <div class="grid__item width-three-fourths">
             <h2>{% trans "Get help paying your Buffalo Water bill" %}</h2>
             <h1>{% trans "Apply for assistance in 10 minutes" %}</h1>
-            <a class="button button--primary" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
+            <a class="button button--secondary" href="{% url 'pathways-apply' %}">{% trans "Apply now" %}<i
                     class="button__icon icon-arrow_forward"></i></a>
         </div>
     </div>
 </section>
 
-<section class="slab slab--half-padded slab--yellow">
+<section class="slab slab--half-padded slab--blue-dark text--grey-light text--centered">
     <div class="grid">
         <div class="grid__item width-one-whole">
             <b>
@@ -34,8 +34,7 @@
             </p>
         </div>
         <div class="grid__item width-one-fourth shift-one-sixth trust-badge">
-            <a href=""
-                class="illustration illustration--buffalo-seal spacing-below-10">{% trans "Buffalo Water" %}</a>
+            <a href="" class="illustration illustration--buffalo-seal spacing-below-10">{% trans "Buffalo Water" %}</a>
             <p>{% trans "An official Affordable Water Program assistance tool" %}
             </p>
         </div>
@@ -43,21 +42,23 @@
 </section>
 
 
-<section class="slab slab--padded">
+<section class="slab slab--padded slab--blue-light text--grey-light text--centered">
     <div class="grid">
         <div class="grid__item">
-            <h1 class="spacing-below-35">{% trans "Already started your application?" %}</h1>
+            <h1 class="spacing-below-35">{% trans "ALREADY STARTED YOUR APPLICATION?" %}</h1>
         </div>
     </div>
     <div class="grid">
         <div class="grid__item width-one-half spacing-below-35">
-            <p>{% trans "Upload requested documents" %}</p>
-            <p class="with-no-padding"><a href="{% url 'pathways-apply-later-documents'%}" class="button">{% trans "Submit documents" %}</a></p>
+            <p><b>{% trans "Upload requested documents" %}</b></p>
+            <p class="with-no-padding"><a href="{% url 'pathways-apply-later-documents'%}"
+                    class="button button--primary">{% trans "Submit documents" %}</a></p>
 
         </div>
         <div class="grid__item width-one-half spacing-below-35">
-            <p>{% trans "For other issues" %}</p>
-            <p class="with-no-padding"><a href="https://buffalowater.org/contactus/" class="button">{% trans "Contact Buffalo Water" %}</a></p>
+            <p><b>{% trans "For other issues" %}</b></p>
+            <p class="with-no-padding"><a href="https://buffalowater.org/contactus/"
+                    class="button button--primary">{% trans "Contact Buffalo Water" %}</a></p>
 
         </div>
     </div>
@@ -66,53 +67,69 @@
 <section class="slab slab--padded slab--white slab--steps text--centered">
     <div class="grid spacing-below-60">
         <div class="grid__item width-one-third">
-            <div class="emoji emoji--big emoji--pencil"></div>
-            <p class="text--caption">{% trans "Apply in 10 minutes" %}</p>
+            <i class="far fa-file-alt fa-4x text--blue-light"></i>
+            <p class="h2 text--caps text--blue-dark spacing-below-25">{% trans "Apply in 10 minutes" %}</p>
             <p>{% trans "Eligibility is determined by income and household size." %}</p>
         </div>
         <div class="grid__item width-one-third">
-            <div class="emoji emoji--big emoji--page-facing-up"></div>
-            <p class="text--caption">{% trans "Verify documents" %}</p>
+            <i class="far fa-check-square fa-4x text--blue-light"></i>
+            <p class="h2 text--caps text--blue-dark spacing-below-25" style="padding-left: 20px;">{% trans "Verify documents" %}</p>
             <p>{% trans "You'll need documents to verify your income and residency." %}</p>
         </div>
         <div class="grid__item width-one-third">
-            <div class="emoji emoji--big emoji--faucet"></div>
-            <p class="text--caption">{% trans "Get discount on water" %}</p>
+            <i class="fas fa-percent fa-4x text--blue-light"></i>
+            <p class="h2 text--caps text--blue-dark spacing-below-25">{% trans "Get discount on water" %}</p>
             <p>{% trans "If you’re approved, you’ll receive a discount on your next water bill." %}</p>
         </div>
     </div>
-    <hr>
+    <hr class="hr-blue">
     <div class="grid">
         <div class="grid__item width-five-sixths shift-one-twelfth">
-            <h2>{% trans "What if I need additional help?" %}</h2>
-            <p class="text--help">You may qualify for additional Pathways to Affordable Water. These include:
-                • Low Income Senior Citizen Discount (must be 65 years of age)
-                • Monthly Payment Plans
-                • Extended Repayment Periods
-                • Interest Charge Suspension
-                • Monthly Billing Option
-                • Leak Abatement Program</p>
+            <h2 class="text--caps text--blue-dark">{% trans "What if I need additional help?" %}</h2>
+            <p class="text--grey-darkest" style="font-weight: 500;">You may qualify for additional Pathways to Affordable Water. These include</p>
+            <div class="grid">
+                <div class="grid__item width-five-sixths shift-one-twelfth">
+                    <ul class="text--left list--bulleted list--two-columns text--blue-dark">
+                        <li><span class="text--grey-darkest">
+                                Low Income Senior Citizen Discount
+                                <small> (must be 65 years of age)</small>
+                                </span></li>
+                        <li><span class="text--grey-darkest">Monthly Payment Plans</span></li>
+                        <li><span class="text--grey-darkest">Extended Repayment Periods</span></li>
+                        <li><span class="text--grey-darkest">Interest Charge Suspension</span></li>
+                        <li><span class="text--grey-darkest">Monthly Billing Option</span></li>
+                        <li><span class="text--grey-darkest">Leak Abatement Program</span></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-    <hr>
+    <hr class="hr-blue">
     <div class="grid">
         <div class="grid__item width-five-sixths shift-one-twelfth">
-            <h2>{% trans "Can I apply as a renter?" %}</h2>
-            <p class="text--help">
-                {% blocktrans %}
-                If you pay your own water bill, you may apply normally.
-                If you do not pay your own water bill or if water is included in your rent, you <strong>may
-                    still be eligible</strong> for water assistance.
-                {% endblocktrans %}
-            </p>
-            <p class="text--help">
-                {% blocktrans %}
-                If your landlord receives the discount on your behalf, you could deduct that amount from your
-                rent.
-                However, this is not legal advice and we <strong>highly recommend a written agreement</strong>
-                with your landlord.
-                {% endblocktrans %}
-            </p>
+            <h2 class="text--caps text--blue-dark">{% trans "Can I apply as a renter?" %}</h2>
+            <p style="font-weight: 500;">{% trans "Yes! Though it may depend on who pays the water bill." %}</p>
+            <div class="grid">
+                <div class="grid__item width-one-half">
+                    <p class="text--help text--grey-darkest">
+                        {% blocktrans %}
+                        If you pay your own water bill, you may apply normally. <b></b>If you do not pay your own water bill or if water is included in your rent</b>, you might
+                            still be eligible for water assistance.
+                        {% endblocktrans %}
+                    </p>
+                </div>
+                <div class="grid__item width-one-half">
+                    <p class="text--help text--grey-darkest">
+                        {% blocktrans %}
+                        It is possible for your landlord to receive the water discount on your behalf. 
+                        However, this is not legal advice and we <strong>highly recommend</strong>
+                        reviewing the <a href="http://www.oag.state.ny.us/realestate/habitability.html#30">Tenant's Rights Guide</a> prepared by the office of the New York State Attorney General.
+                        {% endblocktrans %}
+                    </p>
+                </div>
+            </div>
+            
+            
         </div>
     </div>
 </section>
@@ -139,7 +156,12 @@
 
     <div class="grid__item width-one-fourth shift-one-twelfth">
         <div class="main-footer__cfa-logo">
-            <a href="https://buffalowater.org/"><img src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/code_for_buffalo_horizontal_55.png' %}" alt="Code for Buffalo"></a>
+            <a href="https://buffalowater.org/">
+                <img
+                    src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/code_for_buffalo_light_100.png' %}"
+                    alt="Code for Buffalo"
+                    style="max-width: 200px; height: auto;">
+                </a>
         </div>
     </div>
 </div>
