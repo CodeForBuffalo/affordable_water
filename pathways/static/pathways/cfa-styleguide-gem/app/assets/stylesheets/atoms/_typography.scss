@@ -104,7 +104,7 @@ a {
   @include outline;
   color: #2ea5ba;
   &:hover {
-    color: $color-blue-dark;
+    color: #217d8d;
   }
 }
 
@@ -261,8 +261,12 @@ hr {
   margin-top: $s60;
   margin-bottom: $s60;
   height: 2px;
-  background-color: $color-blue-light;
+  background-color: $color-grey;
   border: 0;
+}
+
+.hr-blue{
+  background-color: $color-blue-light;
 }
 
 .textwell {
