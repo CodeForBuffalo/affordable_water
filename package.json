@@ -14,12 +14,14 @@
     "setup": "npm run python-setup && npm install",
     "gulp": "pipenv run gulp",
     "collectstatic": "pipenv run python manage.py collectstatic --noinput",
+    "heroku-collectstatic": "python manage.py collectstatic --noinput",
     "compress": "pipenv run python manage.py compress --force",
+    "heroku-compress": "python manage.py compress --force",
     "assets": "npm run gulp && npm run collectstatic && npm run compress",
     "migrate": "pipenv run python manage.py migrate",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
-    "heroku-postbuild": "npm run gulp && npm run collectstatic && npm run compress"
+    "heroku-postbuild": "npm run gulp && npm run heroku-collectstatic && npm run heroku-compress"
   },
   "author": "",
   "license": "MIT",
