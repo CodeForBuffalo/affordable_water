@@ -6,8 +6,12 @@ import magic
 from django.utils.deconstruct import deconstructible
 from django.template.defaultfilters import filesizeformat
 from datetime import datetime
+from simple_history.models import HistoricalRecords
 
 class Application(models.Model):
+    # Metadata
+    history = HistoricalRecords()
+
     # HouseholdForm
     household_size = models.IntegerField(choices=(
             (1,_('Just me')),
@@ -208,4 +212,7 @@ class Document(models.Model):
         ('benefits', _('Benefits')),
         ('residence', _('Residence'))
     ])
-    doc_file = models.FileField(upload_to=path_and_rename, blank=True, validators=[ACCEPTED_FILE_VALIDATOR]) 
+    doc_file = models.FileField(upload_to=path_and_rename, blank=True, validators=[ACCEPTED_FILE_VALIDATOR])
+    
+    # Metadata
+    history = HistoricalRecords()
