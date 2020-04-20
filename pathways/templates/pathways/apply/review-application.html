@@ -94,7 +94,7 @@
                     <div class="notice">
                         <p>
                             {% if request.session.has_household_benefits %}
-                            {% blocktrans %}
+                            {% blocktrans trimmed %}
                             Based on this info, you are <br><strong>automatically eligible.</strong>
                             {% endblocktrans %}
                             {% else %}

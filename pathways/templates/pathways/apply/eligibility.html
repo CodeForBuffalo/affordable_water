@@ -21,14 +21,14 @@
     {% endif %}
     {% if request.session.has_household_benefits == 'True' %}
     <p>
-      {% blocktrans %}
+      {% blocktrans trimmed %}
       Because you indicated someone in your household is enrolled in an assistance program like SNAP or HEAP, your
       household is <strong>automatically eligible</strong> to receive a discount on your water bill.
       {% endblocktrans %}
     </p>
     {% else %}
     <p>
-      {% blocktrans with household_size=request.session.household_size %}
+      {% blocktrans trimmed with household_size=request.session.household_size %}
       The pre-tax annual income limit for a household size of <strong>
         {{ household_size }}</strong> is <strong>{{ max_income }}</strong>.
       {% endblocktrans %}
@@ -42,7 +42,7 @@
     </p>
       {% if not is_eligible %}
         <p>
-          {% blocktrans %}
+          {% blocktrans trimmed %}
           If you are interested in any of these additional Pathways to Affordable Water, please contact Buffalo Water directly at <a href="https://buffalowater.org/contactus/">buffalowater.org/contactus/</a>
           {% endblocktrans %}
           <ul class="text--left list--bulleted text--blue-dark">
