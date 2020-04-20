@@ -18,6 +18,7 @@ whitenoise = "*"
 coverage = "*"
 django-coverage-plugin = "*"
 python-magic = "*"
+django-simple-history = "*"
 
 [requires]
 python_version = "3.7"
