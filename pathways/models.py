@@ -77,7 +77,7 @@ class Application(models.Model):
     signature = models.CharField(max_length=250)
 
     def __str__(self):
-        return f'{self.id} ({self.phone_number})'
+        return f'{self.id} - {self.last_name} at {self.street_address}'
 
 
 @deconstructible
@@ -206,3 +206,6 @@ class Document(models.Model):
     
     # Metadata
     history = HistoricalRecords()
+
+    def __str__(self):
+        return f'{self.application.id} - {self.application.last_name} at {self.application.street_address} - {self.doc_type}'
