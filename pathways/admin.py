@@ -18,3 +18,5 @@ class ApplicationAdmin(SimpleHistoryAdmin):
         DocumentInline,
     ]
     readonly_fields = ['legal_agreement', 'signature']
+
+admin.site.site_header = "GetWaterWiseBuffalo Admin"
