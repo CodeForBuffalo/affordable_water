@@ -1,4 +1,4 @@
-# GetBuffaloWater
+# GetWaterWiseBuffalo
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CodeForBuffalo/affordable_water)
 [![Build Status](https://travis-ci.com/CodeForBuffalo/affordable_water.svg?branch=master)](https://travis-ci.com/CodeForBuffalo/affordable_water)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/CodeForBuffalo/affordable_water?label=test%20coverage&logo=Code%20Climate)](https://codeclimate.com/github/CodeForBuffalo/affordable_water)
@@ -6,7 +6,7 @@
 
 This site allows Buffalo residents to apply for the [Residential Affordable Water Program](https://buffalowater.org/wp-content/uploads/2019/03/ResidentialAffordabilityProgram.pdf).
 
-This project is being developed as part of the [2019 Code for America Community Fellowship](https://www.codeforamerica.org/programs/fellowship/meet-the-fellows).
+This project was developed as part of the [2019 Code for America Community Fellowship](https://www.codeforamerica.org/programs/fellowship/meet-the-fellows).
 
 ## Development
 
