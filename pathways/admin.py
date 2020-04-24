@@ -6,7 +6,7 @@ from .models import Application, Document
 
 @admin.register(Document)
 class DocumentAdmin(SimpleHistoryAdmin):
-    readonly_fields = ['application']
+    pass
 
 class DocumentInline(admin.TabularInline):
     model = Document
@@ -17,6 +17,5 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     inlines = [
         DocumentInline,
     ]
-    readonly_fields = ['legal_agreement', 'signature']
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"

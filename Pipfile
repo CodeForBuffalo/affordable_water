@@ -19,6 +19,8 @@ coverage = "*"
 django-coverage-plugin = "*"
 python-magic = "*"
 django-simple-history = "*"
+django-two-factor-auth = "*"
+phonenumbers = "*"
 
 [requires]
 python_version = "3.7"
