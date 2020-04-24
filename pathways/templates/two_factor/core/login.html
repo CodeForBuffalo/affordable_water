@@ -53,6 +53,7 @@
 
                 {% include "two_factor/_wizard_actions.html" %}
             </form>
+            <a href="{% url 'password_reset' %}">{% trans "Forgot password?" %}</a>
         </div>
     </div>
 </section>
