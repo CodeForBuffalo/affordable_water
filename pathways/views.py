@@ -423,17 +423,17 @@ class LaterDocumentsView(FormView, ClearSessionView):
 
         # Get list of possible application
         app_list = Application.objects.filter(
-                first_name = form.cleaned_data['first_name'],
-                last_name = form.cleaned_data['last_name'],
+                first_name__iexact = form.cleaned_data['first_name'],
+                last_name__iexact = form.cleaned_data['last_name'],
                 zip_code = form.cleaned_data['zip_code'],
                 phone_number = form.cleaned_data['phone_number']
                 )
                 
         if form.cleaned_data['middle_initial'] != '':
-            app_list = app_list(middle_initial = form.cleaned_data['middle_initial'])
+            app_list = app_list.filter(middle_initial__iexact = form.cleaned_data['middle_initial'])
 
         if form.cleaned_data['email_address'] != '':
-            app_list = app_list(email_address = form.cleaned_data['email_address'])
+            app_list = app_list.filter(email_address__iexact = form.cleaned_data['email_address'])
 
         if len(app_list) == 0:
             # No matching application found
@@ -477,17 +477,17 @@ class MoreDocumentInfoRequiredView(FormView):
     def form_valid(self, form):
         # Get list of possible application
         app_list = Application.objects.filter(
-                first_name = self.request.session['first_name'],
-                last_name = self.request.session['last_name'],
+                first_name__iexact = self.request.session['first_name'],
+                last_name__iexact = self.request.session['last_name'],
                 zip_code = self.request.session['zip_code'],
                 phone_number = self.request.session['phone_number'],
                 rent_or_own = form.cleaned_data['rent_or_own'],
-                street_address = form.cleaned_data['street_address'],
+                street_address__icontains = form.cleaned_data['street_address'],
                 household_size = form.cleaned_data['household_size']
                 )
         
         if form.cleaned_data['apartment_unit'] != '':
-            app_list = app_list(apartment_unit = form.cleaned_data['apartment_unit'])
+            app_list = app_list.filter(apartment_unit__iexact = form.cleaned_data['apartment_unit'])
 
         if len(app_list) == 1:
             # Matching application successfully found
