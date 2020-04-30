@@ -48,7 +48,8 @@ if ((os.getenv('PRODUCTION_VALUE') != 'True') or (os.getenv('TESTING_VALUE') == 
     ]
 
 ADMINS = [
-    ('Mike', 'mbrown@codeforamerica.org')
+    ('Mike', 'mbrown@codeforamerica.org'),
+    ('Mike', 'mbrown@buffalosewer.org'),
 ]
 
 
@@ -206,6 +207,8 @@ EMAIL_HOST = 'smtp.fastmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_PORT = 587
+
+DEFAULT_FROM_EMAIL = 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>'
 
 # AWS
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
