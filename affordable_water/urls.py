@@ -22,8 +22,12 @@ from django.conf.urls.static import static
 from users import views as user_views
 from two_factor.urls import urlpatterns as tf_urls
 from .admin import AdminSiteOTPRequiredMixinRedirSetup
+from django.conf.urls import handler404, handler500
 
 admin.site.__class__ = AdminSiteOTPRequiredMixinRedirSetup
+
+handler404 = 'pathways.views.handler404'
+handler500 = 'pathways.views.handler500'
 
 urlpatterns = [path('i18n/', include('django.conf.urls.i18n'), name='set_language'),]
 

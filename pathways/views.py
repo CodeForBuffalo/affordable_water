@@ -9,6 +9,16 @@ import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
 
+def handler404(request, exception, template_name="pathways/404.html"):
+    response = render(request, template_name)
+    response.status_code = 404
+    return response
+
+def handler500(request, *args, **argv):
+    response = render(request, 'pathways/500.html')
+    response.status_code = 500
+    return response
+
 class ExtraContextView(TemplateView):
     extra_context = {}
     def get_context_data(self, *args, **kwargs):
