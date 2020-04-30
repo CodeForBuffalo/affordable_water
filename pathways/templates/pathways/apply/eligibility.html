@@ -9,15 +9,13 @@
       {% if is_eligible %}
       {% trans "You are eligible for assistance on your water bill!" %}
       {% else %}
-      {% trans "Unfortunately you don't appear to be eligible for assistance on your water bill" %}
+      {% trans "You don't appear to be eligible for the Affordable Water program" %}
       {% endif %}
     </h1>
   </div>
   <div class="form-card__content">
     {% if is_eligible %}
     <i class="fas fa-thumbs-up fa-3x spacing-below-35 text--blue-dark"></i>
-    {% else %}
-    <i class="far fa-frown fa-3x spacing-below-35 text--blue-dark"></i>
     {% endif %}
     {% if request.session.has_household_benefits == 'True' %}
     <p>
@@ -32,8 +30,6 @@
       The pre-tax annual income limit for a household size of <strong>
         {{ household_size }}</strong> is <strong>{{ max_income }}</strong>.
       {% endblocktrans %}
-    </p>
-    <p>
       {% if is_eligible %}
       {% trans "Based on your answers, you look to be <strong>under</strong> the pre-tax income limit." %}
       {% else %}
@@ -41,7 +37,6 @@
       {% endif %}
     </p>
       {% if not is_eligible %}
-      {% include "pathways/snippets/covid-19.html" %}
         <p>
           {% blocktrans %}
           If you are interested in any of these additional Pathways to Affordable Water, please contact Buffalo Water directly at <a href="https://buffalowater.org/contactus/">buffalowater.org/contactus/</a>

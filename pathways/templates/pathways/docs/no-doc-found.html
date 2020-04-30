@@ -10,13 +10,13 @@
         </h1>
     </div>
     <div class="form-card__content">
-        <i class="far fa-frown fa-3x spacing-below-35 text--blue-dark"></i>
         <p>
             {% blocktrans %}
             Although we couldn't find an existing application with the information you provided, submitting a new
-            application only takes 5 minutes.
+            application <b>only takes about 5 minutes</b>.
             {% endblocktrans %}
         </p>
+        {% include 'pathways/snippets/already-submit-reveal.html' %}
     </div>
     <div class="form-card__footer">
         <a class="button button--primary" href="{% url 'pathways-apply' %}">

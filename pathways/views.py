@@ -423,7 +423,7 @@ class ConfirmationView(DispatchView):
     extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
 
 class LaterDocumentsView(FormView, ClearSessionView):
-    template_name = 'pathways/apply/info-form.html'
+    template_name = 'pathways/docs/later-docs.html'
     form_class = forms.LaterDocumentsForm
     success_url = '/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
