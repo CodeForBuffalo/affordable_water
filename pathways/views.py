@@ -425,7 +425,7 @@ class ConfirmationView(DispatchView):
 class LaterDocumentsView(FormView, ClearSessionView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.LaterDocumentsForm
-    success_url = '/apply/documents-overview/'
+    success_url = '/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def form_valid(self, form):
@@ -447,7 +447,7 @@ class LaterDocumentsView(FormView, ClearSessionView):
 
         if len(app_list) == 0:
             # No matching application found
-            self.success_url = '/apply/later-documents/no-match-found/'
+            self.success_url = '/later-documents/no-match-found/'
 
         elif len(app_list) == 1:
             # Matching application successfully found
@@ -464,7 +464,7 @@ class LaterDocumentsView(FormView, ClearSessionView):
             self.request.session['email_address'] = form.cleaned_data['email_address']
 
             # More information required to narrow down match
-            self.success_url = '/apply/later-documents/more-info-needed/'
+            self.success_url = '/later-documents/more-info-needed/'
             pass
 
         return super().form_valid(form)
@@ -475,7 +475,7 @@ class NoDocumentFoundView(ExtraContextView):
 class MoreDocumentInfoRequiredView(FormView):
     template_name = 'pathways/docs/more-doc-info.html'
     form_class = forms.MoreDocumentInfoRequiredForm
-    success_url = '/apply/documents-overview/'
+    success_url = '/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def dispatch(self, request, *args, **kwargs):
@@ -506,6 +506,6 @@ class MoreDocumentInfoRequiredView(FormView):
             self.request.session['active_app'] = True
         else:
             # No matching application found
-            self.success_url = '/apply/later-documents/no-match-found/'
+            self.success_url = '/later-documents/no-match-found/'
 
         return super().form_valid(form)
