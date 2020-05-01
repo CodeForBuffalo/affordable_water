@@ -9,6 +9,10 @@ urlpatterns = [
     path('privacy/', views.PrivacyView.as_view(), name='pathways-privacy'),
     path('apply/', views.ApplyView.as_view(),
         name='pathways-apply'),
+    path('apply/city-resident/', views.CityResidentView.as_view(),
+        name='pathways-apply-city-resident'),
+    path('apply/non-resident/', views.NonResidentView.as_view(),
+        name='pathways-apply-non-resident'),
     # Household
     path('apply/household-size/', views.HouseholdSizeView.as_view(),
         name='pathways-apply-household-size'),

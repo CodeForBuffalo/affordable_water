@@ -1,0 +1,39 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <img src="{% static 'pathways/email-assets/Seal_of_Buffalo_New_York.png' %}" alt="Seal of the City of Buffalo">
+        <h1 id="city_resident-yes-no-buttons" class="form-card__title">
+            {{ form.city_resident.label }}
+        </h1>
+        <p>{{ form.city_resident.help_text }}</p>
+        <div class="reveal is-hidden">
+            <p><a href="#" class="reveal__link">{% trans "Check map" %}</a></p>
+            <div class="reveal__content text--left">
+                <p>
+                    {% blocktrans %}
+                    If you are not a <b>City of Buffalo</b> resident, you are not serviced by Buffalo Water and are <b>not eligible</b> for this program. You are likely served by the <a href="https://www.ecwa.org/">Erie County Water Authority</a>.
+                    {% endblocktrans %}
+                </p>
+                <img src="{% static 'pathways/cfa-styleguide-gem/app/assets/images/buffalo_city_limits.png' %}" alt="Map of the official City of Buffalo boundary">
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" style="display: inline-block;">
+        {% csrf_token %}
+        <label class="sr-only" for="id_city_resident">{{ form.city_resident.label }}</label>
+        <p class="sr-only text--help">{{ form.city_resident.help_text }}</p>
+        
+        <button type="submit" name="city_resident" class="button" value="True"
+            aria-describedby="city_resident-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--checkmark"></span></i>{% trans "Yes" %}</button>
+        <button type="submit" name="city_resident" class="button" value="False"
+            aria-describedby="city_resident-yes-no-buttons">
+            <span class="button__icon--left emoji emoji--inline emoji--crossmark"></span>{% trans "No" %}</button>
+    </form>
+</div>
+{% endblock question %}

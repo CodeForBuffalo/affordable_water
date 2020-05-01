@@ -4,6 +4,12 @@ from django.core.validators import RegexValidator, ValidationError
 from . import models
 from django.utils.translation import ugettext_lazy as _
 
+class CityResidentForm(forms.Form):
+    city_resident = forms.ChoiceField(
+        label=_("Are you a City of Buffalo resident?"),
+        help_text=_("The City of Buffalo does not include suburban municipalities like Cheektowaga, Lackawanna, Amherst, or Tonawanda."),
+        choices=((True,_('Yes')), (False,_('No')))
+    )
 
 class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),

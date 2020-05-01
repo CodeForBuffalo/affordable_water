@@ -1,0 +1,27 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+  <div class="form-card__header">
+    <h1 class="form-card__title">
+      {% trans "You are not eligible for this program" %}
+    </h1>
+  </div>
+  <div class="form-card__content">
+    <p>
+      {% blocktrans %}
+      You indicated you are <b>not a City of Buffalo</b> resident. Only city residents are serviced by Buffalo Water.
+      {% endblocktrans %}
+    </p>
+    <p>
+        {% blocktrans %}
+        If you live in Erie County outside of Buffalo, you are served by the <a href="https://www.ecwa.org/">Erie County Water Authority</a>
+        {% endblocktrans %}
+    </p>
+  </div>
+  <div class="form-card__footer">
+  </div>
+</div>
+{% endblock question %}

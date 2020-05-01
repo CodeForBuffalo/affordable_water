@@ -75,6 +75,18 @@ class ApplyView(ExtraContextView):
             del request.session[key]
         return super(ApplyView, self).dispatch(request, *args, **kwargs)
 
+class CityResidentView(FormView):
+    template_name = 'pathways/apply/city-resident.html'
+    form_class = forms.CityResidentForm
+    success_url = '/apply/household-size/'
+
+    def form_valid(self, form):
+        if (form.cleaned_data['city_resident'] == 'False'):
+            self.success_url = '/apply/non-resident/'
+        return super().form_valid(form)
+
+class NonResidentView(ExtraContextView):
+    template_name = 'pathways/apply/non-resident.html'
 
 class HouseholdSizeView(FormToSessionView):
     template_name = 'pathways/apply/household-size.html'
