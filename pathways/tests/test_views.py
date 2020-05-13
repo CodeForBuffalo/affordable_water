@@ -603,7 +603,7 @@ class ContactInfoViewTest(TestCase):
         data={
             'phone_number': '716-555-5555', 'email_address': 'example@example.com',
             }, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-account-number'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-review-application'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
         response = self.client.post(reverse('pathways-apply-contact-info'), 

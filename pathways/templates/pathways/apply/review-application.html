@@ -142,8 +142,8 @@
                         {% endif %}
                         <br>
                         {{ request.session.street_address }}
-                        <br>
                         {% if request.session.apartment_unit != "" %}
+                        <br>
                         {% trans "Apartment" %}{{ request.session.apartment_unit }}
                         {% endif %}
                         <br>
@@ -197,7 +197,7 @@
                     </p>
                 </div>
 
-                <div class="vertical-steps__step">
+                <!-- <div class="vertical-steps__step">
                     <i class="fas fa-faucet fa-3x spacing-below-35 text--blue-dark"></i>
                     <div class="vertical-steps__title">
                         {% if request.session.account_number %}
@@ -209,7 +209,7 @@
                         {% if request.session.account_number %}
                         {% trans "Your Buffalo Water account number" %}{% endif %}
                     </p>
-                </div>
+                </div> -->
             </div>
             <p><a class="button button--small" href="{% url 'pathways-apply-resident-info' %}">
                     {% trans "Change water account info" %}</a></p>

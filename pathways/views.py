@@ -311,7 +311,7 @@ class AddressView(FormToSessionView, DispatchView):
 class ContactInfoView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.ContactInfoForm
-    success_url = '/apply/account-number/'
+    success_url = '/apply/review-application/'
     extra_context = {'card_title': form_class.card_title}
 
 class AccountNumberView(FormToSessionView, DispatchView):
@@ -356,6 +356,8 @@ class SignatureView(FormView, DispatchView):
 
     def form_valid(self, form):
         self.request.session['signature'] = form.cleaned_data['signature']
+        # Removed option of providing account number so people don't think it is absolutely required
+        self.request.session['has_account_number'] = 'False'
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
