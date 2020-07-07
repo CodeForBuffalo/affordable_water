@@ -268,7 +268,10 @@ class EligibilityView(DispatchView):
         if self.request.session['has_household_benefits'] == 'True':
             context['is_eligible'] = True
         else:
-            annual_income = int(self.request.session['annual_income'])
+            if 'annual_income' in self.request.session:
+                annual_income = int(self.request.session['annual_income'])
+            else:
+                annual_income = 0
             max_income = income_thresholds[int(self.request.session['household_size'])]
             context['is_eligible'] = annual_income <= max_income
             locale.setlocale( locale.LC_ALL, '' )
