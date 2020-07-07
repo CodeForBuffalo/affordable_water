@@ -67,13 +67,24 @@ class PrivacyView(ExtraContextView):
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
-class ApplyView(ExtraContextView):
-    template_name = 'pathways/apply/overview.html'
+class ApplyOverviewAssistanceView(ExtraContextView):
+    template_name = 'pathways/apply/assistance-overview.html'
+
+class ApplyDiscountView(ExtraContextView):
+    template_name = 'pathways/apply/discount-overview.html'
 
     def dispatch(self, request, *args, **kwargs):
         for key in list(request.session.keys()):
             del request.session[key]
-        return super(ApplyView, self).dispatch(request, *args, **kwargs)
+        return super(ApplyDiscountView, self).dispatch(request, *args, **kwargs)
+
+class ApplyDebtForgivenessView(ExtraContextView):
+    template_name = 'pathways/forgive/debt-forgiveness.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        return super(ApplyDebtForgivenessView, self).dispatch(request, *args, **kwargs)
 
 class CityResidentView(FormView):
     template_name = 'pathways/apply/city-resident.html'
@@ -84,6 +95,15 @@ class CityResidentView(FormView):
         if (form.cleaned_data['city_resident'] == 'False'):
             self.success_url = '/apply/non-resident/'
         return super().form_valid(form)
+
+class ForgiveCityResidentView(CityResidentView):
+    success_url = '/forgive/additional-questions/'
+
+class ForgiveDetailsView(TemplateView):
+    template_name = 'pathways/forgive/additional-questions.html'
+
+class ForgiveAdditionalQuestionsView(TemplateView):
+    template_name = 'pathways/apply/additional-questions.html'
 
 class NonResidentView(ExtraContextView):
     template_name = 'pathways/apply/non-resident.html'
@@ -294,6 +314,25 @@ class ResidentInfoView(FormToSessionView, DispatchView):
             self.request.session['account_last'] = form.cleaned_data['last_name']
             self.request.session['account_middle'] = form.cleaned_data['middle_initial']
         return super().form_valid(form)
+
+class ForgiveResidentInfoView(FormToSessionView):
+    template_name = 'pathways/apply/info-form.html'
+    form_class = forms.ForgiveResidentInfoForm
+    success_url = '/forgive/review-application/'
+    extra_context = {'card_title': form_class.card_title}
+
+class ForgiveReviewApplicationView(FormView):
+    template_name = 'pathways/forgive/review-application.html'
+    form_class = forms.ForgiveReviewApplicationForm
+    success_url = '/forgive/confirmation/'
+
+    def form_valid(self, form):
+        if form.cleaned_data['submit_application']:
+            success_url = '/about/'
+        return super().form_valid(form)
+
+class ForgiveConfirmationView(TemplateView):
+    template_name = 'pathways/forgive/confirmation.html'
 
 # Step 9
 class AccountHolderView(FormToSessionView, DispatchView):

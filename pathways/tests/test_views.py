@@ -20,7 +20,7 @@ class HomeViewTest(TestCase):
         response = self.client.get(reverse('pathways-home'), follow=True)
         self.assertContains(response, text="class=\"template--homepage\"")
 
-class ApplyViewTest(TestCase):
+class ApplyOverviewAssistanceViewTest(TestCase):
     def setUp(self):
         activate('en')
 
@@ -30,7 +30,32 @@ class ApplyViewTest(TestCase):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-apply'), follow=True)
-        self.assertTemplateUsed(response, 'pathways/apply/overview.html')
+        self.assertTemplateUsed(response, 'pathways/apply/assistance-overview.html')
+
+class ApplyForgivenessViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-forgive-overview'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-forgive-overview'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/debt-forgiveness.html')
+
+
+class ApplyDiscountViewTest(TestCase):
+    def setUp(self):
+        activate('en')
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get(reverse('pathways-apply-discount-overview'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('pathways-apply-discount-overview'), follow=True)
+        self.assertTemplateUsed(response, 'pathways/apply/discount-overview.html')
     
     def test_view_clears_existing_session_keys(self):
         session = self.client.session
@@ -38,7 +63,7 @@ class ApplyViewTest(TestCase):
         session.save()
         # a new SessionStore is created every time this property is accessed
         session = self.client.session
-        response = self.client.get(reverse('pathways-apply'), follow=True)
+        response = self.client.get(reverse('pathways-apply-discount-overview'), follow=True)
         # Checks if session keys are deleted
         self.assertEqual(len(session.keys()), 0, f"Expected 0 but got {len(session.items())}. Keys include {list(session.keys())}.")
 
