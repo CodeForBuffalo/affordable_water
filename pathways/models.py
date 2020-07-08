@@ -249,3 +249,6 @@ class ForgivenessApplication(models.Model):
     email_address = models.EmailField(
         blank=True, 
         help_text=_("Optional to provide for status updates on your application"))
+
+    def __str__(self):
+        return f'{self.id} - {self.last_name} at {self.street_address}'

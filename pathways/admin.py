@@ -1,6 +1,6 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
-from .models import Application, Document
+from .models import Application, Document, ForgivenessApplication
 
 # Register your models here.
 
@@ -17,5 +17,9 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     inlines = [
         DocumentInline,
     ]
+
+@admin.register(ForgivenessApplication)
+class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
+    pass
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"

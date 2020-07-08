@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Document
+from .models import Application, Document, ForgivenessApplication
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
@@ -330,12 +330,17 @@ class ForgiveReviewApplicationView(FormView):
     success_url = '/forgive/confirmation/'
 
     def form_valid(self, form):
-        if form.cleaned_data['submit_application']:
-            success_url = '/about/'
+        # Create new forgiveness application, load data from session, and save
+        app = ForgivenessApplication()
+        for field in ForgivenessApplication._meta.get_fields():
+            if field.name in self.request.session:
+                setattr(app, field.name, self.request.session[field.name])
+        app.save()
         return super().form_valid(form)
 
-class ForgiveConfirmationView(TemplateView):
+class ForgiveConfirmationView(ExtraContextView):
     template_name = 'pathways/forgive/confirmation.html'
+    extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
 
 # Step 9
 class AccountHolderView(FormToSessionView, DispatchView):
