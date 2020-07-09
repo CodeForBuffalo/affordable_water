@@ -5,7 +5,7 @@
 {% block question %}
 <div class="form-card form-card--transition">
     <div class="form-card__header">
-        <h1 class="form-card__title">{% trans "Here's how the Water Debt Forgiveness Program works." %}</h1>
+        <h1 class="form-card__title">{% trans "Here's how the Water Amnesty Program works." %}</h1>
     </div>
     <div class="form-card__content">
         <div class="vertical-steps spacing-below-10">
@@ -17,12 +17,10 @@
                 <div class="reveal is-hidden">
                     <p><a href="#" class="reveal__link">{% trans "What water debt is forgiven?" %}</a></p>
                     <div class="reveal__content text--left">
-                        <p class="heading-25-small">
-                            {% trans "The program forgives the following debts:" %}</p>
                         <ul class="list--bulleted text--small">
-                            <li>{% trans "Interest penalty associated with Buffalo Water account balance" %}</li>
-                            <li>{% trans "Turn on/Turn off service fee" %}</li>
-                            <li>{% trans "Charges on any burst meter" %}</li>
+                            <li>{% trans "Waives interest and penalties associated with Buffalo Water account balance" %}</li>
+                            <li>{% trans "Waives the meter fee" %}</li>
+                            <li>{% trans "Forgives any charge related to a burst meter if applicable" %}</li>
                         </ul>
                     </div>
                 </div>
@@ -37,15 +35,15 @@
                     <p><a href="#" class="reveal__link">{% trans "Am I eligible?" %}</a></p>
                     <div class="reveal__content text--left">
                         <p class="heading-25-small">
-                            {% trans "To be eligible for the forgiveness program, you must agree to the following terms:" %}
+                            {% trans "To be eligible for the amnesty program, you must agree to the following terms:" %}
                         </p>
                         <ul class="list--bulleted text--small">
-                            <li>{% trans "Enroll in a payment plan with Buffalo Water for a maximum of 12 months" %}
+                            <li>{% trans "Enroll in a 12-month plan to repay the past due amount" %}
                             </li>
                             <li>{% trans "Make downpayment of 10% of remaining principal balance" %}</li>
-                            <li>{% trans "Make timely monthly payments and remain current on payment obligations" %}
+                            <li>{% trans "Enroll in automatic monthly billing to continue to make timely payments and remain current on the bill" %}
                             </li>
-                            <li>{% trans "Allow Buffalo Water to install an advanced technology water meter" %}</li>
+                            <li>{% trans "Allow Buffalo Water to install an advanced reading technology water meter" %}</li>
                         </ul>
 
                     </div>
@@ -56,7 +54,7 @@
                 <i class="fas fa-money-check-alt fa-2x spacing-above-10 spacing-below-10 text--blue-light"></i>
                 <p class="with-no-padding"><b>{% trans "Continue payment plan" %}</b></p>
                 <p>
-                    {% trans "Once you complete your payment plan you will no longer have water debt." %}</p>
+                    {% trans "Once you complete your payment plan, you’ll be on a path to sustainable water affordability!" %}</p>
 
             </div>
         </div>

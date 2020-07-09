@@ -32,7 +32,7 @@ class ApplyOverviewAssistanceViewTest(TestCase):
         response = self.client.get(reverse('pathways-apply'), follow=True)
         self.assertTemplateUsed(response, 'pathways/apply/assistance-overview.html')
 
-class ApplyForgivenessViewTest(TestCase):
+class ForgiveOverviewViewTest(TestCase):
     def setUp(self):
         activate('en')
 
@@ -42,7 +42,7 @@ class ApplyForgivenessViewTest(TestCase):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse('pathways-forgive-overview'), follow=True)
-        self.assertTemplateUsed(response, 'pathways/apply/debt-forgiveness.html')
+        self.assertTemplateUsed(response, 'pathways/forgive/water-amnesty.html')
 
 
 class ApplyDiscountViewTest(TestCase):

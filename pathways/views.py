@@ -78,14 +78,6 @@ class ApplyDiscountView(ExtraContextView):
             del request.session[key]
         return super(ApplyDiscountView, self).dispatch(request, *args, **kwargs)
 
-class ApplyDebtForgivenessView(ExtraContextView):
-    template_name = 'pathways/forgive/debt-forgiveness.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        for key in list(request.session.keys()):
-            del request.session[key]
-        return super(ApplyDebtForgivenessView, self).dispatch(request, *args, **kwargs)
-
 class CityResidentView(FormView):
     template_name = 'pathways/apply/city-resident.html'
     form_class = forms.CityResidentForm
@@ -96,14 +88,78 @@ class CityResidentView(FormView):
             self.success_url = '/apply/non-resident/'
         return super().form_valid(form)
 
+class ForgiveOverviewView(ExtraContextView):
+    template_name = 'pathways/forgive/water-amnesty.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        request.session['forgive_step'] = 'overview'
+        return super(ForgiveOverviewView, self).dispatch(request, *args, **kwargs)
+
 class ForgiveCityResidentView(CityResidentView):
     success_url = '/forgive/additional-questions/'
 
-class ForgiveDetailsView(TemplateView):
-    template_name = 'pathways/forgive/additional-questions.html'
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveCityResidentView, self).dispatch(request, *args, **kwargs)
 
 class ForgiveAdditionalQuestionsView(TemplateView):
-    template_name = 'pathways/apply/additional-questions.html'
+    template_name = 'pathways/forgive/additional-questions.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveAdditionalQuestionsView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveResidentInfoView(FormToSessionView):
+    template_name = 'pathways/apply/info-form.html'
+    form_class = forms.ForgiveResidentInfoForm
+    success_url = '/forgive/review-application/'
+    extra_context = {'card_title': form_class.card_title}
+
+    def form_valid(self, form):
+        self.request.session['forgive_step'] = 'filled_application'
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveResidentInfoView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveReviewApplicationView(FormView):
+    template_name = 'pathways/forgive/review-application.html'
+    form_class = forms.ForgiveReviewApplicationForm
+    success_url = '/forgive/confirmation/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        elif request.session['forgive_step'] not in ['filled_application', 'submit_application'] :
+            return redirect('pathways-forgive-resident-info')
+        return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Create new Forgive application, load data from session, and save
+        app = ForgivenessApplication()
+        for field in ForgivenessApplication._meta.get_fields():
+            if field.name in self.request.session:
+                setattr(app, field.name, self.request.session[field.name])
+        app.save()
+        self.request.session['forgive_step'] = 'submit_application'
+        return super().form_valid(form)
+
+class ForgiveConfirmationView(ExtraContextView):
+    template_name = 'pathways/forgive/confirmation.html'
+    extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        elif request.session['forgive_step'] != 'submit_application':
+            return redirect('pathways-forgive-resident-info')
+        return super(ForgiveConfirmationView, self).dispatch(request, *args, **kwargs)
 
 class NonResidentView(ExtraContextView):
     template_name = 'pathways/apply/non-resident.html'
@@ -317,30 +373,6 @@ class ResidentInfoView(FormToSessionView, DispatchView):
             self.request.session['account_last'] = form.cleaned_data['last_name']
             self.request.session['account_middle'] = form.cleaned_data['middle_initial']
         return super().form_valid(form)
-
-class ForgiveResidentInfoView(FormToSessionView):
-    template_name = 'pathways/apply/info-form.html'
-    form_class = forms.ForgiveResidentInfoForm
-    success_url = '/forgive/review-application/'
-    extra_context = {'card_title': form_class.card_title}
-
-class ForgiveReviewApplicationView(FormView):
-    template_name = 'pathways/forgive/review-application.html'
-    form_class = forms.ForgiveReviewApplicationForm
-    success_url = '/forgive/confirmation/'
-
-    def form_valid(self, form):
-        # Create new forgiveness application, load data from session, and save
-        app = ForgivenessApplication()
-        for field in ForgivenessApplication._meta.get_fields():
-            if field.name in self.request.session:
-                setattr(app, field.name, self.request.session[field.name])
-        app.save()
-        return super().form_valid(form)
-
-class ForgiveConfirmationView(ExtraContextView):
-    template_name = 'pathways/forgive/confirmation.html'
-    extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
 
 # Step 9
 class AccountHolderView(FormToSessionView, DispatchView):
