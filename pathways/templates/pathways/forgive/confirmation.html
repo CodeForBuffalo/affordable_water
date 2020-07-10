@@ -1,0 +1,49 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <i class="fas fa-check fa-3x spacing-below-35 text--blue-dark"></i>
+        <h1 class="form-card__title">
+            {% trans "Your application for water debt forgiveness has been successfully submitted!" %}
+        </h1>
+        <p class="margin-bottom--none">
+            {% trans "Submitted to Buffalo Water on " %}{{ confirm_timestamp }}
+        </p>
+    </div>
+
+    <div class="form-card__content">
+        <h3 class="spacing-below-35">
+            What to expect next:
+        </h3>
+        <div class="media-box spacing-below-35">
+            <div class="media-box__media">
+                <i class="fas fa-clipboard-list fa-2x spacing-below-35 text--blue-dark"></i>
+            </div>
+            <div class="media-box__content">
+                {% trans "<strong>Your application will be reviewed</strong> by Buffalo Water." %}
+            </div>
+        </div>
+
+        <div class="media-box spacing-below-35">
+            <div class="media-box__media">
+                <i class="fas fa-phone fa-2x spacing-below-35 text--blue-dark"></i>
+            </div>
+            <div class="media-box__content">
+                {% trans "If your account is eligible, you can <strong>expect a phone call</strong> from Buffalo Water." %}
+            </div>
+        </div>
+
+        <div class="media-box spacing-below-35">
+            <div class="media-box__media">
+                <i class="fas fa-arrow-right fa-2x spacing-below-35 text--blue-dark"></i>
+            </div>
+            <div class="media-box__content">
+                {% trans "You’ll be on a path to <strong>sustainable water affordability!</strong>" %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock question %}

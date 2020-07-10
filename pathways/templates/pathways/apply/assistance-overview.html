@@ -1,0 +1,29 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="form-card__header">
+        <h1 class="form-card__title" style="line-height: 1.75em;">{% trans "How can we help you secure more affordable water?" %}</h1>
+    </div>
+    <div class="form-card__content">
+        <p>
+            {% trans "All assistance programs offered through GetWaterWiseBuffalo.org are only available to residents of Buffalo, New York." %}
+        </p>
+        <p>
+            <a class="button button--secondary" href="{% url 'pathways-apply-discount-overview' %}">
+                {% trans "Discount on future water bills" %} <i class="icon icon-arrow_forward"></i>
+            </a>            
+        </p>
+        <p>
+            <a class="button button--secondary" href="{% url 'pathways-forgive-overview' %}">
+                {% trans "Forgive debt on existing water bills" %} <i class="icon icon-arrow_forward"></i>
+            </a>
+        </p>
+    </div>
+    <div class="form-card__footer">
+        
+    </div>
+</div>
+{% endblock question %}
