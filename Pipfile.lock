@@ -33,18 +33,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:17bc71415186efb86a25dd674f78064cdd85139485967d5a0741c7b83d62cf5b",
-                "sha256:e44b11b1c47c06b0f6524b0ff1fa1cae5ddea4eb06f359e4a9730e8e881b397a"
+                "sha256:318b487b9496bf162883fce9ce137b1cd864a968bb0c9e70e0e44c4a62cf2d3c",
+                "sha256:34f4324d15245482a78f1f1b71861982f3e30ed22245bf2e1ec112b5dac5b349"
             ],
-            "version": "==1.16.24"
-        },
-        "colorama": {
-            "hashes": [
-                "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff",
-                "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"
-            ],
-            "markers": "platform_system == 'Windows'",
-            "version": "==0.4.3"
+            "version": "==1.16.26"
         },
         "coverage": {
             "hashes": [
@@ -144,10 +136,10 @@
         },
         "django-otp": {
             "hashes": [
-                "sha256:0c67cf6f4bd6fca84027879ace9049309213b6ac81f88e954376a6b5535d96c4",
-                "sha256:f456639addace8b6d1eb77f9edaada1a53dbb4d6f3c19f17c476c4e3e4beb73f"
+                "sha256:97849f7bf1b50c4c36a5845ab4d2e11dd472fa8e6bcc34fe18b6d3af6e4aa449",
+                "sha256:d2390e61794bc10dea2fd949cbcfb7946e9ae4fb248df5494ccc4ef9ac50427e"
             ],
-            "version": "==0.9.1"
+            "version": "==0.9.3"
         },
         "django-phonenumber-field": {
             "hashes": [
@@ -174,11 +166,11 @@
         },
         "django-two-factor-auth": {
             "hashes": [
-                "sha256:637bd96e76907d044206c3b038bf4b5eb4769e9e3a4718da755fafc97db38b26",
-                "sha256:f1835e5368448d1b3d826ce7a36c590b3e39cd536523d372cfc5f9fbdc9731f4"
+                "sha256:020e7111e96db7a09ccfe8b998ae16aaec454d9debe97f7f2b7481b2aed165e2",
+                "sha256:4e9de047a8e3f1ff7ed8bc41eb6c595e1a19c016e1f08ea81a2ba6898b93c3f3"
             ],
             "index": "pypi",
-            "version": "==1.11.0"
+            "version": "==1.12"
         },
         "docutils": {
             "hashes": [
