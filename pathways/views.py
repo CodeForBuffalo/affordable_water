@@ -8,6 +8,7 @@ from .models import Application, Document, ForgivenessApplication
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
+from .tasks import send_email
 
 def handler404(request, exception, template_name="pathways/404.html"):
     response = render(request, template_name)
@@ -147,6 +148,8 @@ class ForgiveReviewApplicationView(FormView):
             if field.name in self.request.session:
                 setattr(app, field.name, self.request.session[field.name])
         app.save()
+        if 'email_address' in self.request.session and self.request.session['email_address'] != '':
+            send_email.delay('We received your application for the Buffalo Water Amnesty Program', [(self.request.session['first_name'], self.request.session['email_address'])], 'forgiveness_confirmation')
         self.request.session['forgive_step'] = 'submit_application'
         return super().form_valid(form)
 
