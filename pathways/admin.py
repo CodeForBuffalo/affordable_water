@@ -1,6 +1,6 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
-from .models import Application, Document, ForgivenessApplication
+from .models import Application, Document, ForgivenessApplication, EmailCommunication
 
 # Register your models here.
 
@@ -20,6 +20,10 @@ class ApplicationAdmin(SimpleHistoryAdmin):
 
 @admin.register(ForgivenessApplication)
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
+    pass
+
+@admin.register(EmailCommunication)
+class EmailCommunicationAdmin(SimpleHistoryAdmin):
     pass
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"

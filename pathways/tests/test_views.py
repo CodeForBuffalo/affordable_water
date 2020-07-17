@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import ugettext_lazy as _
+from pathways.models import ForgivenessApplication, EmailCommunication
+from django.core import mail
 
 # view tests
 class HomeViewTest(TestCase):
@@ -223,6 +225,35 @@ class ForgiveReviewApplicationViewTest(TestCase):
         response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
         self.assertIn('forgive_step', self.client.session.keys())
         self.assertEqual(self.client.session['forgive_step'], 'submit_application')
+
+    def test_forgiveness_application_created(self):
+        session = self.client.session
+        session['forgive_step'] = 'filled_application'
+        session['first_name'] = 'Test'
+        session['last_name'] = 'User'
+        session['middle_initial'] = 'R'
+        session['street_address'] = '123 Main St'
+        session['zip_code'] = '14202'
+        session['phone_number'] = '716-555-5555'
+        session['email_address'] = 'testing@getwaterwisebuffalo.org'
+        session.save()
+
+        # Verify pre-post state
+        self.assertEqual(EmailCommunication.objects.all().count(), 0)
+        # Verify boolean logic for email check
+        self.assertEqual(EmailCommunication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', amnesty_application_received=True).count(), 0)
+
+        response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
+
+        self.assertTrue({'forgive_step', 'first_name', 'last_name', 'middle_initial', 'street_address', 'zip_code', 'phone_number', 'email_address'}.issubset(self.client.session.keys()))
+        self.assertEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].email_address, 'testing@getwaterwisebuffalo.org')
+        self.assertEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].street_address, '123 Main St')
+        self.assertNotEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].email_address, '')
+
+        # Verify email communication has been sent
+        self.assertEqual(EmailCommunication.objects.all().count(), 1)
+        self.assertEqual(EmailCommunication.objects.all()[EmailCommunication.objects.all().count() - 1].email_address, 'testing@getwaterwisebuffalo.org')
+        self.assertTrue(EmailCommunication.objects.all()[EmailCommunication.objects.all().count() - 1].amnesty_application_received)
 
 class ForgiveConfirmationViewTest(TestCase):
     def setUp(self):

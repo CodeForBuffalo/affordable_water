@@ -79,6 +79,16 @@ class Application(models.Model):
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
 
+class EmailCommunication(models.Model):
+    email_address = models.EmailField(primary_key=True, blank=False, null=False, editable=False)
+    discount_application_received = models.BooleanField(default=False)
+    amnesty_application_received = models.BooleanField(default=False)
+
+    # Metadata
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f'{self.email_address}'
 
 @deconstructible
 class FileValidator(object):

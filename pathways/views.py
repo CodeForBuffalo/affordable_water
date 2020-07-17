@@ -4,18 +4,18 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Document, ForgivenessApplication
+from .models import Application, Document, ForgivenessApplication, EmailCommunication
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
 from .tasks import send_email
 
-def handler404(request, exception, template_name="pathways/404.html"):
-    response = render(request, template_name)
+def handler404(request, *args, **kwargs):
+    response = render(request, 'pathways/404.html')
     response.status_code = 404
     return response
 
-def handler500(request, *args, **argv):
+def handler500(request, *args, **kwargs):
     response = render(request, 'pathways/500.html')
     response.status_code = 500
     return response
@@ -148,8 +148,27 @@ class ForgiveReviewApplicationView(FormView):
             if field.name in self.request.session:
                 setattr(app, field.name, self.request.session[field.name])
         app.save()
-        if 'email_address' in self.request.session and self.request.session['email_address'] != '':
-            send_email.delay('We received your application for the Buffalo Water Amnesty Program', [(self.request.session['first_name'], self.request.session['email_address'])], 'forgiveness_confirmation')
+        
+        # Email address hasn't received submission notification yet
+        if app.email_address != '' and EmailCommunication.objects.filter(email_address__iexact=app.email_address, amnesty_application_received=True).count() == 0:
+            # Send email notification that application has been received
+            subject = 'We received your application for the Buffalo Water Amnesty Program'
+            template_name = 'pathways/emails/amnesty_confirmation.html'
+            recipient_list = [(self.request.session['first_name'], self.request.session['email_address'])]
+
+            send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
+            
+            # Keep track of who has received a notification already
+            queryset = EmailCommunication.objects.filter(email_address__iexact=app.email_address)
+            if queryset.count() == 0:
+                # No emails have been sent to applicant's email yet
+                email_com = EmailCommunication.objects.create(email_address = app.email_address, amnesty_application_received = True)
+            elif queryset.count() == 1:
+                # Applicant has received an email before but amnesty_application_received was still False, can happen when applying for discount program first
+                email_com = EmailCommunication.objects.filter(email_address__iexact=app.email_address)[0]
+                email_com.amnesty_application_received = True
+                email_com.save()
+
         self.request.session['forgive_step'] = 'submit_application'
         return super().form_valid(form)
 
