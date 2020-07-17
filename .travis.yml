@@ -34,7 +34,6 @@ install:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
-  - sudo chmod +x /var/log/celery/
   - sudo chmod +x /var/run/celery/
 
 cache:
