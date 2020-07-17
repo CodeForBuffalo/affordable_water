@@ -34,7 +34,6 @@ install:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
-  - sudo chmod +x /var/run/celery/
 
 cache:
   directories:
@@ -49,7 +48,6 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - celery multi start -A affordable_water worker --pool=solo
   - coverage run manage.py test -v 2
 after_script:
   - coverage xml

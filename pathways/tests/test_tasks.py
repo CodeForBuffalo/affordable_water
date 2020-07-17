@@ -20,7 +20,7 @@ class SendEmailTests(TestCase):
         recipient_list = [('Your first name', 'to@example.com')]
         template_name = 'pathways/emails/amnesty_confirmation.html'
 
-        send_email(subject=subject, recipient_list=recipient_list, template_name=template_name)
+        send_email(subject=subject, recipient_list=recipient_list, template_name=template_name).apply()
 
         # Test that one message has been sent.
         self.assertEqual(len(mail.outbox), 1)
