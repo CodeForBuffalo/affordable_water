@@ -42,31 +42,16 @@ cache:
     - node_modules
     - $HOME/.npm
 
-jobs:
-  include:
-    - stage: test
-      name: "Start celery worker"
-      script:
-        - celery -A affordable_water worker --pool=solo
 
-    - stage: test
-      name: "Run tests"
-      before_script:
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
-      script:
-        - coverage run manage.py test -v 2
-      after_script:
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-
-    - stage: cleanup
-      name: "Cleanup"
-      script:
-        - celery stopwait worker
-        - coverage xml
-
-stages:
-  - test
-  - cleanup
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script:
+  - celery -A affordable_water worker --pool=solo
+  - coverage run manage.py test -v 2
+after_script:
+  - coverage xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        
   
