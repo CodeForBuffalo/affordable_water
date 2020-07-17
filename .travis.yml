@@ -10,6 +10,9 @@ node_js:
 
 addons:
   chrome: stable
+  apt:
+    packages:
+      - rabbitmq-server
 
 before_install:
   - pip install -U pip
@@ -42,7 +45,9 @@ script:
   - gulp
   - python manage.py collectstatic --noinput
   - python manage.py compress
+  - celery multi start worker1 -A affordable_water --pool=solo
   - coverage run manage.py test -v 2
+  - celery multi stopwait worker1
 
 after_script:
   - coverage xml

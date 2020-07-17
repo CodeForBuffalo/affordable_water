@@ -4,6 +4,15 @@ from pathways.tasks import send_email
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from affordable_water.celery import debug_task
+
+class CeleryTravisIntegration(TestCase):
+    def test_broker(self):
+        print("Starting test_broker")
+        task_id = debug_task.delay().task_id
+        print("Waiting result")
+        debug_task.AsyncResult(task_id).get(timeout=5)
+        print("Completed")
 
 class SendEmailTests(TestCase):
     def test_send_amnesty_confirmation_email(self):

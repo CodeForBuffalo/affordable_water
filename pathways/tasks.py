@@ -1,8 +1,13 @@
 from __future__ import absolute_import
 from celery import shared_task
+from celery.decorators import task
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+
+@task(bind=True)
+def debug_task2(self):
+    return "Debug_task2 completed"
 
 @shared_task  # Use this decorator to make this an asyncronous function
 def send_email(subject, recipient_list, template_name):
