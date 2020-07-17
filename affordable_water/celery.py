@@ -8,7 +8,7 @@ from django.conf import settings
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'affordable_water.settings')
 
-app = Celery('affordable_water')
+app = Celery('affordable_water', backend='amqp://')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
