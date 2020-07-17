@@ -14,6 +14,9 @@ addons:
     packages:
       - rabbitmq-server
 
+services:
+  - rabbitmq
+
 before_install:
   - pip install -U pip
 
@@ -64,7 +67,6 @@ jobs:
         - coverage xml
 
 stages:
-  - build
   - test
   - cleanup
   
