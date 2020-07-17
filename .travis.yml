@@ -35,20 +35,40 @@ cache:
     - node_modules
     - $HOME/.npm
 
-before_script:
-  - npm install -g gulp-cli
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+jobs:
+  include:
+    - stage: build
+      name: "Assets"
+      before_script:
+        - npm install -g gulp-cli
+      script:
+        - gulp
+        - python manage.py collectstatic --noinput
+        - python manage.py compress
+    - stage: build
+      name: "Code coverage"
+      script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
+    - stage: test
+      name: "Start celery worker"
+      script:
+        - celery -A affordable_water worker --pool=solo
+    - stage: test
+      name: "Run tests"
+      script:
+        - coverage run manage.py test -v 2
+    - stage: cleanup
+      name: "Cleanup"
+      script:
+        - celery stopwait worker
+        - coverage xml
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+    
 
-script:
-  - gulp
-  - python manage.py collectstatic --noinput
-  - python manage.py compress
-  - celery -A affordable_water worker --pool=solo
-  - coverage run manage.py test -v 2
-  - celery stopwait worker
-
-after_script:
-  - coverage xml
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+stages:
+  - build
+  - test
+  - cleanup
+  
