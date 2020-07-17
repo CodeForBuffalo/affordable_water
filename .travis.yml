@@ -21,12 +21,16 @@ install:
   - pip install pipenv
   - pipenv sync --dev
   - npm install
+  - npm install -g gulp-cli
   - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
   - export CHROME_BIN=chromium-browser
+  - gulp
+  - python manage.py collectstatic --noinput
+  - python manage.py compress
 
 cache:
   directories:
@@ -37,35 +41,27 @@ cache:
 
 jobs:
   include:
-    - stage: build
-      name: "Assets"
-      before_script:
-        - npm install -g gulp-cli
-      script:
-        - gulp
-        - python manage.py collectstatic --noinput
-        - python manage.py compress
-    - stage: build
-      name: "Code coverage"
-      script:
-        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
     - stage: test
       name: "Start celery worker"
       script:
         - celery -A affordable_water worker --pool=solo
+
     - stage: test
       name: "Run tests"
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
       script:
         - coverage run manage.py test -v 2
+      after_script:
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
     - stage: cleanup
       name: "Cleanup"
       script:
         - celery stopwait worker
         - coverage xml
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-    
 
 stages:
   - build
