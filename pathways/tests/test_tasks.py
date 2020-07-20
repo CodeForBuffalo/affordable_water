@@ -6,26 +6,18 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from affordable_water.celery import debug_task
 
-class CeleryTravisIntegration(TestCase):
-    def test_broker(self):
-        print("Starting test_broker")
-        task_id = debug_task.delay().task_id
-        print("Waiting result")
-        debug_task.AsyncResult(task_id).get(timeout=5)
-        print("Completed")
-
 class SendEmailTests(TestCase):
     def test_send_amnesty_confirmation_email(self):
         subject = 'We received your application for the Buffalo Water Amnesty Program'
         recipient_list = [('Your first name', 'to@example.com')]
         template_name = 'pathways/emails/amnesty_confirmation.html'
 
-        send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
+        send_email(subject=subject, recipient_list=recipient_list, template_name=template_name)
 
-        # Test that one message has been sent.
+        # Test that one message has been sent
         self.assertEqual(len(mail.outbox), 1)
 
-        # Verify that the subject of the first message is correct.
+        # Verify that the subject of the first message is correct
         self.assertEqual(mail.outbox[0].subject, subject)
 
         # Verify that the from_email is correct
