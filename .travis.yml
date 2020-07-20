@@ -48,6 +48,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
+  - celery multi start worker1 -A affordable_water --pidfile="$HOME/run/celery/%n.pid" --logfile="$HOME/log/celery/%n%I.log"
   - coverage run manage.py test -v 2
 after_script:
   - coverage xml
