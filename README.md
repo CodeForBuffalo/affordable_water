@@ -8,14 +8,15 @@ This mobile-friendly site allows Buffalo residents to apply for the [Residential
 
 This project was developed as part of the [2019 Code for America Community Fellowship](https://www.codeforamerica.org/programs/fellowship/meet-the-fellows).
 
+## Development
+
 ### Tech Stack
 - Python 3.7 with Django 2.2
+- Node.js for npm packages and scripts
 - Travis CI for testing and builds
 - Heroku deployment
 - Heroku-hosted PostgreSQL database for storing application data
 - S3 bucket for storing photos of documents
-
-## Development
 
 ### Requirements
 Make sure these are installed on your machine.
