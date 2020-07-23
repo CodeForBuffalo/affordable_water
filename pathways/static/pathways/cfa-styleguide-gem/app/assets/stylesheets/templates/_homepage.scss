@@ -73,7 +73,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: url($image-url + "hero-home.jpg");
+      background-image: url($image-url + "hero-home-full.jpg");
       background-size: cover;
       background-position: top center;
       @include media($tablet-up) {

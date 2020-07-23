@@ -4,6 +4,12 @@ from django.core.validators import RegexValidator, ValidationError
 from . import models
 from django.utils.translation import ugettext_lazy as _
 
+class CityResidentForm(forms.Form):
+    city_resident = forms.ChoiceField(
+        label=_("Are you a City of Buffalo resident?"),
+        help_text=_("The City of Buffalo does not include suburban municipalities like Cheektowaga, Lackawanna, Amherst, or Tonawanda."),
+        choices=((True,_('Yes')), (False,_('No')))
+    )
 
 class HouseholdSizeForm(forms.Form):
     household_size = forms.ChoiceField(label=_("What is your household size?"),
@@ -264,3 +270,86 @@ class MoreDocumentInfoRequiredForm(forms.Form):
             (8,_('8+')),
         ), required=True)
     card_title = _("We need more information to find your existing application.")
+
+class ForgiveReviewApplicationForm(forms.Form):
+    submit_application = forms.ChoiceField(
+        label=_("Would you like to submit this application?"),
+        choices=((True,_('Yes')), (False,_('No')))
+    )
+
+class ForgiveResidentInfoForm(forms.Form):
+    card_title = _("Let's get some basic information.")
+
+    first_name = forms.CharField(
+        max_length=100, 
+        required=True, 
+        label=_("What is your first name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("First name")}), 
+        help_text=_("Legally as it appears on your ID."))
+
+    last_name = forms.CharField(
+        max_length=100, 
+        required=True, 
+        label=_("What is your last name?"), 
+        widget=forms.TextInput(attrs={'placeholder': _("Last name")}), 
+        help_text=_("Legally as it appears on your ID."))
+
+    middle_initial = forms.CharField(
+        max_length=5, 
+        required=False, 
+        label=_("What is your middle initial?"),
+        help_text=_("Not required"),
+        empty_value=(""))
+
+    street_address = forms.CharField(
+        max_length=200, 
+        label=_("What is your street address?"), 
+        validators=[RegexValidator(
+            regex=r'^\d+ .*', 
+            message=_("Make sure to enter a street number before the street name, for example 123 Main St"))], 
+        widget=forms.TextInput(attrs={'placeholder': "123 Main St"}))
+
+    apartment_unit = forms.CharField(
+        required=False, 
+        max_length=10, 
+        label=_("If this is an apartment, what is the apartment unit?"), 
+        help_text=_("Skip this if you don't live in an apartment"))
+
+    zip_code = forms.CharField(
+        label=_("What is your 5 digit ZIP code?"), 
+        validators=[RegexValidator(
+            regex=r'^\d{5}$',
+            message=_("Your ZIP code must be exactly 5 digits")
+        )]
+    )
+
+    phone_number = forms.CharField(
+        label=_("What is your phone number?"),
+        max_length=17, 
+        widget=forms.TextInput(attrs={'placeholder': _("716-555-5555")}))
+
+    email_address = forms.EmailField(
+        label=_("What is your email address?"),
+        help_text=_("Not required"),
+        required=False)
+
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+        phone = phone.replace('-','')
+        phone = phone.replace('(','')
+        phone = phone.replace(')','')
+        phone = phone.replace(' ','')
+        if len(phone) != 10:
+            raise ValidationError(_("Please use a valid 10 digit phone number such as 716-555-5555."), code='invalid')
+        phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
+        return phone
+    
+    def __init__(self, *args, **kwargs):
+        super(ForgiveResidentInfoForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].error_messages = {'required': _("Make sure to provide a first name.")}
+        self.fields['last_name'].error_messages = {'required': _("Make sure to provide a last name.")}
+        self.fields['street_address'].error_messages = {'required': _("Make sure to provide a street address.")}
+        self.fields['zip_code'].error_messages = {'required': _("Make sure to provide a 5 digit ZIP code.")}
+        self.fields['phone_number'].error_messages = {'required': _("Make sure to provide a valid phone number.")}
+        

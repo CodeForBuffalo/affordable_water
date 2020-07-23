@@ -4,10 +4,20 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Document
+from .models import Application, Document, ForgivenessApplication
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
+
+def handler404(request, exception, template_name="pathways/404.html"):
+    response = render(request, template_name)
+    response.status_code = 404
+    return response
+
+def handler500(request, *args, **argv):
+    response = render(request, 'pathways/500.html')
+    response.status_code = 500
+    return response
 
 class ExtraContextView(TemplateView):
     extra_context = {}
@@ -57,14 +67,102 @@ class PrivacyView(ExtraContextView):
 # Considerations between Class-Based Views and Function-Based Views
 # https://www.reddit.com/r/django/comments/ad7ulo/when_and_how_to_use_django_formview/edg21b6/
 
-class ApplyView(ExtraContextView):
-    template_name = 'pathways/apply/overview.html'
+class ApplyOverviewAssistanceView(ExtraContextView):
+    template_name = 'pathways/apply/assistance-overview.html'
+
+class ApplyDiscountView(ExtraContextView):
+    template_name = 'pathways/apply/discount-overview.html'
 
     def dispatch(self, request, *args, **kwargs):
         for key in list(request.session.keys()):
             del request.session[key]
-        return super(ApplyView, self).dispatch(request, *args, **kwargs)
+        return super(ApplyDiscountView, self).dispatch(request, *args, **kwargs)
 
+class CityResidentView(FormView):
+    template_name = 'pathways/apply/city-resident.html'
+    form_class = forms.CityResidentForm
+    success_url = '/apply/household-size/'
+
+    def form_valid(self, form):
+        if (form.cleaned_data['city_resident'] == 'False'):
+            self.success_url = '/apply/non-resident/'
+        return super().form_valid(form)
+
+class ForgiveOverviewView(ExtraContextView):
+    template_name = 'pathways/forgive/water-amnesty.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        for key in list(request.session.keys()):
+            del request.session[key]
+        request.session['forgive_step'] = 'overview'
+        return super(ForgiveOverviewView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveCityResidentView(CityResidentView):
+    success_url = '/forgive/additional-questions/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveCityResidentView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveAdditionalQuestionsView(TemplateView):
+    template_name = 'pathways/forgive/additional-questions.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveAdditionalQuestionsView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveResidentInfoView(FormToSessionView):
+    template_name = 'pathways/apply/info-form.html'
+    form_class = forms.ForgiveResidentInfoForm
+    success_url = '/forgive/review-application/'
+    extra_context = {'card_title': form_class.card_title}
+
+    def form_valid(self, form):
+        self.request.session['forgive_step'] = 'filled_application'
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        return super(ForgiveResidentInfoView, self).dispatch(request, *args, **kwargs)
+
+class ForgiveReviewApplicationView(FormView):
+    template_name = 'pathways/forgive/review-application.html'
+    form_class = forms.ForgiveReviewApplicationForm
+    success_url = '/forgive/confirmation/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        elif request.session['forgive_step'] not in ['filled_application', 'submit_application'] :
+            return redirect('pathways-forgive-resident-info')
+        return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Create new Forgive application, load data from session, and save
+        app = ForgivenessApplication()
+        for field in ForgivenessApplication._meta.get_fields():
+            if field.name in self.request.session:
+                setattr(app, field.name, self.request.session[field.name])
+        app.save()
+        self.request.session['forgive_step'] = 'submit_application'
+        return super().form_valid(form)
+
+class ForgiveConfirmationView(ExtraContextView):
+    template_name = 'pathways/forgive/confirmation.html'
+    extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
+
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        elif request.session['forgive_step'] != 'submit_application':
+            return redirect('pathways-forgive-resident-info')
+        return super(ForgiveConfirmationView, self).dispatch(request, *args, **kwargs)
+
+class NonResidentView(ExtraContextView):
+    template_name = 'pathways/apply/non-resident.html'
 
 class HouseholdSizeView(FormToSessionView):
     template_name = 'pathways/apply/household-size.html'
@@ -246,7 +344,10 @@ class EligibilityView(DispatchView):
         if self.request.session['has_household_benefits'] == 'True':
             context['is_eligible'] = True
         else:
-            annual_income = int(self.request.session['annual_income'])
+            if 'annual_income' in self.request.session:
+                annual_income = int(self.request.session['annual_income'])
+            else:
+                annual_income = 0
             max_income = income_thresholds[int(self.request.session['household_size'])]
             context['is_eligible'] = annual_income <= max_income
             locale.setlocale( locale.LC_ALL, '' )
@@ -289,7 +390,7 @@ class AddressView(FormToSessionView, DispatchView):
 class ContactInfoView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.ContactInfoForm
-    success_url = '/apply/account-number/'
+    success_url = '/apply/review-application/'
     extra_context = {'card_title': form_class.card_title}
 
 class AccountNumberView(FormToSessionView, DispatchView):
@@ -334,6 +435,8 @@ class SignatureView(FormView, DispatchView):
 
     def form_valid(self, form):
         self.request.session['signature'] = form.cleaned_data['signature']
+        # Removed option of providing account number so people don't think it is absolutely required
+        self.request.session['has_account_number'] = 'False'
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
@@ -413,9 +516,9 @@ class ConfirmationView(DispatchView):
     extra_context = {'confirm_timestamp': datetime.datetime.now().strftime("%m/%d/%Y")}
 
 class LaterDocumentsView(FormView, ClearSessionView):
-    template_name = 'pathways/apply/info-form.html'
+    template_name = 'pathways/docs/later-docs.html'
     form_class = forms.LaterDocumentsForm
-    success_url = '/apply/documents-overview/'
+    success_url = '/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def form_valid(self, form):
@@ -423,21 +526,21 @@ class LaterDocumentsView(FormView, ClearSessionView):
 
         # Get list of possible application
         app_list = Application.objects.filter(
-                first_name = form.cleaned_data['first_name'],
-                last_name = form.cleaned_data['last_name'],
+                first_name__iexact = form.cleaned_data['first_name'],
+                last_name__iexact = form.cleaned_data['last_name'],
                 zip_code = form.cleaned_data['zip_code'],
                 phone_number = form.cleaned_data['phone_number']
                 )
                 
         if form.cleaned_data['middle_initial'] != '':
-            app_list = app_list(middle_initial = form.cleaned_data['middle_initial'])
+            app_list = app_list.filter(middle_initial__iexact = form.cleaned_data['middle_initial'])
 
         if form.cleaned_data['email_address'] != '':
-            app_list = app_list(email_address = form.cleaned_data['email_address'])
+            app_list = app_list.filter(email_address__iexact = form.cleaned_data['email_address'])
 
         if len(app_list) == 0:
             # No matching application found
-            self.success_url = '/apply/later-documents/no-match-found/'
+            self.success_url = '/later-documents/no-match-found/'
 
         elif len(app_list) == 1:
             # Matching application successfully found
@@ -454,7 +557,7 @@ class LaterDocumentsView(FormView, ClearSessionView):
             self.request.session['email_address'] = form.cleaned_data['email_address']
 
             # More information required to narrow down match
-            self.success_url = '/apply/later-documents/more-info-needed/'
+            self.success_url = '/later-documents/more-info-needed/'
             pass
 
         return super().form_valid(form)
@@ -465,7 +568,7 @@ class NoDocumentFoundView(ExtraContextView):
 class MoreDocumentInfoRequiredView(FormView):
     template_name = 'pathways/docs/more-doc-info.html'
     form_class = forms.MoreDocumentInfoRequiredForm
-    success_url = '/apply/documents-overview/'
+    success_url = '/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def dispatch(self, request, *args, **kwargs):
@@ -477,17 +580,17 @@ class MoreDocumentInfoRequiredView(FormView):
     def form_valid(self, form):
         # Get list of possible application
         app_list = Application.objects.filter(
-                first_name = self.request.session['first_name'],
-                last_name = self.request.session['last_name'],
+                first_name__iexact = self.request.session['first_name'],
+                last_name__iexact = self.request.session['last_name'],
                 zip_code = self.request.session['zip_code'],
                 phone_number = self.request.session['phone_number'],
                 rent_or_own = form.cleaned_data['rent_or_own'],
-                street_address = form.cleaned_data['street_address'],
+                street_address__icontains = form.cleaned_data['street_address'],
                 household_size = form.cleaned_data['household_size']
                 )
         
         if form.cleaned_data['apartment_unit'] != '':
-            app_list = app_list(apartment_unit = form.cleaned_data['apartment_unit'])
+            app_list = app_list.filter(apartment_unit__iexact = form.cleaned_data['apartment_unit'])
 
         if len(app_list) == 1:
             # Matching application successfully found
@@ -496,6 +599,6 @@ class MoreDocumentInfoRequiredView(FormView):
             self.request.session['active_app'] = True
         else:
             # No matching application found
-            self.success_url = '/apply/later-documents/no-match-found/'
+            self.success_url = '/later-documents/no-match-found/'
 
         return super().form_valid(form)

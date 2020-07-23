@@ -1,0 +1,26 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item">
+            <h1>{% trans 'Well, this is embarrassing...' %}</h1>
+            <p>{% trans 'Sorry, this is not working properly. We now know about this mistake and are working to fix it.' %}</p>
+            <p>{% trans 'In the meantime, here is what you can do:' %}</p>
+            <ul class="fa-ul">
+                <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-redo text--blue-dark"></i></span>{% trans 'Refresh the page (sometimes this helps).' %}</li>
+                <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-broom text--blue-dark"></i></span>
+                    If you are submitting a new application, clicking here to <a href="{% url 'pathways-apply-discount-overview' %}">reset your application</a> might help as it cleans and resets the current session.
+                </li>
+                <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-envelope text--blue-dark"></i></span>
+                    {% blocktrans %}
+                    Email us at <a href="mailto:hello@getwaterwisebuffalo.org">hello@getwaterwisebuffalo.org</a> and tell us what happened.
+                    {% endblocktrans %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock content %}

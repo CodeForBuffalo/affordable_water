@@ -1,9 +1,15 @@
 {% extends "pathways/base.html" %}
 {% block content %}
-<h2>You have been logged out</h2>
-<div class="border-top pt-3">
-    <small class="text-muted">
-        <a href="{% url 'login' %}">Log In Again</a>
-    </small>
-</div>
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item">
+            <h2>You have been logged out</h2>
+            <div class="border-top pt-3">
+                <small class="text-muted">
+                    <a href="{% url 'two_factor:login' %}">Log In Again</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}

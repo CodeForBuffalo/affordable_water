@@ -1,0 +1,20 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item">
+            <h1>{% trans 'Oops! We can\'t find that page' %}</h1>
+            <p>
+                {% blocktrans %}
+                The page you requested could not be found. Please feel free to contact us at <a href="mailto:hello@getwaterwisebuffalo.org">hello@getwaterwisebuffalo.org</a>
+                {% endblocktrans %}
+            </p>
+            <a href="{% url 'pathways-home' %}" class="button button--primary">{% trans 'Return home' %}</a>
+            <button class="button" onclick="window.history.back();">{% trans 'Previous page' %}</button>
+        </div>
+    </div>
+</section>
+{% endblock content %}

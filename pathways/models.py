@@ -6,8 +6,12 @@ import magic
 from django.utils.deconstruct import deconstructible
 from django.template.defaultfilters import filesizeformat
 from datetime import datetime
+from simple_history.models import HistoricalRecords
 
 class Application(models.Model):
+    # Metadata
+    history = HistoricalRecords()
+
     # HouseholdForm
     household_size = models.IntegerField(choices=(
             (1,_('Just me')),
@@ -72,18 +76,8 @@ class Application(models.Model):
     # SignatureForm
     signature = models.CharField(max_length=250)
 
-    # Income Photo
-    income_photo = models.ImageField(upload_to='income_docs', blank=True)
-
-    # Benefits Photo
-    benefits_photo = models.ImageField(upload_to='benefits_docs', blank=True)
-
-    # Residence Photo
-    residence_photo = models.ImageField(upload_to='residence_docs', blank=True)
-
     def __str__(self):
-        return f'{self.id} ({self.phone_number})'
-
+        return f'{self.id} - {self.last_name} at {self.street_address}'
 
 
 @deconstructible
@@ -208,4 +202,53 @@ class Document(models.Model):
         ('benefits', _('Benefits')),
         ('residence', _('Residence'))
     ])
-    doc_file = models.FileField(upload_to=path_and_rename, blank=True, validators=[ACCEPTED_FILE_VALIDATOR]) 
+    doc_file = models.FileField(upload_to=path_and_rename, blank=True, validators=[ACCEPTED_FILE_VALIDATOR])
+    
+    # Metadata
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f'{self.application.id} - {self.application.last_name} at {self.application.street_address} - {self.doc_type}'
+
+class ForgivenessApplication(models.Model):
+    # Metadata
+    history = HistoricalRecords()
+
+    # ResidentInfoForm
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    middle_initial = models.CharField(
+        max_length=5, 
+        blank=True)
+
+    # AddressForm
+    street_address = models.CharField(
+        max_length=200, 
+        validators=[RegexValidator(
+            regex=r'^\d+ .*', 
+            message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
+        ])
+    apartment_unit = models.CharField(
+        max_length=10, 
+        blank=True, 
+        help_text=_("Skip this if you don't live in an apartment"))
+    zip_code = models.CharField(
+        max_length=5, 
+        validators=[RegexValidator(
+            regex=r'^\d{5}$', 
+            message=_("Your ZIP code must be exactly 5 digits"))
+        ])
+
+    # ContactInfoForm
+    phone_number = models.CharField(
+        max_length=12, 
+        validators=[RegexValidator(
+            regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
+            message=_("Please use a valid phone number format such as 716-555-5555."))
+            ])
+    email_address = models.EmailField(
+        blank=True, 
+        help_text=_("Optional to provide for status updates on your application"))
+
+    def __str__(self):
+        return f'{self.id} - {self.last_name} at {self.street_address}'

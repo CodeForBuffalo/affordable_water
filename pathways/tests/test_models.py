@@ -37,5 +37,5 @@ class ApplicationModelTest(TestCase):
         pass
 
     def test_application_self_string(self):
-        expected = '1 (7163334444)'
+        expected = '1 - Doe at 123 Main St'
         self.assertEqual(self.app_1.__str__(), expected, msg=f'app_1 self string expected {expected} but got {self.app_1.__str__()}')

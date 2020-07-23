@@ -1,0 +1,13 @@
+{% extends "two_factor/_base_focus.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item">
+            <h1>{% block title %}{% trans "Disabling Two-factor Authentication" %}{% endblock %}</h1>
+            <p>{% blocktrans %}You are unable to disable two-factor authentication as it would weaken security. Please contact the <a href="mailto:hello@getwaterwisebuffalo.org">administrator</a> if you have questions.{% endblocktrans %}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

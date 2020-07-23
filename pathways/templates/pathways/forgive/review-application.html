@@ -1,0 +1,77 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition">
+    <div class="grid">
+        <div class="grid__item width-two-thirds shift-one-sixth">
+            <h1 class="form-card__title">{% trans "Let's review what you told us about your application." %}</h1>
+
+            <!-- Personal Info -->
+            <h2>{% trans "Personal Info" %}</h2>
+            <div class="vertical-steps">
+                <div class="vertical-steps__step">
+                    <i class="fas fa-user fa-3x spacing-below-35 text--blue-dark"></i>
+                    <div class="vertical-steps__title">{{ request.session.first_name }}
+                        {{ request.session.middle_initial }}
+                        {{ request.session.last_name }}</div>
+                    <p>{% trans "Your full name" %}</p>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <i class="fas fa-home fa-3x spacing-below-35 text--blue-dark"></i>
+                    <div class="vertical-steps__title">
+                        {% trans "Address" %}
+                    </div>
+                    <p>
+                        {{ request.session.street_address }}
+                        {% if request.session.apartment_unit != "" %}
+                        <br>
+                        {% trans "Apartment " %}{{ request.session.apartment_unit }}
+                        {% endif %}
+                        <br>
+                        Buffalo, NY {{ request.session.zip_code }}
+                    </p>
+                </div>
+                <div class="vertical-steps__step">
+                    <i class="fas fa-phone fa-3x spacing-below-35 text--blue-dark"></i>
+                    <div class="vertical-steps__title">{{ request.session.phone_number }}</div>
+                    <p>{% trans "Your phone number" %}</p>
+                </div>
+
+                <div class="vertical-steps__step">
+                    <i class="fas fa-at fa-3x spacing-below-35 text--blue-dark"></i>
+                    <div class="vertical-steps__title">
+                        {% if request.session.email_address %}
+                        {{ request.session.email_address }}
+                        {% else %}
+                        No email address provided.
+                        {% endif %}
+                    </div>
+                    <p>
+                        {% if request.session.email_address %}
+                        {% trans "Your email address" %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <p><a class="button button--small" href="{% url 'pathways-apply-resident-info' %}">
+                    {% trans "Change my info" %}</a>
+            </p>
+            <hr>
+            <p>
+                <form method="post">
+                    {% csrf_token %}
+                    <label class="sr-only" for="submit_application">{{ form.submit_application.label }}</label>
+                    <p class="sr-only text--help">{{ form.submit_application.help_text }}</p>
+                    <input type="hidden" name="submit_application" id="submit_application" value="True">
+                    <button type="submit" class="button button--primary">
+                        {% trans "This all looks correct" %}
+                    </button>
+                </form>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock question %}
