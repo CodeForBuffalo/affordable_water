@@ -169,7 +169,13 @@ LOCALE_PATHS = (
 
 LANGUAGES = (
     ('en', _('English')),
-#    ('es', _('Spanish')),
+    ('es', _('Spanish')),
+    ('ar', _('Arabic')),
+    ('bn', _('Bengali')),
+    ('my', _('Burmese')),
+    ('ne', _('Nepali')),
+    ('so', _('Somali')),
+    ('sw', _('Swahili'))
 )
 
 
