@@ -86,19 +86,21 @@
     <div class="grid">
         <div class="grid__item width-five-sixths shift-one-twelfth">
             <h2 class="text--caps text--blue-dark">{% trans "What if I need additional help?" %}</h2>
-            <p class="text--grey-darkest" style="font-weight: 500;">You may qualify for additional Pathways to Affordable Water. These include</p>
+            <p class="text--grey-darkest" style="font-weight: 500;">{% trans "You may qualify for additional Pathways to Affordable Water. These include" %}</p>
             <div class="grid">
                 <div class="grid__item width-five-sixths shift-one-twelfth">
                     <ul class="text--left list--bulleted list--two-columns text--blue-dark">
                         <li><span class="text--grey-darkest">
+                            {% blocktrans %}
                                 Low Income Senior Citizen Discount
                                 <small> (must be 65 years of age)</small>
+                                {% endblocktrans %}
                                 </span></li>
-                        <li><span class="text--grey-darkest">Monthly Payment Plans</span></li>
-                        <li><span class="text--grey-darkest">Extended Repayment Periods</span></li>
-                        <li><span class="text--grey-darkest">Interest Charge Suspension</span></li>
-                        <li><span class="text--grey-darkest">Monthly Billing Option</span></li>
-                        <li><span class="text--grey-darkest">Leak Abatement Program</span></li>
+                        <li><span class="text--grey-darkest">{% trans "Monthly Payment Plans" %}</span></li>
+                        <li><span class="text--grey-darkest">{% trans "Extended Repayment Periods" %}</span></li>
+                        <li><span class="text--grey-darkest">{% trans "Interest Charge Suspension" %}</span></li>
+                        <li><span class="text--grey-darkest">{% trans "Monthly Billing Option" %}</span></li>
+                        <li><span class="text--grey-darkest">{% trans "Leak Abatement Program" %}</span></li>
                     </ul>
                 </div>
             </div>
@@ -141,15 +143,15 @@
         <div class="main-footer__legal">
             <div class="grid">
                 <div class="grid__item width-one-half spacing-below-35">
-                    <p><a class="link--subtle" href="/en/admin">Admin sign in</a></p>
-                    <p><a class="link--subtle" href="/en/about">About this website</a></p>
+                    <p><a class="link--subtle" href="/en/admin">{% trans "Admin sign in" %}</a></p>
+                    <p><a class="link--subtle" href="/en/about">{% trans "About this website" %}</a></p>
                     <!-- <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('en')">English</a></p>
                     <p><a class="link--subtle" lang="es" href="#" onclick="changeLanguage('es')">Español</a></p> -->
-                    <p><a class="link--subtle" href="https://buffalowater.org/">Buffalo Water</a></p>
+                    <p><a class="link--subtle" href="https://buffalowater.org/">{% trans "Buffalo Water" %}</a></p>
                 </div>
                 <div class="grid__item width-one-half spacing-below-35">                    
-                    <p><a class="link--subtle" href="/en/privacy">Privacy policy</a></p>
-                    <p><a class="link--subtle" href="/en/nondiscrimination">Nondiscrimination statement</a></p>
+                    <p><a class="link--subtle" href="/en/privacy">{% trans "Privacy policy" %}</a></p>
+                    <p><a class="link--subtle" href="/en/nondiscrimination">{% trans "Nondiscrimination statement" %}</a></p>
                 </div>
             </div>
         </div>

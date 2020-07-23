@@ -12,7 +12,9 @@
             <ul class="fa-ul">
                 <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-redo text--blue-dark"></i></span>{% trans 'Refresh the page (sometimes this helps).' %}</li>
                 <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-broom text--blue-dark"></i></span>
-                    If you are submitting a new application, clicking here to <a href="{% url 'pathways-apply-discount-overview' %}">reset your application</a> might help as it cleans and resets the current session.
+                    {% blocktrans trimmed %}
+                    If you are submitting a new application, clicking here to <a href="https://getwaterwisebuffalo.org/apply/discount-overview/">reset your application</a> might help as it cleans and resets the current session.
+                    {% endblocktrans %}
                 </li>
                 <li class="spacing-below-10"><span class="fa-li"><i class="fas fa-envelope text--blue-dark"></i></span>
                     {% blocktrans %}

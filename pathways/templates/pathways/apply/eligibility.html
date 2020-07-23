@@ -43,14 +43,17 @@
           {% endblocktrans %}
           <ul class="text--left list--bulleted text--blue-dark">
             <li><span class="text--grey-darkest">
+              {% blocktrans trimmed %}
                     Low Income Senior Citizen Discount <br>
                     <small> (must be 65 years of age)</small>
-                    </span></li>
-            <li><span class="text--grey-darkest">Monthly Payment Plans</span></li>
-            <li><span class="text--grey-darkest">Extended Repayment Periods</span></li>
-            <li><span class="text--grey-darkest">Interest Charge Suspension</span></li>
-            <li><span class="text--grey-darkest">Monthly Billing Option</span></li>
-            <li><span class="text--grey-darkest">Leak Abatement Program</span></li>
+                    </span>
+                    {% endblocktrans %}
+                  </li>
+            <li><span class="text--grey-darkest">{% trans "Monthly Payment Plans" %}</span></li>
+            <li><span class="text--grey-darkest">{% trans "Extended Repayment Periods" %}</span></li>
+            <li><span class="text--grey-darkest">{% trans "Interest Charge Suspension" %}</span></li>
+            <li><span class="text--grey-darkest">{% trans "Monthly Billing Option" %}</span></li>
+            <li><span class="text--grey-darkest">{% trans "Leak Abatement Program" %}</span></li>
         </ul>
         </p>
       {% endif %}
