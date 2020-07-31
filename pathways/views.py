@@ -462,7 +462,7 @@ class SignatureView(FormView, DispatchView):
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
-            if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
+            if field.name in ['id', 'income_photo','benefits_photo','residence_photo', 'status', 'notes']:
                 continue
             if field.name == 'annual_income' and self.request.session['has_household_benefits'] == 'True':
                 continue
