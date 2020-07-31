@@ -80,9 +80,11 @@ class Application(models.Model):
         return f'{self.id} - {self.last_name} at {self.street_address}'
 
 class EmailCommunication(models.Model):
-    email_address = models.EmailField(primary_key=True, blank=False, null=False, editable=False)
+    email_address = models.EmailField(primary_key=True, blank=False, null=False)
     discount_application_received = models.BooleanField(default=False)
     amnesty_application_received = models.BooleanField(default=False)
+    enrolled_in_amnesty_program = models.BooleanField(default=False)
+    enrolled_in_discount_program = models.BooleanField(default=False)
 
     # Metadata
     history = HistoricalRecords()

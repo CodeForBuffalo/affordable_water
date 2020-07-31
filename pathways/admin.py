@@ -24,6 +24,16 @@ class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
 
 @admin.register(EmailCommunication)
 class EmailCommunicationAdmin(SimpleHistoryAdmin):
-    pass
+    readonly_fields = ['email_address','discount_application_received', 
+                        'amnesty_application_received', 'enrolled_in_amnesty_program', 
+                        'enrolled_in_discount_program']
+
+    list_display = ['email_address','discount_application_received', 
+                        'amnesty_application_received', 'enrolled_in_amnesty_program', 
+                        'enrolled_in_discount_program']
+
+    list_filter = ['discount_application_received', 
+                        'amnesty_application_received', 'enrolled_in_amnesty_program', 
+                        'enrolled_in_discount_program']
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"
