@@ -476,6 +476,26 @@ class SignatureView(FormView, DispatchView):
 
         app.save()
         self.request.session['app_id'] = app.id
+        # Email address hasn't received submission notification yet
+        if app.email_address != '' and EmailCommunication.objects.filter(email_address__iexact=app.email_address, discount_application_received=True).count() == 0:
+            # Send email notification that application has been received
+            subject = 'We received your application for the Buffalo Water Affordability Program'
+            template_name = 'pathways/emails/discount_confirmation.html'
+            recipient_list = [(self.request.session['first_name'], self.request.session['email_address'])]
+
+            send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
+            
+            # Keep track of who has received a notification already
+            queryset = EmailCommunication.objects.filter(email_address__iexact=app.email_address)
+            if queryset.count() == 0:
+                # No emails have been sent to applicant's email yet
+                email_com = EmailCommunication.objects.create(email_address = app.email_address, discount_application_received = True)
+            elif queryset.count() == 1:
+                # Applicant has received an email before but amnesty_application_received was still False, can happen when applying for discount program first
+                email_com = EmailCommunication.objects.filter(email_address__iexact=app.email_address)[0]
+                email_com.discount_application_received = True
+                email_com.save()
+
         return super().form_valid(form)
 
 class DocumentOverviewView(DispatchView):
