@@ -76,8 +76,27 @@ class Application(models.Model):
     # SignatureForm
     signature = models.CharField(max_length=250)
 
+    status = models.CharField(
+        max_length=12, 
+        choices=[
+            ('new',_("New")),
+            ('in_progress', _("In Progress")),
+            ('enrolled',_("Enrolled")),
+            ('denied',_("Denied")),
+        ], 
+        default='new')
+
+    notes = models.TextField(
+        blank=True,
+        help_text="Enter any notes for this case",
+        default='')
+
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
+
+    class Meta:
+        verbose_name = 'Discount Application'
+        verbose_name_plural = 'Discount Applications'
 
 
 @deconstructible
@@ -246,9 +265,29 @@ class ForgivenessApplication(models.Model):
             regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
             message=_("Please use a valid phone number format such as 716-555-5555."))
             ])
+
     email_address = models.EmailField(
         blank=True, 
         help_text=_("Optional to provide for status updates on your application"))
 
+    status = models.CharField(
+        max_length=12, 
+        choices=[
+            ('new',_("New")),
+            ('in_progress', _("In Progress")),
+            ('enrolled',_("Enrolled")),
+            ('denied',_("Denied")),
+        ], 
+        default='new')
+
+    notes = models.TextField(
+        blank=True,
+        help_text="Enter any notes for this case",
+        default='')
+
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
+
+    class Meta:
+        verbose_name = 'Amnesty Application'
+        verbose_name_plural = 'Amnesty Applications'

@@ -24,7 +24,10 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     )
 
     def full_name(self, obj):
-        return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
+        if obj.middle_initial == '':
+            return obj.first_name + ' ' + obj.last_name
+        else:
+            return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
 
     def account_name(self, obj):
         return obj.account_first + ' ' + obj.account_middle + ' ' + obj.account_last
@@ -47,6 +50,29 @@ class ApplicationAdmin(SimpleHistoryAdmin):
 
 @admin.register(ForgivenessApplication)
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
+    list_display = [
+        '__str__', 'date_created', 'full_name', 
+        'street_address', 'apartment_unit', 'zip_code',
+        'phone_number', 'email_address',
+        'status'
+    ]
+
+    list_editable = ['status']
+
+    list_filter = ['status']
+
+    list_per_page = 12
+
+    def date_created(self, obj):
+        return obj.history.all()[0].history_date
+
+    def full_name(self, obj):
+        if obj.middle_initial == '':
+            return obj.first_name + ' ' + obj.last_name
+        else:
+            return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
+
+class ListFilter(admin.SimpleListFilter):
     pass
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"
