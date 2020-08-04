@@ -21,7 +21,8 @@
     "migrate": "pipenv run python manage.py migrate",
     "start": "pipenv run python manage.py runserver",
     "heroku-prebuild": "npm install",
-    "heroku-postbuild": "npm run gulp && npm run heroku-collectstatic && npm run heroku-compress"
+    "heroku-postbuild": "npm run gulp && npm run heroku-collectstatic && npm run heroku-compress",
+    "celery": "celery worker -A affordable_water -l info --pool=solo"
   },
   "author": "",
   "license": "MIT",
