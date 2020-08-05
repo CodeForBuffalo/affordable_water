@@ -1,6 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from .models import Application, Document, ForgivenessApplication, EmailCommunication
+from . import tasks
 
 # Register your models here.
 
@@ -12,16 +13,32 @@ class DocumentInline(admin.TabularInline):
     model = Document
     extra = 0
 
+def make_enrolled_discount(modeladmin, request, queryset):
+    for app in queryset:
+        app.status = 'enrolled'
+        app.save()
+
+make_enrolled_discount.short_description = "Mark selected Discount Applications as enrolled"
+make_enrolled_discount.allowed_permissions = ('change',)
+
+def make_enrolled_amnesty(modeladmin, request, queryset):
+    for app in queryset:
+        app.status = 'enrolled'
+        app.save()
+
+make_enrolled_amnesty.short_description = "Mark selected Amnesty Applications as enrolled"
+make_enrolled_amnesty.allowed_permissions = ('change',)
+
 @admin.register(Application)
 class ApplicationAdmin(SimpleHistoryAdmin):
-    inlines = [
-        DocumentInline,
-    ]
-    list_display = (
-        '__str__', 'date_created', 'full_name', 'account_name', 'rent_or_own', 
-        'street_address', 'apartment_unit', 'zip_code', 'household_size', 
-        'has_household_benefits', 'has_residence_documents', 'has_eligible_documents'
-    )
+    inlines = [DocumentInline,]
+    actions = [make_enrolled_discount]
+    list_display = ['__str__', 'date_created', 'full_name', 'account_name', 
+                    'rent_or_own', 'street_address', 'apartment_unit', 
+                    'zip_code', 'household_size', 'has_household_benefits', 
+                    'has_residence_docs', 'has_eligible_docs', 'status']
+    list_editable = ['status']
+    list_filter = ['status']    
 
     def full_name(self, obj):
         if obj.middle_initial == '':
@@ -35,32 +52,27 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     def date_created(self, obj):
         return obj.history.all()[0].history_date
 
-    def has_residence_documents(self, obj):
+    def has_residence_docs(self, obj):
         residence_count = Document.objects.filter(application=obj, doc_type='residence').count()
         return residence_count > 0
-    has_residence_documents.boolean = True
-    has_residence_documents.description = 'Residence documents'
+    has_residence_docs.boolean = True
+    has_residence_docs.description = 'Residence documents'
 
-    def has_eligible_documents(self, obj):
+    def has_eligible_docs(self, obj):
         income_count = Document.objects.filter(application=obj, doc_type='income').count()
         benefits_count = Document.objects.filter(application=obj, doc_type='benefits').count()
         return income_count + benefits_count > 0
-    has_eligible_documents.boolean = True
-    has_eligible_documents.description = 'Income or benefits documents'
+    has_eligible_docs.boolean = True
+    has_eligible_docs.description = 'Income or benefits documents'
 
 @admin.register(ForgivenessApplication)
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
-    list_display = [
-        '__str__', 'date_created', 'full_name', 
-        'street_address', 'apartment_unit', 'zip_code',
-        'phone_number', 'email_address',
-        'status'
-    ]
-
+    actions = [make_enrolled_amnesty]
+    list_display = ['__str__', 'date_created', 'full_name', 'street_address', 
+                    'apartment_unit', 'zip_code', 'phone_number',
+                    'email_address', 'status']
     list_editable = ['status']
-
     list_filter = ['status']
-
     list_per_page = 12
 
     def date_created(self, obj):
@@ -72,9 +84,6 @@ class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
         else:
             return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
 
-class ListFilter(admin.SimpleListFilter):
-    pass
-
 @admin.register(EmailCommunication)
 class EmailCommunicationAdmin(SimpleHistoryAdmin):
     readonly_fields = ['email_address',
@@ -82,13 +91,11 @@ class EmailCommunicationAdmin(SimpleHistoryAdmin):
                         'amnesty_application_received', 
                         'enrolled_in_amnesty_program', 
                         'enrolled_in_discount_program']
-
     list_display = ['email_address',
                     'discount_application_received', 
                     'amnesty_application_received', 
                     'enrolled_in_amnesty_program', 
                     'enrolled_in_discount_program']
-
     list_filter = ['email_address',
                     'discount_application_received', 
                     'amnesty_application_received', 

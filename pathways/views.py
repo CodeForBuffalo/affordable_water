@@ -8,7 +8,7 @@ from .models import Application, Document, ForgivenessApplication, EmailCommunic
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
-from .tasks import send_email
+from . import tasks
 
 def handler404(request, *args, **kwargs):
     response = render(request, 'pathways/404.html')
@@ -142,33 +142,12 @@ class ForgiveReviewApplicationView(FormView):
         return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # Create new Forgive application, load data from session, and save
+        # Create new Forgiveness application, load data from session, and save
         app = ForgivenessApplication()
         for field in ForgivenessApplication._meta.get_fields():
             if field.name in self.request.session:
                 setattr(app, field.name, self.request.session[field.name])
         app.save()
-        
-        # Email address hasn't received submission notification yet
-        if app.email_address != '' and EmailCommunication.objects.filter(email_address__iexact=app.email_address, amnesty_application_received=True).count() == 0:
-            # Send email notification that application has been received
-            subject = 'We received your application for the Buffalo Water Amnesty Program'
-            template_name = 'pathways/emails/amnesty_confirmation.html'
-            recipient_list = [(self.request.session['first_name'], self.request.session['email_address'])]
-
-            send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
-            
-            # Keep track of who has received a notification already
-            queryset = EmailCommunication.objects.filter(email_address__iexact=app.email_address)
-            if queryset.count() == 0:
-                # No emails have been sent to applicant's email yet
-                email_com = EmailCommunication.objects.create(email_address = app.email_address, amnesty_application_received = True)
-            elif queryset.count() == 1:
-                # Applicant has received an email before but amnesty_application_received was still False, can happen when applying for discount program first
-                email_com = EmailCommunication.objects.filter(email_address__iexact=app.email_address)[0]
-                email_com.amnesty_application_received = True
-                email_com.save()
-
         self.request.session['forgive_step'] = 'submit_application'
         return super().form_valid(form)
 
@@ -476,25 +455,6 @@ class SignatureView(FormView, DispatchView):
 
         app.save()
         self.request.session['app_id'] = app.id
-        # Email address hasn't received submission notification yet
-        if app.email_address != '' and EmailCommunication.objects.filter(email_address__iexact=app.email_address, discount_application_received=True).count() == 0:
-            # Send email notification that application has been received
-            subject = 'We received your application for the Buffalo Water Affordability Program'
-            template_name = 'pathways/emails/discount_confirmation.html'
-            recipient_list = [(self.request.session['first_name'], self.request.session['email_address'])]
-
-            send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
-            
-            # Keep track of who has received a notification already
-            queryset = EmailCommunication.objects.filter(email_address__iexact=app.email_address)
-            if queryset.count() == 0:
-                # No emails have been sent to applicant's email yet
-                email_com = EmailCommunication.objects.create(email_address = app.email_address, discount_application_received = True)
-            elif queryset.count() == 1:
-                # Applicant has received an email before but amnesty_application_received was still False, can happen when applying for discount program first
-                email_com = EmailCommunication.objects.filter(email_address__iexact=app.email_address)[0]
-                email_com.discount_application_received = True
-                email_com.save()
 
         return super().form_valid(form)
 

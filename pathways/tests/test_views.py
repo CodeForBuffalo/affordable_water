@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils.translation import activate
 from django.utils.translation import ugettext_lazy as _
@@ -177,6 +177,7 @@ class ForgiveResidentInfoViewTest(TestCase):
         response = self.client.get(reverse('pathways-forgive-resident-info'), follow=False, secure=True)
         self.assertRedirects(response, reverse('pathways-forgive-overview'), fetch_redirect_response=False)
 
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class ForgiveReviewApplicationViewTest(TestCase):
     def setUp(self):
         activate('en')
@@ -238,22 +239,47 @@ class ForgiveReviewApplicationViewTest(TestCase):
         session['email_address'] = 'testing@getwaterwisebuffalo.org'
         session.save()
 
-        # Verify pre-post state
-        self.assertEqual(EmailCommunication.objects.all().count(), 0)
-        # Verify boolean logic for email check
-        self.assertEqual(EmailCommunication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', amnesty_application_received=True).count(), 0)
-
         response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
 
         self.assertTrue({'forgive_step', 'first_name', 'last_name', 'middle_initial', 'street_address', 'zip_code', 'phone_number', 'email_address'}.issubset(self.client.session.keys()))
-        self.assertEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].email_address, 'testing@getwaterwisebuffalo.org')
-        self.assertEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].street_address, '123 Main St')
-        self.assertNotEqual(ForgivenessApplication.objects.all()[ForgivenessApplication.objects.all().count() - 1].email_address, '')
+        self.assertTrue(ForgivenessApplication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', street_address='123 Main St').exists())
 
-        # Verify email communication has been sent
-        self.assertEqual(EmailCommunication.objects.all().count(), 1)
-        self.assertEqual(EmailCommunication.objects.all()[EmailCommunication.objects.all().count() - 1].email_address, 'testing@getwaterwisebuffalo.org')
-        self.assertTrue(EmailCommunication.objects.all()[EmailCommunication.objects.all().count() - 1].amnesty_application_received)
+    def test_email_sent_after_forgiveness_application_created(self):
+        session = self.client.session
+        session['forgive_step'] = 'filled_application'
+        session['first_name'] = 'Test'
+        session['last_name'] = 'User'
+        session['middle_initial'] = 'R'
+        session['street_address'] = '123 Main St'
+        session['zip_code'] = '14202'
+        session['phone_number'] = '716-555-5555'
+        session['email_address'] = 'testing@getwaterwisebuffalo.org'
+        session.save()
+
+        # Verify pre-post state
+        self.assertEqual(EmailCommunication.objects.all().count(), 0)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertFalse(EmailCommunication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', amnesty_application_received=True).exists())
+
+        response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
+
+        # Verify that an email message has been sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        # Verify that the subject of the first message is correct
+        self.assertEqual(mail.outbox[0].subject, 'We received your application for the Buffalo Water Amnesty Program')
+
+        # Verify that the from_email is correct
+        self.assertEqual(mail.outbox[0].from_email, 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>')
+
+        # Verify that the recipient is correct
+        self.assertEqual(mail.outbox[0].to, ['testing@getwaterwisebuffalo.org'])
+
+        # Verify that the template is correct
+        self.assertIn('Here is what you can expect next', mail.outbox[0].body)
+
+        # Verify EmailCommunication object has been recorded
+        self.assertTrue(EmailCommunication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', amnesty_application_received=True).exists())
 
 class ForgiveConfirmationViewTest(TestCase):
     def setUp(self):
@@ -1015,6 +1041,7 @@ class LegalViewTest(TestCase):
         self.assertIn('legal_agreement', self.client.session.keys())
         self.assertEqual(self.client.session['legal_agreement'], True)
 
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class SignatureViewTest(TestCase):
     def setUp(self):
         activate('en')
@@ -1064,3 +1091,30 @@ class SignatureViewTest(TestCase):
         self.assertIn('signature', self.client.session.keys())
         self.assertEqual(self.client.session['signature'], 'Test User')
         self.assertIn('app_id', self.client.session.keys())
+
+    def test_email_confirmation_sent_on_submit(self):
+        # Verify pre-post state
+        self.assertEqual(EmailCommunication.objects.all().count(), 0)
+        self.assertEqual(len(mail.outbox), 0)
+        # Verify boolean logic for email check
+        self.assertFalse(EmailCommunication.objects.filter(email_address__iexact='testing@getwaterwisebuffalo.org', discount_application_received=True).exists())
+
+        response = self.client.post(reverse('pathways-apply-signature'), data={'signature': 'Test User'}, follow=True, secure=True)
+
+        # Verify that an email message has been sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        # Verify that the subject of the first message is correct
+        self.assertEqual(mail.outbox[0].subject, 'We received your application for the Buffalo Water Affordability Program')
+
+        # Verify that the from_email is correct
+        self.assertEqual(mail.outbox[0].from_email, 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>')
+
+        # Verify that the recipient is correct
+        self.assertEqual(mail.outbox[0].to, ['example@example.com'])
+
+        # Verify that the template is correct
+        self.assertIn('you can submit your documents', mail.outbox[0].body)
+
+        # Verify email communication has been sent
+        self.assertTrue(EmailCommunication.objects.filter(email_address__iexact='example@example.com', discount_application_received=True).exists())
