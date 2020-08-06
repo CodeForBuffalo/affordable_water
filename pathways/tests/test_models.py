@@ -1,4 +1,4 @@
-from django.test import LiveServerTestCase, TestCase, Client
+from django.test import LiveServerTestCase, TestCase, Client, override_settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 from django.utils.translation import activate
@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from pathways.models import Application
 
 # model tests
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class ApplicationModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

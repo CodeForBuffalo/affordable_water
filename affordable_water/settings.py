@@ -210,6 +210,14 @@ EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>'
 
+# Celery Config
+CELERY_BROKER_URL = os.getenv('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672//')
+BROKER_POOL_LIMIT = 1
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'rpc'
+
 # AWS
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')

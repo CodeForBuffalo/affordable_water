@@ -76,9 +76,40 @@ class Application(models.Model):
     # SignatureForm
     signature = models.CharField(max_length=250)
 
+    status = models.CharField(
+        max_length=12, 
+        choices=[
+            ('new',_("New")),
+            ('in_progress', _("In Progress")),
+            ('enrolled',_("Enrolled")),
+            ('denied',_("Denied")),
+        ], 
+        default='new')
+
+    notes = models.TextField(
+        blank=True,
+        help_text="Enter any notes for this case",
+        default='')
+
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
 
+    class Meta:
+        verbose_name = 'Discount Application'
+        verbose_name_plural = 'Discount Applications'
+
+class EmailCommunication(models.Model):
+    email_address = models.EmailField(primary_key=True, blank=False, null=False)
+    discount_application_received = models.BooleanField(default=False)
+    amnesty_application_received = models.BooleanField(default=False)
+    enrolled_in_amnesty_program = models.BooleanField(default=False)
+    enrolled_in_discount_program = models.BooleanField(default=False)
+
+    # Metadata
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f'{self.email_address}'
 
 @deconstructible
 class FileValidator(object):
@@ -246,9 +277,29 @@ class ForgivenessApplication(models.Model):
             regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
             message=_("Please use a valid phone number format such as 716-555-5555."))
             ])
+
     email_address = models.EmailField(
         blank=True, 
         help_text=_("Optional to provide for status updates on your application"))
 
+    status = models.CharField(
+        max_length=12, 
+        choices=[
+            ('new',_("New")),
+            ('in_progress', _("In Progress")),
+            ('enrolled',_("Enrolled")),
+            ('denied',_("Denied")),
+        ], 
+        default='new')
+
+    notes = models.TextField(
+        blank=True,
+        help_text="Enter any notes for this case",
+        default='')
+
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
+
+    class Meta:
+        verbose_name = 'Amnesty Application'
+        verbose_name_plural = 'Amnesty Applications'

@@ -4,17 +4,18 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Document, ForgivenessApplication
+from .models import Application, Document, ForgivenessApplication, EmailCommunication
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
+from . import tasks
 
-def handler404(request, exception, template_name="pathways/404.html"):
-    response = render(request, template_name)
+def handler404(request, *args, **kwargs):
+    response = render(request, 'pathways/404.html')
     response.status_code = 404
     return response
 
-def handler500(request, *args, **argv):
+def handler500(request, *args, **kwargs):
     response = render(request, 'pathways/500.html')
     response.status_code = 500
     return response
@@ -141,7 +142,7 @@ class ForgiveReviewApplicationView(FormView):
         return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # Create new Forgive application, load data from session, and save
+        # Create new Forgiveness application, load data from session, and save
         app = ForgivenessApplication()
         for field in ForgivenessApplication._meta.get_fields():
             if field.name in self.request.session:
@@ -440,7 +441,7 @@ class SignatureView(FormView, DispatchView):
         # Create new application, load data from session, and save
         app = Application()
         for field in Application._meta.get_fields():
-            if field.name in ['id', 'income_photo','benefits_photo','residence_photo']:
+            if field.name in ['id', 'income_photo','benefits_photo','residence_photo', 'status', 'notes']:
                 continue
             if field.name == 'annual_income' and self.request.session['has_household_benefits'] == 'True':
                 continue
@@ -454,6 +455,7 @@ class SignatureView(FormView, DispatchView):
 
         app.save()
         self.request.session['app_id'] = app.id
+
         return super().form_valid(form)
 
 class DocumentOverviewView(DispatchView):

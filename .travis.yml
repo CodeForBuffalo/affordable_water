@@ -10,6 +10,12 @@ node_js:
 
 addons:
   chrome: stable
+  apt:
+    packages:
+      - rabbitmq-server
+
+services:
+  - rabbitmq
 
 before_install:
   - pip install -U pip
@@ -18,12 +24,16 @@ install:
   - pip install pipenv
   - pipenv sync --dev
   - npm install
+  - npm install -g gulp-cli
   - wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip -P ~/
   - unzip ~/chromedriver_linux64.zip -d ~/
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
   - export CHROME_BIN=chromium-browser
+  - gulp
+  - python manage.py collectstatic --noinput
+  - python manage.py compress
 
 cache:
   directories:
@@ -32,18 +42,16 @@ cache:
     - node_modules
     - $HOME/.npm
 
+
 before_script:
-  - npm install -g gulp-cli
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
-
 script:
-  - gulp
-  - python manage.py collectstatic --noinput
-  - python manage.py compress
+  - celery multi start worker1 -A affordable_water --pidfile="$HOME/run/celery/%n.pid" --logfile="$HOME/log/celery/%n%I.log"
   - coverage run manage.py test -v 2
-
 after_script:
   - coverage xml
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        
+  
