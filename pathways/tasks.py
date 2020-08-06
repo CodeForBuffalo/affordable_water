@@ -24,82 +24,45 @@ def send_email(subject, recipient_list, template_name, **kwargs):
         # Add msg to messages list
         msg.send()
 
-def send_confirmation_email_after_discount_enrolled(app):
-    subject = 'You have been successfully enrolled in the Buffalo Water Affordability Program'
-    template_name = 'pathways/emails/discount_enrolled.html'
-    recipient_list = [(app.first_name, app.email_address)]
+def send_automatic_email(email_address, email_type, subject, template_name, recipient_list):
+    # Filter to applicant's email address
+    email_coms = EmailCommunication.objects.filter(email_address=email_address)
 
-    # If they haven't received enrollment email before
-    if not EmailCommunication.objects.filter(enrolled_in_discount_program=True).exists():
+    # Maps to True if applicant's email address has received this email type before
+    has_received_email_type_before = {
+        'discount_receive': email_coms.filter(discount_application_received=True).exists(),
+        'discount_enroll': email_coms.filter(enrolled_in_discount_program=True).exists(),
+        'amnesty_receive': email_coms.filter(amnesty_application_received=True).exists(),
+        'amnesty_enroll': email_coms.filter(enrolled_in_amnesty_program=True).exists(),
+    }
+
+    # If they haven't received the email before
+    if not has_received_email_type_before[email_type]:
         # Send email task
         send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
         
+        defaults_for_create = {
+            'discount_receive': {'email_address': email_address, 'discount_application_received': True},
+            'discount_enroll': {'email_address': email_address, 'enrolled_in_discount_program': True},
+            'amnesty_receive': {'email_address': email_address, 'amnesty_application_received': True},
+            'amnesty_enroll': {'email_address': email_address, 'enrolled_in_amnesty_program': True},
+        }
+
         # Get or create EmailCommunication object
         email_com, created = EmailCommunication.objects.get_or_create(
-            email_address__iexact=app.email_address,
-            defaults={'email_address': app.email_address, 'enrolled_in_discount_program': True}
+            email_address__iexact=email_address,
+            defaults=defaults_for_create[email_type]
         )
         # Change and save EmailCommunication object if it already existed
         if not created:
-            email_com.enrolled_in_discount_program = True
-            email_com.save()
-
-def send_confirmation_email_after_amnesty_enrolled(app):
-    subject = 'You have been successfully enrolled in the Buffalo Water Amnesty Program'
-    template_name = 'pathways/emails/amnesty_enrolled.html'
-    recipient_list = [(app.first_name, app.email_address)]
-    
-    # If they haven't received enrollment email before
-    if not EmailCommunication.objects.filter(enrolled_in_amnesty_program=True).exists():
-        # Send email task
-        send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
-        
-        # Get or create EmailCommunication object
-        email_com, created = EmailCommunication.objects.get_or_create(
-            email_address__iexact=app.email_address,
-            defaults={'email_address': app.email_address, 'enrolled_in_amnesty_program': True}
-        )
-        # Change and save EmailCommunication object if it already existed
-        if not created:
-            email_com.enrolled_in_amnesty_program = True
-            email_com.save()
-
-def send_received_confirmation_on_discount_application(app):
-    subject = 'We received your application for the Buffalo Water Affordability Program'
-    template_name = 'pathways/emails/discount_confirmation_no_docs_now.html'
-    recipient_list = [(app.first_name, app.email_address)]
-
-    # If they haven't received confirmation email before
-    if not EmailCommunication.objects.filter(discount_application_received=True).exists():
-        # Send email task
-        send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
-        
-        # Get or create EmailCommunication object
-        email_com, created = EmailCommunication.objects.get_or_create(
-            email_address__iexact=app.email_address,
-            defaults={'email_address': app.email_address, 'discount_application_received': True}
-        )
-        # Change and save EmailCommunication object if it already existed
-        if not created:
-            email_com.discount_application_received = True
-            email_com.save()
-
-def send_received_confirmation_on_amnesty_application(app):
-    subject = 'We received your application for the Buffalo Water Amnesty Program'
-    template_name = 'pathways/emails/amnesty_confirmation.html'
-    recipient_list = [(app.first_name, app.email_address)]
-
-    # If they haven't received confirmation email before
-    if not EmailCommunication.objects.filter(amnesty_application_received=True).exists():
-        # Send email task
-        send_email.delay(subject=subject, recipient_list=recipient_list, template_name=template_name)
-        
-        # Get or create EmailCommunication object
-        email_com, created = EmailCommunication.objects.get_or_create(
-            email_address__iexact=app.email_address,
-            defaults={'email_address': app.email_address, 'amnesty_application_received': True}
-        )
-        # Change and save EmailCommunication object if it already existed
-        if not created:
-            email_com.amnesty_application_received = True
+            if email_type == 'discount_receive':
+                email_com.discount_application_received = True
+            elif email_type == 'discount_enroll':
+                email_com.enrolled_in_discount_program = True
+            elif email_type == 'amnesty_receive':
+                email_com.amnesty_application_received = True
+            elif email_type == 'amnesty_enroll':
+                email_com.enrolled_in_amnesty_program = True
+            else:
+                raise ValueError("Invalid email_type")
             email_com.save()
