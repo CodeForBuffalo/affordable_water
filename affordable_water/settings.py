@@ -212,6 +212,7 @@ DEFAULT_FROM_EMAIL = 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>'
 
 # Celery Config
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+BROKER_POOL_LIMIT = 1
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
