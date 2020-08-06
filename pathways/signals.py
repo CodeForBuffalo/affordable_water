@@ -5,6 +5,10 @@ from . import tasks
 
 @receiver(post_save, sender=Application, dispatch_uid="confirmation_email_discount")
 def send_email_for_discount_application(sender, instance, created, **kwargs):
+    # No email to send without an email address
+    if instance.email_address == '':
+        return
+
     recipient_list = [(instance.first_name, instance.email_address)]
 
     if created:
@@ -28,6 +32,10 @@ def send_email_for_discount_application(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=ForgivenessApplication, dispatch_uid="confirmation_email_amnesty")
 def send_email_for_amnesty_application(sender, instance, created, **kwargs):
+    # No email to send without an email address
+    if instance.email_address == '':
+        return
+
     recipient_list = [(instance.first_name, instance.email_address)]
 
     if created:
