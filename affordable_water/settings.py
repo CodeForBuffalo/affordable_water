@@ -210,13 +210,18 @@ EMAIL_PORT = 587
 
 DEFAULT_FROM_EMAIL = 'Get Water Wise Buffalo <hello@getwaterwisebuffalo.org>'
 
-# Celery Config
+# Celery Config using recommended settings from CloudAMQP
 CELERY_BROKER_URL = os.getenv('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672//')
-BROKER_POOL_LIMIT = 1
+CELERY_BROKER_POOL_LIMIT = 1 # Will decrease connection usage
+CELERY_BROKER_HEARTBEAT = None # We're using TCP keep-alive instead
+CELERY_BROKER_CONNECTION_TIMEOUT = 30 # May require a long timeout due to Linux DNS timeouts etc
+CELERY_RESULT_BACKEND = None # AMQP is not recommended as result backend as it creates thousands of queues
+CELERY_EVENT_QUEUE_EXPIRES = 60 # Will delete all celeryev. queues without consumers after 1 minute.
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1 # Disable prefetching, it's causes problems and doesn't help performance
+CELERY_WORKER_CONCURRENCY = 50 # If you tasks are CPU bound, then limit to the number of cores, otherwise increase substainally
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'rpc'
 
 # AWS
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
