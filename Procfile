@@ -1,2 +1,2 @@
 web: gunicorn affordable_water.wsgi
-worker: celery worker --app=affordable_water -l info
+worker: celery worker --app=affordable_water -l info --without-heartbeat
