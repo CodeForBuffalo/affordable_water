@@ -34,13 +34,11 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     inlines = [DocumentInline,]
     actions = [make_enrolled_discount]
     list_display = ['__str__', 'date_created', 'full_name', 'account_name', 
-                    'rent_or_own', 'street_address', 'apt_unit', 
-                    'zip_code', 'status']
+                    'rent_or_own', 'street_address', 'apartment_unit', 
+                    'zip_code', 'household_size', 'has_household_benefits', 
+                    'has_residence_docs', 'has_eligible_docs', 'status']
     list_editable = ['status']
-    list_filter = ['status']
-
-    def apt_unit(self, obj):
-        return obj.apartment_unit
+    list_filter = ['status']    
 
     def full_name(self, obj):
         if obj.middle_initial == '':
@@ -71,14 +69,11 @@ class ApplicationAdmin(SimpleHistoryAdmin):
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
     actions = [make_enrolled_amnesty]
     list_display = ['__str__', 'date_created', 'full_name', 'street_address', 
-                    'apt_unit', 'zip_code', 'phone_number',
+                    'apartment_unit', 'zip_code', 'phone_number',
                     'email_address', 'status']
     list_editable = ['status']
     list_filter = ['status']
     list_per_page = 12
-
-    def apt_unit(self, obj):
-        return obj.apartment_unit
 
     def date_created(self, obj):
         return obj.history.all()[0].history_date
