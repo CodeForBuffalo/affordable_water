@@ -9,6 +9,7 @@ import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
 from . import tasks
+from django.core.exceptions import ObjectDoesNotExist
 
 def handler404(request, *args, **kwargs):
     response = render(request, 'pathways/404.html')
@@ -142,11 +143,28 @@ class ForgiveReviewApplicationView(FormView):
         return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        # Create new Forgiveness application, load data from session, and save
-        app = ForgivenessApplication()
-        for field in ForgivenessApplication._meta.get_fields():
-            if field.name in self.request.session:
-                setattr(app, field.name, self.request.session[field.name])
+        # Get or create Forgiveness application, load data from session, and save
+        app = None
+        try:
+            app = ForgivenessApplication.objects.get(
+                first_name=self.request.session['first_name'],
+                last_name=self.request.session['last_name'],
+                street_address=self.request.session['street_address'],
+                zip_code=self.request.session['zip_code'],
+                phone_number=self.request.session['phone_number'],
+            )
+            for field in ForgivenessApplication._meta.get_fields():
+                if field.name == 'email_address' and app.email_address != '':
+                    continue
+                if field.name in self.request.session:
+                    setattr(app, field.name, self.request.session[field.name])
+                    
+        except ObjectDoesNotExist:
+            app = ForgivenessApplication()
+            for field in ForgivenessApplication._meta.get_fields():
+                if field.name in self.request.session:
+                    setattr(app, field.name, self.request.session[field.name])
+
         app.save()
         self.request.session['forgive_step'] = 'submit_application'
         return super().form_valid(form)
@@ -438,21 +456,36 @@ class SignatureView(FormView, DispatchView):
         self.request.session['signature'] = form.cleaned_data['signature']
         # Removed option of providing account number so people don't think it is absolutely required
         self.request.session['has_account_number'] = 'False'
-        # Create new application, load data from session, and save
-        app = Application()
-        for field in Application._meta.get_fields():
-            if field.name in ['id', 'income_photo','benefits_photo','residence_photo', 'status', 'notes']:
-                continue
-            if field.name == 'annual_income' and self.request.session['has_household_benefits'] == 'True':
-                continue
-            if field.name == 'apartment_unit' and ('apartment_unit' not in self.request.session or self.request.session['apartment_unit'] == ''):
-                continue
-            if field.name == 'account_number' and self.request.session['has_account_number'] == 'False':
-                continue
-            if field.name == 'document':
-                continue
-            setattr(app, field.name, self.request.session[field.name])
 
+        # Create new application, load data from session, and save
+        app = None
+        try:
+            app = Application.objects.get(
+                household_size=self.request.session['household_size'],
+                has_household_benefits=self.request.session['has_household_benefits'],
+                first_name=self.request.session['first_name'],
+                last_name=self.request.session['last_name'],
+                rent_or_own=self.request.session['rent_or_own'],
+                street_address=self.request.session['street_address'],
+                zip_code=self.request.session['zip_code'],
+                phone_number=self.request.session['phone_number'],
+                account_holder=self.request.session['account_holder'],
+                account_first=self.request.session['account_first'],
+                account_last=self.request.session['account_last'],
+                legal_agreement=self.request.session['legal_agreement']
+            )
+            for field in Application._meta.get_fields():
+                if field.name == 'email_address' and app.email_address != '':
+                    continue
+                if field.name in self.request.session:
+                    setattr(app, field.name, self.request.session[field.name])
+
+        except ObjectDoesNotExist:
+            app = Application()
+            for field in Application._meta.get_fields():
+                if field.name in self.request.session:
+                    setattr(app, field.name, self.request.session[field.name])
+        
         app.save()
         self.request.session['app_id'] = app.id
 
