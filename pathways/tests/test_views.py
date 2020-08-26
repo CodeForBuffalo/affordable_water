@@ -214,13 +214,6 @@ class ForgiveReviewApplicationViewTest(TestCase):
     def test_redirect_on_submit(self):
         session = self.client.session
         session['forgive_step'] = 'filled_application'
-        session['first_name'] = 'Test'
-        session['last_name'] = 'User'
-        session['middle_initial'] = 'R'
-        session['street_address'] = '123 Main St'
-        session['zip_code'] = '14202'
-        session['phone_number'] = '716-555-5555'
-        session['email_address'] = 'testing@getwaterwisebuffalo.org'
         session.save()
         response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
         self.assertRedirects(response, reverse('pathways-forgive-confirmation'), fetch_redirect_response=False)
@@ -229,13 +222,6 @@ class ForgiveReviewApplicationViewTest(TestCase):
     def test_session_saved_on_submit(self):
         session = self.client.session
         session['forgive_step'] = 'filled_application'
-        session['first_name'] = 'Test'
-        session['last_name'] = 'User'
-        session['middle_initial'] = 'R'
-        session['street_address'] = '123 Main St'
-        session['zip_code'] = '14202'
-        session['phone_number'] = '716-555-5555'
-        session['email_address'] = 'testing@getwaterwisebuffalo.org'
         session.save()
         response = self.client.post(reverse('pathways-forgive-review-application'), data={'submit_application': True}, follow=True, secure=True)
         self.assertIn('forgive_step', self.client.session.keys())
@@ -264,7 +250,7 @@ class ForgiveReviewApplicationViewTest(TestCase):
         session['first_name'] = 'Test'
         session['last_name'] = 'User'
         session['middle_initial'] = 'R'
-        session['street_address'] = '12345 Main St'
+        session['street_address'] = '123 Main St'
         session['zip_code'] = '14202'
         session['phone_number'] = '716-555-5555'
         session['email_address'] = 'testing@getwaterwisebuffalo.org'
@@ -1074,7 +1060,7 @@ class SignatureViewTest(TestCase):
         session['last_name'] = 'User'
         session['middle_initial'] = 'R'
         session['rent_or_own'] = 'rent'
-        session['street_address'] = '1234 Main St'
+        session['street_address'] = '123 Main St'
         session['zip_code'] = '14202'
         session['phone_number'] = '716-555-5555'
         session['email_address'] = 'example@example.com'
