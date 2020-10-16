@@ -35,7 +35,7 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     actions = [make_enrolled_discount]
     list_display = ['__str__', 'date_created', 'full_name', 'account_name', 
                     'rent_or_own', 'street_address', 'apt_unit', 
-                    'zip_code', 'status']
+                    'zip_code', 'discount_amount', 'status']
     list_editable = ['status']
     list_filter = ['status']
 

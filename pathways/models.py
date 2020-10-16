@@ -7,6 +7,7 @@ from django.utils.deconstruct import deconstructible
 from django.template.defaultfilters import filesizeformat
 from datetime import datetime
 from simple_history.models import HistoricalRecords
+from . import helpers
 
 class Application(models.Model):
     # Metadata
@@ -93,6 +94,12 @@ class Application(models.Model):
 
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
+
+    @property
+    def discount_amount(self):
+        very_low_income_thresholds = helpers.getVeryLowIncomeThresholds()
+        max_income = very_low_income_thresholds[self.household_size]
+        return 90 if self.annual_income <= max_income else 60
 
     class Meta:
         verbose_name = 'Discount Application'

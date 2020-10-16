@@ -10,6 +10,7 @@ import datetime
 from django.utils.translation import ugettext_lazy as _
 from . import tasks
 from django.core.exceptions import ObjectDoesNotExist
+from . import helpers
 
 def handler404(request, *args, **kwargs):
     response = render(request, 'pathways/404.html')
@@ -355,10 +356,7 @@ class EligibilityView(DispatchView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        income_thresholds = {
-            1: 41850, 2: 47800, 3: 53800, 4: 59750, 
-            5: 64550, 6: 69350, 7: 74100, 8: 78900,
-        }
+        income_thresholds = helpers.getIncomeThresholds
 
         if self.request.session['has_household_benefits'] == 'True':
             context['is_eligible'] = True
