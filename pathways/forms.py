@@ -227,6 +227,29 @@ class LegalForm(forms.Form):
     legal_agreement = forms.BooleanField(required=True, widget=widgets.CheckboxInput, label=_("I agree"), error_messages={
         'required': _("You must agree to the terms to continue"),})
 
+class ReferralForm(ModelForm):
+    class Meta:
+        model = models.Referral
+        fields = ['facebook', 'google', 'twitter', 'linkedin', 'bill', 'ad', 'pamphlet', 'word_of_mouth', 'custom_referral']
+
+    choices = [
+        ('facebook', _('Facebook')),
+        ('google', _('Google')),
+        ('twitter', _('Twitter')),
+        ('linkedin', _('LinkedIn')),
+        ('bill', _('Letter inserted in water bill')),
+        ('ad', _('Advertisement on bus, poster, or billboard')),
+        ('pamphlet', _('Pamphlet')),
+        ('word_of_mouth', _('Word of Mouth'))
+    ]
+
+    custom_referral = forms.CharField(
+        label=_("Please type if you learned about the program another way"),
+        help_text=_("This question is not required, but your answers help us improve our service outreach."),
+        required=False,
+        strip=True
+    )
+
 class SignatureForm(forms.Form):
     signature = forms.CharField(max_length=250, required=True, label=_("Type your full legal name to sign this application"), error_messages={'required':_("You must sign the application to continue.")})
 

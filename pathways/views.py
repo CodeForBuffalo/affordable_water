@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from . import forms
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
-from .models import Application, Document, ForgivenessApplication, EmailCommunication
+from .models import Application, Document, ForgivenessApplication, EmailCommunication, Referral
 import locale
 import datetime
 from django.utils.translation import ugettext_lazy as _
@@ -119,7 +119,7 @@ class ForgiveAdditionalQuestionsView(TemplateView):
 class ForgiveResidentInfoView(FormToSessionView):
     template_name = 'pathways/apply/info-form.html'
     form_class = forms.ForgiveResidentInfoForm
-    success_url = '/forgive/review-application/'
+    success_url = '/forgive/refer/'
     extra_context = {'card_title': form_class.card_title}
 
     def form_valid(self, form):
@@ -131,6 +131,27 @@ class ForgiveResidentInfoView(FormToSessionView):
             return redirect('pathways-forgive-overview')
         return super(ForgiveResidentInfoView, self).dispatch(request, *args, **kwargs)
 
+class ForgiveReferralView(FormView):
+    template_name = 'pathways/referral.html'
+    form_class = forms.ReferralForm
+    success_url = '/forgive/review-application/'
+
+    def form_valid(self, form):
+        ref = Referral()
+        ref.program = 'Amnesty'
+        for value, text in form.choices:
+            setattr(ref, value, form.cleaned_data[value])
+        ref.custom_referral = form.cleaned_data['custom_referral']
+        ref.save()
+        return super().form_valid(form)
+    
+    def dispatch(self, request, *args, **kwargs):
+        if 'forgive_step' not in request.session:
+            return redirect('pathways-forgive-overview')
+        elif request.session['forgive_step'] not in ['filled_application', 'submit_application']:
+            return redirect('pathways-forgive-resident-info')
+        return super(ForgiveReferralView, self).dispatch(request, *args, **kwargs)
+
 class ForgiveReviewApplicationView(FormView):
     template_name = 'pathways/forgive/review-application.html'
     form_class = forms.ForgiveReviewApplicationForm
@@ -139,7 +160,7 @@ class ForgiveReviewApplicationView(FormView):
     def dispatch(self, request, *args, **kwargs):
         if 'forgive_step' not in request.session:
             return redirect('pathways-forgive-overview')
-        elif request.session['forgive_step'] not in ['filled_application', 'submit_application'] :
+        elif request.session['forgive_step'] not in ['filled_application', 'submit_application']:
             return redirect('pathways-forgive-resident-info')
         return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
 
@@ -443,7 +464,21 @@ class ReviewApplicationView(DispatchView):
 class LegalView(FormToSessionView, DispatchView):
     template_name = 'pathways/apply/legal.html'
     form_class = forms.LegalForm
+    success_url = '/apply/refer/'
+
+class ReferralView(FormView, DispatchView):
+    template_name = 'pathways/referral.html'
+    form_class = forms.ReferralForm
     success_url = '/apply/signature/'
+
+    def form_valid(self, form):
+        ref = Referral()
+        ref.program = 'Discount'
+        for value, text in form.choices:
+            setattr(ref, value, form.cleaned_data[value])
+        ref.custom_referral = form.cleaned_data['custom_referral']
+        ref.save()
+        return super().form_valid(form)
 
 class SignatureView(FormView, DispatchView):
     template_name = 'pathways/apply/signature.html'

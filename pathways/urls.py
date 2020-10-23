@@ -19,6 +19,8 @@ urlpatterns = [
         name='pathways-forgive-additional-questions'),
     path('forgive/resident-info/', views.ForgiveResidentInfoView.as_view(),
         name='pathways-forgive-resident-info'),
+    path('forgive/refer/', views.ForgiveReferralView.as_view(),
+        name='pathways-forgive-refer'),
     path('forgive/review-application/', views.ForgiveReviewApplicationView.as_view(),
         name='pathways-forgive-review-application'),
     path('forgive/confirmation/', views.ForgiveConfirmationView.as_view(),
@@ -72,6 +74,8 @@ urlpatterns = [
         name='pathways-apply-review-application'),
     path('apply/legal/', views.LegalView.as_view(),
         name='pathways-apply-legal'),
+    path('apply/refer/', views.ReferralView.as_view(),
+        name='pathways-apply-refer'),
     path('apply/signature/', views.SignatureView.as_view(),
         name='pathways-apply-signature'),
     # Documents

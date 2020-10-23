@@ -310,3 +310,15 @@ class ForgivenessApplication(models.Model):
     class Meta:
         verbose_name = 'Amnesty Application'
         verbose_name_plural = 'Amnesty Applications'
+
+class Referral(models.Model):
+    program = models.CharField(default='', max_length=60)
+    facebook = models.BooleanField(default=False)
+    google = models.BooleanField(default=False)
+    twitter = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
+    bill = models.BooleanField(default=False)
+    ad = models.BooleanField(default=False)
+    pamphlet = models.BooleanField(default=False)
+    word_of_mouth = models.BooleanField(default=False)
+    custom_referral = models.CharField(default='', max_length=60)

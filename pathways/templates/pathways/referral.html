@@ -1,0 +1,37 @@
+{% extends "pathways/snippets/question.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block question %}
+<div class="form-card form-card--transition" id="referral_card">
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-card__content">
+            <div class="form-card__header">
+                <h1 class="form-card__title" id="referrer_describedby">{% trans 'How did you first learn about this program?' %}</h1>
+                <p>{% trans 'Please select all that apply' %}</p>
+            </div>
+
+            {% for value, text in form.choices %}
+            <label for="{{ value }}" class="checkbox">
+                <input type="checkbox" name="{{ value }}" id="{{ value }}" aria-describedby="referrer_describedby">
+                {{ text }}
+              </label>
+            {% endfor %}
+            <label class="sr-only" for="custom_referral">{% trans 'This question is not required, but your answers help us improve our service outreach.' %}</label>
+            <p class="sr-only">{% trans 'Please type if you learned about the program another way' %}</p>
+            <input type="text" class="text-input" name="custom_referral" id="custom_referral" placeholder="Type here for another option">
+        </div>
+        <div class="form-card__footer">
+            <button name="button" type="submit" class="button button--primary">
+                <i class=&quot;button__icon icon-arrow_forward&quot; aria-hidden='true'>
+                </i>{% trans "Continue" %}<i class="button__icon icon-arrow_forward" aria-hidden='true'></i>
+            </button>
+        </div>
+    </form>
+
+
+</div>
+
+{% endblock question %}

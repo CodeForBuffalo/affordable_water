@@ -145,7 +145,7 @@ class ForgiveResidentInfoViewTest(TestCase):
             'first_name': 'Test', 'last_name': 'User', 'middle_initial': 'R', 
             'street_address': '123 Main St', 'phone_number': '555-555-5555', 'zip_code': 14202
             }, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-forgive-review-application'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-forgive-refer'), fetch_redirect_response=False)
         self.assertEqual('filled_application', self.client.session['forgive_step'])
 
     def test_session_saved_on_submit(self):
@@ -1047,7 +1047,7 @@ class LegalViewTest(TestCase):
     def test_redirect_on_submit(self):
         response = self.client.post(reverse('pathways-apply-legal'),
         data={'legal_agreement': True}, follow=True, secure=True)
-        self.assertRedirects(response, reverse('pathways-apply-signature'), fetch_redirect_response=False)
+        self.assertRedirects(response, reverse('pathways-apply-refer'), fetch_redirect_response=False)
 
     def test_session_saved_on_submit(self):
         response = self.client.post(reverse('pathways-apply-legal'), 
