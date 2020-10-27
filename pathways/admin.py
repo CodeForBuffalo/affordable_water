@@ -18,7 +18,7 @@ def make_enrolled_discount(modeladmin, request, queryset):
         app.status = 'enrolled'
         app.save()
 
-make_enrolled_discount.short_description = "Mark selected Discount Applications as enrolled"
+make_enrolled_discount.short_description = "Enroll selected Discount Applications"
 make_enrolled_discount.allowed_permissions = ('change',)
 
 def make_enrolled_amnesty(modeladmin, request, queryset):
@@ -26,16 +26,32 @@ def make_enrolled_amnesty(modeladmin, request, queryset):
         app.status = 'enrolled'
         app.save()
 
-make_enrolled_amnesty.short_description = "Mark selected Amnesty Applications as enrolled"
+make_enrolled_amnesty.short_description = "Enroll selected Amnesty Applications"
 make_enrolled_amnesty.allowed_permissions = ('change',)
+
+def make_denied_discount(modeladmin, request, queryset):
+    for app in queryset:
+        app.status = 'denied'
+        app.save()
+
+make_denied_discount.short_description = "Deny selected Discount Applications"
+make_denied_discount.allowed_permissions = ('change',)
+
+def make_denied_amnesty(modeladmin, request, queryset):
+    for app in queryset:
+        app.status = 'denied'
+        app.save()
+
+make_denied_amnesty.short_description = "Deny selected Amnesty Applications"
+make_denied_amnesty.allowed_permissions = ('change',)
 
 @admin.register(Application)
 class ApplicationAdmin(SimpleHistoryAdmin):
     inlines = [DocumentInline,]
-    actions = [make_enrolled_discount]
+    actions = [make_enrolled_discount, make_denied_discount]
     list_display = ['__str__', 'date_created', 'full_name', 'account_name', 
                     'rent_or_own', 'street_address', 'apt_unit', 
-                    'zip_code', 'discount_amount', 'status']
+                    'zip_code', 'phone_number', 'discount_amount', 'status']
     list_editable = ['status']
     list_filter = ['status']
 
@@ -69,7 +85,7 @@ class ApplicationAdmin(SimpleHistoryAdmin):
 
 @admin.register(ForgivenessApplication)
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
-    actions = [make_enrolled_amnesty]
+    actions = [make_enrolled_amnesty, make_denied_amnesty]
     list_display = ['__str__', 'date_created', 'full_name', 'street_address', 
                     'apt_unit', 'zip_code', 'phone_number',
                     'email_address', 'status']
