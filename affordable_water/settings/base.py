@@ -9,55 +9,22 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
 import os
+
 import django_heroku
 from django.utils.translation import ugettext_lazy as _
 from dotenv import load_dotenv
 load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# Production
-if (os.getenv('PRODUCTION_VALUE') == 'True'):
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    
-# Development
-else:
-    SECRET_KEY = 'zu_8+if0(p@3mf+dxn29_*^*-mo(o^)7nr)*s!hyw_i*rzp7k#'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# This expression evaluates to false if DEBUG_VALUE is not set as environment variable
-DEBUG = (os.getenv('DEBUG_VALUE') == 'True')
-DEBUG_PROPAGRATE_EXCEPTIONS = True
-
-ALLOWED_HOSTS = [
-    'getbuffalowater.herokuapp.com'
-]
-if ((os.getenv('PRODUCTION_VALUE') != 'True') or (os.getenv('TESTING_VALUE') == 'True')):
-    ALLOWED_HOSTS += [
-        '127.0.0.1',
-        'localhost',
-        'testserver'
-    ]
-
-ADMINS = [
-    ('Mike', 'mbrown@codeforamerica.org'),
-    ('Mike', 'mbrown@buffalosewer.org'),
-]
-
+DEBUG = False
 
 # Application definition
 
 INSTALLED_APPS = [
     'pathways.apps.PathwaysConfig',
-    'users.apps.UsersConfig',
     'compressor',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -92,24 +59,6 @@ MIDDLEWARE = [
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ROOT_URLCONF = 'affordable_water.urls'
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.template.context_processors.i18n',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-            'debug': (os.getenv('TEMPLATE_DEBUG') == 'True')
-        },
-    },
-]
 
 WSGI_APPLICATION = 'affordable_water.wsgi.application'
 
@@ -169,7 +118,6 @@ LOCALE_PATHS = (
 
 LANGUAGES = (
     ('en', _('English')),
-#    ('es', _('Spanish')),
 )
 
 
@@ -232,10 +180,6 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-SECURE_SSL_REDIRECT = (os.getenv('PRODUCTION_VALUE') == 'True')
-CSRF_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
-SESSION_COOKIE_SECURE = (os.getenv('PRODUCTION_VALUE') == 'True')
 
 if os.getenv('HOME') and '/app' in os.getenv('HOME'):
     django_heroku.settings(locals())
