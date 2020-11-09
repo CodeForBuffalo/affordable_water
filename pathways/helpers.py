@@ -1,4 +1,3 @@
-
 def getIncomeThresholds():
     income_thresholds = {
         1: 41850, 2: 47800, 3: 53800, 4: 59750, 

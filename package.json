@@ -1,8 +1,6 @@
 {
-  "name": "getbuffalowater",
+  "name": "getwaterwisebuffalo",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "coverage:erase": "pipenv run coverage erase && npm run coverage:erasehtmlcov",
     "coverage:erasehtmlcov": "rm -rf htmlcov",
@@ -24,7 +22,6 @@
     "heroku-postbuild": "npm run gulp && npm run heroku-collectstatic && npm run heroku-compress",
     "celery": "celery worker -A affordable_water -l info --pool=solo"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "bourbon": "^6.0.0",

@@ -1,23 +1,22 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.http import HttpResponse
-from . import forms
-from django.views.generic.edit import FormView
-from django.views.generic import TemplateView
-from .models import Application, Document, ForgivenessApplication, EmailCommunication, Referral
 import locale
 import datetime
-from django.utils.translation import ugettext_lazy as _
-from . import tasks
-from django.core.exceptions import ObjectDoesNotExist
-from . import helpers
 
-def handler404(request, *args, **kwargs):
+from django.shortcuts import render, redirect
+from django.views.generic.edit import FormView
+from django.views.generic import TemplateView
+from django.core.exceptions import ObjectDoesNotExist
+
+from pathways.models import Application, Document, ForgivenessApplication, Referral
+from pathways import forms
+from pathways import helpers
+
+def handler404(request, exception):
+    del exception # unused
     response = render(request, 'pathways/404.html')
     response.status_code = 404
     return response
 
-def handler500(request, *args, **kwargs):
+def handler500(request):
     response = render(request, 'pathways/500.html')
     response.status_code = 500
     return response
@@ -34,8 +33,7 @@ class DispatchView(ExtraContextView):
     def dispatch(self, request, *args, **kwargs):
         if 'active_app' in request.session:
             return super(DispatchView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('pathways-home')
+        return redirect('pathways-home')
 
 class FormToSessionView(FormView):
     def form_valid(self, form):
@@ -139,8 +137,8 @@ class ForgiveReferralView(FormView):
     def form_valid(self, form):
         ref = Referral()
         ref.program = 'Amnesty'
-        for value, text in form.choices:
-            setattr(ref, value, form.cleaned_data[value])
+        for choice in form.choices:
+            setattr(ref, choice[0], form.cleaned_data[choice[0]])
         ref.custom_referral = form.cleaned_data['custom_referral']
         ref.save()
         return super().form_valid(form)
@@ -148,7 +146,7 @@ class ForgiveReferralView(FormView):
     def dispatch(self, request, *args, **kwargs):
         if 'forgive_step' not in request.session:
             return redirect('pathways-forgive-overview')
-        elif request.session['forgive_step'] not in ['filled_application', 'submit_application']:
+        if request.session['forgive_step'] not in ['filled_application', 'submit_application']:
             return redirect('pathways-forgive-resident-info')
         return super(ForgiveReferralView, self).dispatch(request, *args, **kwargs)
 
@@ -160,7 +158,7 @@ class ForgiveReviewApplicationView(FormView):
     def dispatch(self, request, *args, **kwargs):
         if 'forgive_step' not in request.session:
             return redirect('pathways-forgive-overview')
-        elif request.session['forgive_step'] not in ['filled_application', 'submit_application']:
+        if request.session['forgive_step'] not in ['filled_application', 'submit_application']:
             return redirect('pathways-forgive-resident-info')
         return super(ForgiveReviewApplicationView, self).dispatch(request, *args, **kwargs)
 
@@ -198,7 +196,7 @@ class ForgiveConfirmationView(ExtraContextView):
     def dispatch(self, request, *args, **kwargs):
         if 'forgive_step' not in request.session:
             return redirect('pathways-forgive-overview')
-        elif request.session['forgive_step'] != 'submit_application':
+        if request.session['forgive_step'] != 'submit_application':
             return redirect('pathways-forgive-resident-info')
         return super(ForgiveConfirmationView, self).dispatch(request, *args, **kwargs)
 
@@ -349,7 +347,7 @@ class NonJobIncomeView(FormToSessionView, DispatchView):
 class ReviewEligibilityView(DispatchView):
     template_name = 'pathways/apply/review-eligibility.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         locale.setlocale( locale.LC_ALL, '' )
         
@@ -375,7 +373,7 @@ class ReviewEligibilityView(DispatchView):
 class EligibilityView(DispatchView):
     template_name = 'pathways/apply/eligibility.html'
     
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         income_thresholds = helpers.getIncomeThresholds()
 
@@ -440,7 +438,7 @@ class AccountNumberView(FormToSessionView, DispatchView):
 class ReviewApplicationView(DispatchView):
     template_name = 'pathways/apply/review-application.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         locale.setlocale( locale.LC_ALL, '' )
         # Income
@@ -474,8 +472,8 @@ class ReferralView(FormView, DispatchView):
     def form_valid(self, form):
         ref = Referral()
         ref.program = 'Discount'
-        for value, text in form.choices:
-            setattr(ref, value, form.cleaned_data[value])
+        for choice in form.choices:
+            setattr(ref, choice[0], form.cleaned_data[choice[0]])
         ref.custom_referral = form.cleaned_data['custom_referral']
         ref.save()
         return super().form_valid(form)
@@ -527,7 +525,7 @@ class SignatureView(FormView, DispatchView):
 class DocumentOverviewView(DispatchView):
     template_name = 'pathways/docs/overview.html'
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         app = Application.objects.filter(id = self.request.session['app_id'])[0]
         context['has_household_benefits'] = app.has_household_benefits
@@ -626,7 +624,6 @@ class LaterDocumentsView(FormView, ClearSessionView):
 
             # More information required to narrow down match
             self.success_url = '/later-documents/more-info-needed/'
-            pass
 
         return super().form_valid(form)
 
@@ -642,8 +639,7 @@ class MoreDocumentInfoRequiredView(FormView):
     def dispatch(self, request, *args, **kwargs):
         if 'is_later_docs' in request.session:
             return super(MoreDocumentInfoRequiredView, self).dispatch(request, *args, **kwargs)
-        else:
-            return redirect('pathways-home')
+        return redirect('pathways-home')
 
     def form_valid(self, form):
         # Get list of possible application

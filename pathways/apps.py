@@ -5,4 +5,8 @@ class PathwaysConfig(AppConfig):
     name = 'pathways'
 
     def ready(self):
-        import pathways.signals
+        # pylint:disable=import-outside-toplevel
+        # pylint:disable=unused-import
+        import pathways.signals # noqa: F401
+        # pylint:enable=import-outside-toplevel
+        # pylint:enable=unused-import

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
-from .models import Application, Document, ForgivenessApplication, EmailCommunication
-from . import tasks
+
+from pathways.models import Application, Document, ForgivenessApplication, EmailCommunication
 
 # Register your models here.
 
@@ -9,51 +9,37 @@ from . import tasks
 class DocumentAdmin(SimpleHistoryAdmin):
     pass
 
+
 class DocumentInline(admin.TabularInline):
     model = Document
     extra = 0
 
-def make_enrolled_discount(modeladmin, request, queryset):
-    for app in queryset:
-        app.status = 'enrolled'
-        app.save()
-
-make_enrolled_discount.short_description = "Enroll selected Discount Applications"
-make_enrolled_discount.allowed_permissions = ('change',)
-
-def make_enrolled_amnesty(modeladmin, request, queryset):
-    for app in queryset:
-        app.status = 'enrolled'
-        app.save()
-
-make_enrolled_amnesty.short_description = "Enroll selected Amnesty Applications"
-make_enrolled_amnesty.allowed_permissions = ('change',)
-
-def make_denied_discount(modeladmin, request, queryset):
-    for app in queryset:
-        app.status = 'denied'
-        app.save()
-
-make_denied_discount.short_description = "Deny selected Discount Applications"
-make_denied_discount.allowed_permissions = ('change',)
-
-def make_denied_amnesty(modeladmin, request, queryset):
-    for app in queryset:
-        app.status = 'denied'
-        app.save()
-
-make_denied_amnesty.short_description = "Deny selected Amnesty Applications"
-make_denied_amnesty.allowed_permissions = ('change',)
 
 @admin.register(Application)
 class ApplicationAdmin(SimpleHistoryAdmin):
     inlines = [DocumentInline,]
-    actions = [make_enrolled_discount, make_denied_discount]
-    list_display = ['__str__', 'date_created', 'full_name', 'account_name', 
-                    'rent_or_own', 'street_address', 'apt_unit', 
-                    'zip_code', 'phone_number', 'discount_amount', 'status']
+    actions = ['make_enrolled', 'make_denied']
+    list_display = [
+        '__str__', 'date_created', 'full_name', 'account_name', 
+        'rent_or_own', 'street_address', 'apt_unit', 'zip_code',
+        'phone_number', 'discount_amount', 'status'
+    ]
     list_editable = ['status']
     list_filter = ['status']
+
+    def make_enrolled(self, request, queryset):
+        for app in queryset:
+            app.status = 'enrolled'
+            app.save()
+    make_enrolled.short_description = "Enroll selected Discount Applications"
+    make_enrolled.allowed_permissions = ('change',)
+
+    def make_denied(modeladmin, request, queryset):
+        for app in queryset:
+            app.status = 'denied'
+            app.save()
+    make_denied.short_description = "Deny selected Discount Applications"
+    make_denied.allowed_permissions = ('change',)
 
     def apt_unit(self, obj):
         return obj.apartment_unit
@@ -61,8 +47,7 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     def full_name(self, obj):
         if obj.middle_initial == '':
             return obj.first_name + ' ' + obj.last_name
-        else:
-            return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
+        return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
 
     def account_name(self, obj):
         return obj.account_first + ' ' + obj.account_middle + ' ' + obj.account_last
@@ -83,15 +68,33 @@ class ApplicationAdmin(SimpleHistoryAdmin):
     has_eligible_docs.boolean = True
     has_eligible_docs.description = 'Income or benefits documents'
 
+
 @admin.register(ForgivenessApplication)
 class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
-    actions = [make_enrolled_amnesty, make_denied_amnesty]
-    list_display = ['__str__', 'date_created', 'full_name', 'street_address', 
-                    'apt_unit', 'zip_code', 'phone_number',
-                    'email_address', 'status']
+    actions = ['make_enrolled', 'make_denied']
+    list_display = [
+        '__str__', 'date_created', 'full_name', 'street_address', 'apt_unit',
+        'zip_code', 'phone_number', 'email_address', 'status'
+    ]
     list_editable = ['status']
     list_filter = ['status']
     list_per_page = 12
+
+    def make_enrolled(modeladmin, request, queryset):
+        for app in queryset:
+            app.status = 'enrolled'
+            app.save()
+
+    make_enrolled.short_description = "Enroll selected Amnesty Applications"
+    make_enrolled.allowed_permissions = ('change',)
+
+    def make_denied(modeladmin, request, queryset):
+        for app in queryset:
+            app.status = 'denied'
+            app.save()
+
+    make_denied.short_description = "Deny selected Amnesty Applications"
+    make_denied.allowed_permissions = ('change',)
 
     def apt_unit(self, obj):
         return obj.apartment_unit
@@ -102,25 +105,34 @@ class ForgivenessApplicationAdmin(SimpleHistoryAdmin):
     def full_name(self, obj):
         if obj.middle_initial == '':
             return obj.first_name + ' ' + obj.last_name
-        else:
-            return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
+        return obj.first_name + ' ' + obj.middle_initial + ' ' + obj.last_name
+
 
 @admin.register(EmailCommunication)
 class EmailCommunicationAdmin(SimpleHistoryAdmin):
-    readonly_fields = ['email_address',
-                        'discount_application_received', 
-                        'amnesty_application_received', 
-                        'enrolled_in_amnesty_program', 
-                        'enrolled_in_discount_program']
-    list_display = ['email_address',
-                    'discount_application_received', 
-                    'amnesty_application_received', 
-                    'enrolled_in_amnesty_program', 
-                    'enrolled_in_discount_program']
-    list_filter = ['email_address',
-                    'discount_application_received', 
-                    'amnesty_application_received', 
-                    'enrolled_in_amnesty_program', 
-                    'enrolled_in_discount_program']
+    readonly_fields = [
+        'email_address',
+        'discount_application_received', 
+        'amnesty_application_received', 
+        'enrolled_in_amnesty_program', 
+        'enrolled_in_discount_program',
+    ]
+
+    list_display = [
+        'email_address',
+        'discount_application_received', 
+        'amnesty_application_received', 
+        'enrolled_in_amnesty_program', 
+        'enrolled_in_discount_program',
+    ]
+    
+    list_filter = [
+        'email_address',
+        'discount_application_received', 
+        'amnesty_application_received', 
+        'enrolled_in_amnesty_program', 
+        'enrolled_in_discount_program',
+    ]
+
 
 admin.site.site_header = "GetWaterWiseBuffalo Admin"
