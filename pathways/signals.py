@@ -1,7 +1,7 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
-from pathways.models import Application, ForgivenessApplication
+from pathways.models import Application, ForgivenessApplication, Document
 from pathways.tasks import send_automatic_email
 
 @receiver(post_save, sender=Application, dispatch_uid="confirmation_email_discount")
@@ -59,3 +59,9 @@ def send_email_for_amnesty_application(sender, instance, created, **kwargs):
                                     template_name=template_name,
                                     recipient_list=recipient_list
                                     )
+
+
+@receiver(post_delete, sender=Document)
+def remove_file_from_s3(sender, instance, using, **kwargs):
+    del sender, using, kwargs # unused
+    instance.doc_file.delete(save=False)

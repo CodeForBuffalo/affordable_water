@@ -213,6 +213,10 @@ LOGGING = {
         'testlogger': {
             'handlers': ['console'],
             'level': 'INFO',
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO'
         }
     }
 }
