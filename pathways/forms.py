@@ -18,6 +18,17 @@ def getIntTuplesInclusive(start, end, appendPlusOnLast):
     result.append(last)
     return result
 
+def cleanPhoneNumberFormat(form):
+    phone = form.cleaned_data.get('phone_number')
+    phone = phone.replace('-','')
+    phone = phone.replace('(','')
+    phone = phone.replace(')','')
+    phone = phone.replace(' ','')
+    if len(phone) != 10:
+        raise ValidationError(_("Please use a valid 10 digit phone number such as 716-555-5555."), code='invalid')
+    phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
+    return phone
+
 class CityResidentForm(forms.Form):
     city_resident = forms.ChoiceField(
         label=_("Are you a City of Buffalo resident?"),
@@ -270,15 +281,7 @@ class ContactInfoForm(forms.Form):
     card_title = _("Okay, let's get your contact info.")
 
     def clean_phone_number(self):
-        phone = self.cleaned_data.get('phone_number')
-        phone = phone.replace('-','')
-        phone = phone.replace('(','')
-        phone = phone.replace(')','')
-        phone = phone.replace(' ','')
-        if len(phone) != 10:
-            raise ValidationError(_("Please use a valid 10 digit phone number such as 716-555-5555."), code='invalid')
-        phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
-        return phone
+        return cleanPhoneNumberFormat(self)
 
 
 class AccountHolderForm(forms.Form):
@@ -522,12 +525,4 @@ class ForgiveResidentInfoForm(forms.Form):
     )
 
     def clean_phone_number(self):
-        phone = self.cleaned_data.get('phone_number')
-        phone = phone.replace('-','')
-        phone = phone.replace('(','')
-        phone = phone.replace(')','')
-        phone = phone.replace(' ','')
-        if len(phone) != 10:
-            raise ValidationError(_("Please use a valid 10 digit phone number such as 716-555-5555."), code='invalid')
-        phone = phone[:3] + '-' + phone[3:6] + '-' + phone[6:]
-        return phone
+        return cleanPhoneNumberFormat(self)
