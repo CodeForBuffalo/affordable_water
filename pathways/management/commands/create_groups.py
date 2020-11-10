@@ -1,22 +1,21 @@
 # backend/management/commands/initgroups.py
 from django.core.management import BaseCommand
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group, Permission, User
 
-from pathways import models
-import users
+from pathways.models import Application, Document
 
 GROUPS_PERMISSIONS = {
     'Assister': {
-        models.Application: ['add'],
-        models.Document: ['add'],
+        Application: ['add'],
+        Document: ['add'],
     },
     'AuthenticationAdmin': {
-        users.models.User: ['add','change','view'],
+        User: ['add','change','view'],
     },
     'StaffAdmin': {
-        models.Application: ['add', 'change', 'view'],
+        Application: ['add', 'change', 'view'],
         'historicalapplication': ['view'],
-        models.Document: ['add', 'view'],
+        Document: ['add', 'view'],
         'historicaldocument': ['view'],
     }
 }
@@ -33,6 +32,7 @@ class Command(BaseCommand):
 
             # Get or create group
             group, created = Group.objects.get_or_create(name=group_name)
+            del created # unused
 
             # Loop models in group
             for model_cls in GROUPS_PERMISSIONS[group_name]:
@@ -40,10 +40,11 @@ class Command(BaseCommand):
                 # Loop permissions in group/model
                 for perm_index, perm_name in \
                         enumerate(GROUPS_PERMISSIONS[group_name][model_cls]):
+                    del perm_index # unused
 
                     # Generate permission name as Django would generate it
                     # Check if model is a str (for django-simple-history)
-                    if type(model_cls) == str:
+                    if isinstance(model_cls, str):
                         codename = perm_name + "_" + model_cls
                     else:
                         codename = perm_name + "_" + model_cls._meta.model_name

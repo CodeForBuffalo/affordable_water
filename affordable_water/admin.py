@@ -16,6 +16,7 @@ class AdminSiteOTPRequiredMixinRedirSetup(AdminSiteOTPRequired):
         # will fail. So use the standard admin has_permission check:
         # (is_active and is_staff) and then check for verification.
         # Go to index if they pass, otherwise make them setup OTP device.
+        # pylint:disable=bad-super-call
         if request.method == "GET" and super(
             AdminSiteOTPRequiredMixin, self
         ).has_permission(request):

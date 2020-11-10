@@ -19,10 +19,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
-from users import views as user_views
 from two_factor.urls import urlpatterns as tf_urls
+
 from .admin import AdminSiteOTPRequiredMixinRedirSetup
-from django.conf.urls import handler404, handler500
 
 admin.site.__class__ = AdminSiteOTPRequiredMixinRedirSetup
 
@@ -35,14 +34,14 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include(tf_urls)),
     path('', include('pathways.urls')),
-    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='users/password_reset.html'), 
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='pathways/password_reset.html'), 
         name='password_reset'),
     path('password-reset/done/', 
-        auth_views.PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'), 
+        auth_views.PasswordResetDoneView.as_view(template_name='pathways/password_reset_done.html'), 
         name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', 
-        auth_views.PasswordResetConfirmView.as_view(template_name='users/password_reset_confirm.html'), 
+        auth_views.PasswordResetConfirmView.as_view(template_name='pathways/password_reset_confirm.html'), 
         name='password_reset_confirm'),
-    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='users/password_reset_complete.html'), 
+    path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='pathways/password_reset_complete.html'), 
         name='password_reset_complete'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from pathways import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='pathways-home'),
@@ -11,6 +11,7 @@ urlpatterns = [
         name='pathways-apply'),
     path('apply/discount-overview/', views.ApplyDiscountView.as_view(),
         name='pathways-apply-discount-overview'),
+    # Amnesty Debt Forgiveness
     path('forgive/overview/', views.ForgiveOverviewView.as_view(),
         name='pathways-forgive-overview'),
     path('forgive/city-resident/', views.ForgiveCityResidentView.as_view(),

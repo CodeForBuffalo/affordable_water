@@ -1,59 +1,91 @@
 from django.db import models
 from django.core.validators import RegexValidator, ValidationError
-from PIL import Image
 from django.utils.translation import ugettext_lazy as _
-import magic
 from django.utils.deconstruct import deconstructible
 from django.template.defaultfilters import filesizeformat
 from datetime import datetime
 from simple_history.models import HistoricalRecords
-from . import helpers
+import magic
+
+from pathways import helpers
 
 class Application(models.Model):
     # Metadata
     history = HistoricalRecords()
 
+    HOUSEHOLD_SIZE_CHOICES = [
+        (1,_('Just me')),
+        (2,_('2 people')),
+        (3,_('3 people')),
+        (4,_('4 people')),
+        (5,_('5 people')),
+        (6,_('6 people')),
+        (7,_('7 people')),
+        (8,_('8 people')),
+    ]
     # HouseholdForm
-    household_size = models.IntegerField(choices=(
-            (1,_('Just me')),
-            (2,_('2 people')),
-            (3,_('3 people')),
-            (4,_('4 people')),
-            (5,_('5 people')),
-            (6,_('6 people')),
-            (7,_('7 people')),
-            (8,_('8 people')),
-        ), help_text=_("Typically how many people you regularly share living expenses with, including yourself. If you live with them, include children under 21, spouses/partners, and parents."))
+    household_size = models.IntegerField(
+        choices=HOUSEHOLD_SIZE_CHOICES,
+        help_text=_("Typically how many people you regularly share living expenses with, including yourself. "
+                    "If you live with them, include children under 21, spouses/partners, and parents.")
+    )
     # AutoEligibleForm
     has_household_benefits = models.BooleanField()
 
     # Data from Income forms will be in a seperate model because 
     # if has_household_benefits is True, user won't have to enter income data
-    annual_income = models.DecimalField(max_digits=11, decimal_places=2, blank=True, default=0, help_text=_("Must specify annual income if applicant does not have other household benefits (HEAP, SNAP, etc.)"))
+    annual_income = models.DecimalField(
+        max_digits=11,
+        decimal_places=2,
+        blank=True,
+        default=0,
+        help_text=_("Must specify annual income if applicant does not have other household benefits (HEAP, SNAP, etc.)")
+    )
 
     # ResidentInfoForm
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     middle_initial = models.CharField(max_length=5, blank=True)
-    rent_or_own = models.CharField(max_length=4, choices=(
-        ('rent',_("Rent")),
-        ('own',_("Own")),
-    ))
+    rent_or_own = models.CharField(
+        max_length=4, 
+        choices=(
+            ('rent',_("Rent")),
+            ('own',_("Own")))
+    )
 
     # AddressForm
-    street_address = models.CharField(max_length=200, validators=[RegexValidator(
-        regex=r'^\d+ .*', message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
-        ])
-    apartment_unit = models.CharField(max_length=10, blank=True, help_text=_("Skip this if you don't live in an apartment"))
-    zip_code = models.CharField(max_length=5, validators=[RegexValidator(
-        regex=r'^\d{5}$', message=_("Your ZIP code must be exactly 5 digits"))
-        ])
+    street_address = models.CharField(
+        max_length=200,
+        validators=[RegexValidator(
+            regex=r'^\d+ .*',
+            message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
+        ]
+    )
+    apartment_unit = models.CharField(
+        max_length=10,
+        blank=True,
+        help_text=_("Skip this if you don't live in an apartment")
+    )
+    zip_code = models.CharField(
+        max_length=5,
+        validators=[RegexValidator(
+            regex=r'^\d{5}$',
+            message=_("Your ZIP code must be exactly 5 digits"))
+        ]
+    )
 
     # ContactInfoForm
-    phone_number = models.CharField(max_length=12, validators=[ # validators should be a list
-        RegexValidator(regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
-            message=_("Please use a valid phone number format such as 716-555-5555."))])
-    email_address = models.EmailField(blank=True, help_text=_("Optional to provide for status updates on your application"))
+    phone_number = models.CharField(
+        max_length=12, 
+        validators=[RegexValidator(
+            regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
+            message=_("Please use a valid phone number format such as 716-555-5555."))
+            ]
+    )
+    email_address = models.EmailField(
+        blank=True, 
+        help_text=_("Optional to provide for status updates on your application")
+    )
 
     # account_holder in ResidentInfoForm
     account_holder = models.CharField(max_length=8, choices=[
@@ -68,8 +100,14 @@ class Application(models.Model):
     account_middle = models.CharField(max_length=5, blank=True)
 
     # AccountNumberForm
-    account_number = models.CharField(max_length=30, blank=True, validators=[ # validators should be a list
-        RegexValidator(regex=r'^\d+$', message=_("Please enter only digits"))])
+    account_number = models.CharField(
+        max_length=30,
+        blank=True,
+        validators=[RegexValidator(
+            regex=r'^\d+$',
+            message=_("Please enter only digits"))
+        ]
+    )
 
     # LegalForm
     legal_agreement = models.BooleanField()
@@ -77,20 +115,24 @@ class Application(models.Model):
     # SignatureForm
     signature = models.CharField(max_length=250)
 
+    STATUS_CHOICES = [
+        ('new',_("New")),
+        ('in_progress', _("In Progress")),
+        ('enrolled',_("Enrolled")),
+        ('denied',_("Denied")),
+    ]
+
     status = models.CharField(
         max_length=12, 
-        choices=[
-            ('new',_("New")),
-            ('in_progress', _("In Progress")),
-            ('enrolled',_("Enrolled")),
-            ('denied',_("Denied")),
-        ], 
-        default='new')
+        choices=STATUS_CHOICES, 
+        default='new'
+    )
 
     notes = models.TextField(
         blank=True,
         help_text="Enter any notes for this case",
-        default='')
+        default=''
+    )
 
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'
@@ -118,8 +160,9 @@ class EmailCommunication(models.Model):
     def __str__(self):
         return f'{self.email_address}'
 
+
 @deconstructible
-class FileValidator(object):
+class FileValidator():
     """A class to validate a file with size and contents constraints
 
     Attributes
@@ -223,6 +266,7 @@ def path_and_rename(instance, filename):
         filename = f'{t.year}-{t.month}-{t.day}-{t.hour}-{t.minute}-{t.second}-{t.microsecond}'
     return f'{upload_to}/{filename}.{ext}'
 
+
 # Validator for acceptable file uploads, used by both Document model and in forms.py
 ACCEPTED_FILE_VALIDATOR = FileValidator(
     max_size=1024 * 4000, content_types=(
@@ -257,7 +301,8 @@ class ForgivenessApplication(models.Model):
     last_name = models.CharField(max_length=100)
     middle_initial = models.CharField(
         max_length=5, 
-        blank=True)
+        blank=True
+    )
 
     # AddressForm
     street_address = models.CharField(
@@ -265,17 +310,20 @@ class ForgivenessApplication(models.Model):
         validators=[RegexValidator(
             regex=r'^\d+ .*', 
             message=_("Make sure to enter a street number before the street name, for example 123 Main St"))
-        ])
+        ]
+    )
     apartment_unit = models.CharField(
         max_length=10, 
         blank=True, 
-        help_text=_("Skip this if you don't live in an apartment"))
+        help_text=_("Skip this if you don't live in an apartment")
+    )
     zip_code = models.CharField(
         max_length=5, 
         validators=[RegexValidator(
             regex=r'^\d{5}$', 
             message=_("Your ZIP code must be exactly 5 digits"))
-        ])
+        ]
+    )
 
     # ContactInfoForm
     phone_number = models.CharField(
@@ -283,11 +331,13 @@ class ForgivenessApplication(models.Model):
         validators=[RegexValidator(
             regex=r'^(\d{10}|(\d{3}\-\d{3}\-\d{4}))|(\(\d{3}\)\s?\d{3}\-\d{4})',
             message=_("Please use a valid phone number format such as 716-555-5555."))
-            ])
+            ]
+    )
 
     email_address = models.EmailField(
         blank=True, 
-        help_text=_("Optional to provide for status updates on your application"))
+        help_text=_("Optional to provide for status updates on your application")
+    )
 
     status = models.CharField(
         max_length=12, 
@@ -297,12 +347,14 @@ class ForgivenessApplication(models.Model):
             ('enrolled',_("Enrolled")),
             ('denied',_("Denied")),
         ], 
-        default='new')
+        default='new'
+    )
 
     notes = models.TextField(
         blank=True,
         help_text="Enter any notes for this case",
-        default='')
+        default=''
+    )
 
     def __str__(self):
         return f'{self.id} - {self.last_name} at {self.street_address}'

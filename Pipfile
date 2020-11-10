@@ -22,6 +22,7 @@ django-simple-history = "*"
 django-two-factor-auth = "*"
 phonenumbers = "*"
 celery = "*"
+prospector = "*"
 
 [requires]
 python_version = "3.7"

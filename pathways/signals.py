@@ -1,10 +1,12 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from pathways.models import Application, ForgivenessApplication
-from . import tasks
+
+from pathways.models import Application, ForgivenessApplication, Document
+from pathways.tasks import send_automatic_email
 
 @receiver(post_save, sender=Application, dispatch_uid="confirmation_email_discount")
 def send_email_for_discount_application(sender, instance, created, **kwargs):
+    del sender, kwargs # unused
     # No email to send without an email address
     if instance.email_address == '':
         return
@@ -14,7 +16,7 @@ def send_email_for_discount_application(sender, instance, created, **kwargs):
     if created:
         subject = 'We received your application for the Buffalo Water Affordability Program'
         template_name = 'pathways/emails/discount_confirmation_no_docs_now.html'
-        tasks.send_automatic_email(email_address=instance.email_address, 
+        send_automatic_email(email_address=instance.email_address, 
                                     email_type='discount_receive',
                                     subject=subject,
                                     template_name=template_name,
@@ -23,7 +25,7 @@ def send_email_for_discount_application(sender, instance, created, **kwargs):
     elif instance.status == 'enrolled':
         subject = 'You have been successfully enrolled in the Buffalo Water Affordability Program'
         template_name = 'pathways/emails/discount_enrolled.html'
-        tasks.send_automatic_email(email_address=instance.email_address, 
+        send_automatic_email(email_address=instance.email_address, 
                                     email_type='discount_enroll',
                                     subject=subject,
                                     template_name=template_name,
@@ -32,6 +34,7 @@ def send_email_for_discount_application(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=ForgivenessApplication, dispatch_uid="confirmation_email_amnesty")
 def send_email_for_amnesty_application(sender, instance, created, **kwargs):
+    del sender, kwargs # unused
     # No email to send without an email address
     if instance.email_address == '':
         return
@@ -41,7 +44,7 @@ def send_email_for_amnesty_application(sender, instance, created, **kwargs):
     if created:
         subject = 'We received your application for the Buffalo Water Amnesty Program'
         template_name = 'pathways/emails/amnesty_confirmation.html'
-        tasks.send_automatic_email(email_address=instance.email_address, 
+        send_automatic_email(email_address=instance.email_address, 
                                     email_type='amnesty_receive',
                                     subject=subject,
                                     template_name=template_name,
@@ -50,9 +53,15 @@ def send_email_for_amnesty_application(sender, instance, created, **kwargs):
     elif instance.status == 'enrolled':
         subject = 'You have been successfully enrolled in the Buffalo Water Amnesty Program'
         template_name = 'pathways/emails/amnesty_enrolled.html'
-        tasks.send_automatic_email(email_address=instance.email_address, 
+        send_automatic_email(email_address=instance.email_address, 
                                     email_type='amnesty_enroll',
                                     subject=subject,
                                     template_name=template_name,
                                     recipient_list=recipient_list
                                     )
+
+
+@receiver(post_delete, sender=Document)
+def remove_file_from_s3(sender, instance, using, **kwargs):
+    del sender, using, kwargs # unused
+    instance.doc_file.delete(save=False)
