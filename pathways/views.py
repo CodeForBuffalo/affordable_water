@@ -375,7 +375,7 @@ class EligibilityView(DispatchView):
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        income_thresholds = helpers.getIncomeThresholds()
+        income_thresholds = helpers.get_income_thresholds()
 
         if self.request.session['has_household_benefits'] == 'True':
             context['is_eligible'] = True

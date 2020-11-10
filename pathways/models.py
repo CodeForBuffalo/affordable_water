@@ -139,7 +139,7 @@ class Application(models.Model):
 
     @property
     def discount_amount(self):
-        very_low_income_thresholds = helpers.getVeryLowIncomeThresholds()
+        very_low_income_thresholds = helpers.get_lower_income_thresholds()
         max_income = very_low_income_thresholds[self.household_size]
         return 90 if self.annual_income <= max_income else 60
 
