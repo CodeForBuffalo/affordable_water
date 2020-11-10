@@ -5,21 +5,35 @@ from django.utils.translation import ugettext_lazy as _
 
 from pathways.models import Referral, ACCEPTED_FILE_VALIDATOR
 
-def getIntTuplesInclusive(start, end, appendPlusOnLast):
+def get_int_tuples(start, end, append_plus_on_end):
+    """Return list of tuples in form of (int, str(int))
+
+    Arguments:
+
+    start -- the starting int (inclusive)
+
+    end -- the ending int (inclusive)
+
+    append_plus_on_end -- bool for whether last tuple gets a '+' appended on the string
+    """
     result = []
     for x in range(start, end):
         pair = (x, _(str(x)))
         result.append(pair)
 
-    if appendPlusOnLast:
+    if append_plus_on_end:
         last = (end, _(str(end)+'+'))
     else:
         last = (end, _(str(end)))
     result.append(last)
     return result
 
-def cleanPhoneNumberFormat(form):
-    phone = form.cleaned_data.get('phone_number')
+def reformat_phone_number(phone):
+    """Returns phone number in format of 716-555-5555
+
+    Arguments:
+    phone -- str to reformat
+    """
     phone = phone.replace('-','')
     phone = phone.replace('(','')
     phone = phone.replace(')','')
@@ -38,7 +52,7 @@ class CityResidentForm(forms.Form):
     )
 
 class HouseholdSizeForm(forms.Form):
-    HOUSEHOLD_SIZE_CHOICES = getIntTuplesInclusive(1, 8, True)
+    HOUSEHOLD_SIZE_CHOICES = get_int_tuples(1, 8, True)
 
     household_size = forms.ChoiceField(
         label=_("What is your household size?"),
@@ -59,7 +73,7 @@ class HouseholdBenefitsForm(forms.Form):
     )
 
 class HouseholdContributorsForm(forms.Form):
-    HOUSEHOLD_CONTRIBUTOR_CHOICES = getIntTuplesInclusive(1, 8, True)
+    HOUSEHOLD_CONTRIBUTOR_CHOICES = get_int_tuples(1, 8, True)
 
     household_contributors = forms.ChoiceField(
         label=_("How many individuals contribute to your household income?"),
@@ -94,7 +108,7 @@ class OtherIncomeSourcesForm(forms.Form):
 
 
 class NumberOfJobsForm(forms.Form):
-    NUMBER_OF_JOBS_CHOICES = getIntTuplesInclusive(1, 12, False)
+    NUMBER_OF_JOBS_CHOICES = get_int_tuples(1, 12, False)
 
     number_of_jobs = forms.ChoiceField(
         label=_("In total, how many jobs do you have?"), 
@@ -281,7 +295,8 @@ class ContactInfoForm(forms.Form):
     card_title = _("Okay, let's get your contact info.")
 
     def clean_phone_number(self):
-        return cleanPhoneNumberFormat(self)
+        phone_number = self.cleaned_data.get('phone_number')
+        return reformat_phone_number(phone_number)
 
 
 class AccountHolderForm(forms.Form):
@@ -416,7 +431,7 @@ class LaterDocumentsForm(forms.Form):
     card_title = _("Before submitting your documents, we need to match your information to an existing application.")
 
 class MoreDocumentInfoRequiredForm(forms.Form):
-    HOUSEHOLD_SIZE_CHOICES = getIntTuplesInclusive(1, 8, True)
+    HOUSEHOLD_SIZE_CHOICES = get_int_tuples(1, 8, True)
 
     rent_or_own = forms.ChoiceField(
         label=_("Do you rent or own your home?"),
@@ -525,4 +540,5 @@ class ForgiveResidentInfoForm(forms.Form):
     )
 
     def clean_phone_number(self):
-        return cleanPhoneNumberFormat(self)
+        phone_number = self.cleaned_data.get('phone_number')
+        return reformat_phone_number(phone_number)
