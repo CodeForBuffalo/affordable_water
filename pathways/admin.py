@@ -135,4 +135,4 @@ class EmailCommunicationAdmin(SimpleHistoryAdmin):
     ]
 
 
-admin.site.site_header = "GetWaterWiseBuffalo Admin"
+admin.site.site_header = "Get Water Wise Buffalo Admin"
