@@ -7,6 +7,7 @@ urlpatterns = [
     path('about/', views.AboutView.as_view(),name='pathways-about'),
     path('nondiscrimination/', views.NondiscriminationView.as_view(), name='pathways-nondiscrimination'),
     path('privacy/', views.PrivacyView.as_view(), name='pathways-privacy'),
+    path('metrics/', views.ProgramMetricsView.as_view(), name='pathways-metrics'),
     path('apply/', views.ApplyOverviewAssistanceView.as_view(),
         name='pathways-apply'),
     path('apply/discount-overview/', views.ApplyDiscountView.as_view(),

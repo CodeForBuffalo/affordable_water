@@ -1,0 +1,53 @@
+{% extends "pathways/base.html" %}
+{% load i18n %}
+{% block content %}
+<section class="slab slab--white">
+    <div class="grid spacing-above-60 spacing-below-60">
+        <div class="grid__item">
+            <h1>Application Metrics</h1>
+        </div>
+    </div>
+</section>
+<section class="slab">
+    <div class="grid">
+        <div class="grid__item width-three-fourths">
+            <h2>Application Totals</h2>
+            <p>Total applicants for <b>Residential Affordable Water Program (Discount)</b>: {{ total_discount }}</p>
+            <p>Total applicants for <b>Water Amnesty Program</b>: {{ total_amnesty }}</p>
+        <hr>
+        </div>
+        <div class="grid__item width-three-fourths">
+            <h2>Referrals for Residential Affordable Water Program (Discount)</h2>
+            <p><b>Facebook</b>: {{ discount_referral_facebook }}</p>
+            <p><b>Google</b>: {{ discount_referral_google }}</p>
+            <p><b>Twitter</b>: {{ discount_referral_twitter }}</p>
+            <p><b>LinkedIn</b>: {{ discount_referral_linkedin }}</p>
+            <p><b>Letter inserted in water bill</b>: {{ discount_referral_bill }}</p>
+            <p><b>Advertisement on bus, poster, or billboard</b>: {{ discount_referral_ad }}</p>
+            <p><b>Pamphlet</b>: {{ discount_referral_pamphlet }}</p>
+            <p><b>Word of Mouth</b>: {{ discount_referral_word_of_mouth }}</p>
+            <p><b>Other Referral (listed below)</b>: {{ discount_referral_custom_referral_total }}</p>
+            {% for custom_referral in discount_referral_custom_referrals %}
+            <p>{{ custom_referral }}</p>
+            {% endfor %}
+        <hr>
+
+        </div>
+        <div class="grid__item width-three-fourths">
+            <h2>Referrals for Water Amnesty Program</h2>
+            <p><b>Facebook</b>: {{ amnesty_referral_facebook }}</p>
+            <p><b>Google</b>: {{ amnesty_referral_google }}</p>
+            <p><b>Twitter</b>: {{ amnesty_referral_twitter }}</p>
+            <p><b>LinkedIn</b>: {{ amnesty_referral_linkedin }}</p>
+            <p><b>Letter inserted in water bill</b>: {{ amnesty_referral_bill }}</p>
+            <p><b>Advertisement on bus, poster, or billboard</b>: {{ amnesty_referral_ad }}</p>
+            <p><b>Pamphlet</b>: {{ amnesty_referral_pamphlet }}</p>
+            <p><b>Word of Mouth</b>: {{ amnesty_referral_word_of_mouth }}</p>
+            <p><b>Other Referral (listed below)</b>: {{ amnesty_referral_custom_referral_total }}</p>
+            {% for custom_referral in amnesty_referral_custom_referrals %}
+            <p>{{ custom_referral }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

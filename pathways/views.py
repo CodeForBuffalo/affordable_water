@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
 from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from pathways.models import Application, Document, ForgivenessApplication, Referral
 from pathways import forms
@@ -666,3 +667,47 @@ class MoreDocumentInfoRequiredView(FormView):
             self.success_url = '/later-documents/no-match-found/'
 
         return super().form_valid(form)
+
+class ProgramMetricsView(LoginRequiredMixin, TemplateView):
+    template_name = 'pathways/metrics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Application Totals
+        context['total_discount'] = Application.objects.count()
+        context['total_amnesty'] = ForgivenessApplication.objects.count()
+
+        # Discount Referrals 
+        discount_referrals = Referral.objects.filter(program='Discount')
+        context['discount_referral_facebook'] = discount_referrals.filter(facebook=True).count()
+        context['discount_referral_google'] = discount_referrals.filter(google=True).count()
+        context['discount_referral_twitter'] = discount_referrals.filter(twitter=True).count()
+        context['discount_referral_linkedin'] = discount_referrals.filter(linkedin=True).count()
+        context['discount_referral_bill'] = discount_referrals.filter(bill=True).count()
+        context['discount_referral_ad'] = discount_referrals.filter(ad=True).count()
+        context['discount_referral_pamphlet'] = discount_referrals.filter(pamphlet=True).count()
+        context['discount_referral_word_of_mouth'] = discount_referrals.filter(word_of_mouth=True).count()
+        context['discount_referral_custom_referral_total'] = discount_referrals.exclude(custom_referral='').count()
+        discount_custom_referral_objects = list(discount_referrals.exclude(custom_referral=''))
+        discount_custom_referral_strings = []
+        for ref in discount_custom_referral_objects:
+            discount_custom_referral_strings.append(ref.custom_referral)
+        context['discount_referral_custom_referrals'] = discount_custom_referral_strings
+
+        # Amnesty Referrals
+        amnesty_referrals = Referral.objects.filter(program='Amnesty')
+        context['amnesty_referral_facebook'] = amnesty_referrals.filter(facebook=True).count()
+        context['amnesty_referral_google'] = amnesty_referrals.filter(google=True).count()
+        context['amnesty_referral_twitter'] = amnesty_referrals.filter(twitter=True).count()
+        context['amnesty_referral_linkedin'] = amnesty_referrals.filter(linkedin=True).count()
+        context['amnesty_referral_bill'] = amnesty_referrals.filter(bill=True).count()
+        context['amnesty_referral_ad'] = amnesty_referrals.filter(ad=True).count()
+        context['amnesty_referral_pamphlet'] = amnesty_referrals.filter(pamphlet=True).count()
+        context['amnesty_referral_word_of_mouth'] = amnesty_referrals.filter(word_of_mouth=True).count()
+        context['amnesty_referral_custom_referral_total'] = amnesty_referrals.exclude(custom_referral='').count()
+        amnesty_custom_referral_objects = list(amnesty_referrals.exclude(custom_referral=''))
+        amnesty_custom_referral_strings = []
+        for ref in amnesty_custom_referral_objects:
+            amnesty_custom_referral_strings.append(ref.custom_referral)
+        context['amnesty_referral_custom_referrals'] = amnesty_custom_referral_strings
+        return context
