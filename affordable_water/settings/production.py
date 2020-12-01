@@ -10,7 +10,8 @@ DEBUG = False
 DEBUG_PROPAGRATE_EXCEPTIONS = False
 
 ALLOWED_HOSTS = [
-    os.getenv('HOSTNAME')
+    os.getenv('HOSTNAME'),
+    'getwaterwisebuffalo.org'
 ]
 
 ADMINS = [
