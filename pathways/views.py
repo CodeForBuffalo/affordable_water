@@ -585,7 +585,7 @@ class ConfirmationView(DispatchView):
 class LaterDocumentsView(FormView, ClearSessionView):
     template_name = 'pathways/docs/later-docs.html'
     form_class = forms.LaterDocumentsForm
-    success_url = '/documents-overview/'
+    success_url = '/apply/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def form_valid(self, form):
@@ -634,7 +634,7 @@ class NoDocumentFoundView(ExtraContextView):
 class MoreDocumentInfoRequiredView(FormView):
     template_name = 'pathways/docs/more-doc-info.html'
     form_class = forms.MoreDocumentInfoRequiredForm
-    success_url = '/documents-overview/'
+    success_url = '/apply/documents-overview/'
     extra_context = {'card_title': form_class.card_title}
 
     def dispatch(self, request, *args, **kwargs):
